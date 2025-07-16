@@ -64,7 +64,6 @@ export default function PlansListPage() {
     };
 
 //   if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
-  if (loading) return <p className="p-4">불러오는 중...</p>;
 
 return (
     <div className="max-w-2xl mx-auto p-6">
