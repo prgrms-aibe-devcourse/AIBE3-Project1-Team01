@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/app/components/Header";
-import KoreaMap from "@/app/components/KoreaMap";
 import PopularDestinations from "@/app/components/PopularDestinations";
 import Link from "next/link";
 
@@ -27,9 +26,7 @@ export default function Home() {
         </div>
 
         {/* Interactive Korea Map */}
-        <div className="mb-16">
-          <KoreaMap />
-        </div>
+        <div className="mb-16"></div>
       </section>
 
       {/* Popular Destinations */}

@@ -77,15 +77,15 @@ export default function RecommendationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
-          추천 여행지 리스트
+        <h1 className="text-2xl md:text-3xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 drop-shadow-sm">
+          ✨ 오늘의 추천 여행지, 어디로 떠나볼까요?
         </h1>
         <div className="flex flex-col md:flex-row gap-8">
           {/* 선택 UI 영역 */}
           <div className="md:w-1/3 w-full flex flex-col gap-6">
             <div className="bg-white/60 rounded-2xl shadow-lg p-6">
               <h2 className="text-lg font-bold text-gray-700 mb-2">
-                지역 선택
+                어디로 떠나볼까요?
               </h2>
               <RegionSelector
                 areaCode={areaCode}
@@ -96,7 +96,7 @@ export default function RecommendationPage() {
             {areaCode && (
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
                 <h2 className="text-lg font-bold text-gray-700 mb-2">
-                  카테고리 선택
+                  어떤 여행을 원하세요?
                 </h2>
                 <CategoryTabs
                   category={category}
@@ -108,7 +108,7 @@ export default function RecommendationPage() {
             {areaCode && category && SUBCATEGORIES[category] && (
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
                 <h2 className="text-lg font-bold text-gray-700 mb-2">
-                  중분류 선택
+                  더 자세히 골라볼까요?
                 </h2>
                 <SubCategoryTabs
                   category={category}

@@ -48,21 +48,27 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
           url = `https://apis.data.go.kr/B551011/KorService2/searchKeyword2?serviceKey=${encodedKey}&MobileOS=ETC&MobileApp=AppTest&keyword=${encodeURIComponent(
             keyword
           )}&numOfRows=${numOfRows}&pageNo=${pageNo}&_type=json`;
-          if (areaCode) url += `&areaCode=${areaCode}`;
-          if (contentTypeId) url += `&contentTypeId=${contentTypeId}`;
-          if (cat1) url += `&cat1=${cat1}`;
-          if (cat2) url += `&cat2=${cat2}`;
+          if (areaCode !== "") url += `&areaCode=${areaCode}`;
+          if (contentTypeId !== "") url += `&contentTypeId=${contentTypeId}`;
+          if (cat1 !== "") url += `&cat1=${cat1}`;
+          if (cat2 !== "") url += `&cat2=${cat2}`;
         } else {
           // 지역+카테고리 검색
           const coords = AREA_COORDS[areaCode] || AREA_COORDS[1];
           const { mapX, mapY } = coords;
-          url = `http://apis.data.go.kr/B551011/KorService2/locationBasedList2?serviceKey=${encodedKey}&numOfRows=${numOfRows}&pageNo=${pageNo}&MobileOS=ETC&MobileApp=AppTest&_type=json&mapX=${mapX}&mapY=${mapY}&radius=20000&areaCode=${areaCode}&contentTypeId=${contentTypeId}`;
-          if (cat1) url += `&cat1=${cat1}`;
-          if (cat2) url += `&cat2=${cat2}`;
+          url = `http://apis.data.go.kr/B551011/KorService2/locationBasedList2?serviceKey=${encodedKey}&numOfRows=${numOfRows}&pageNo=${pageNo}&MobileOS=ETC&MobileApp=AppTest&_type=json&mapX=${mapX}&mapY=${mapY}&radius=20000`;
+          if (areaCode !== "") url += `&areaCode=${areaCode}`;
+          if (contentTypeId !== "") url += `&contentTypeId=${contentTypeId}`;
+          if (cat1 !== "") url += `&cat1=${cat1}`;
+          if (cat2 !== "") url += `&cat2=${cat2}`;
         }
         const res = await fetch(url);
         data = await res.json();
-        const items = data.response?.body?.items?.item || [];
+        const items = Array.isArray(data.response?.body?.items?.item)
+          ? data.response.body.items.item
+          : data.response.body.items?.item
+          ? [data.response.body.items.item]
+          : [];
         setPlaces(items);
         setTotalCount(Number(data.response?.body?.totalCount) || 0);
       } catch (e) {
@@ -78,13 +84,22 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
 
   const totalPages = Math.ceil(totalCount / numOfRows);
 
+  // 페이지네이션 버튼 계산
+  let pageNumbers = [];
+  if (totalPages > 1) {
+    const window = 2; // 현재 페이지 앞뒤로 몇 개 보여줄지
+    let startPage = Math.max(1, pageNo - window);
+    let endPage = Math.min(totalPages, pageNo + window);
+    if (startPage > 1) pageNumbers.push(1);
+    if (startPage > 2) pageNumbers.push("...");
+    for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
+    if (endPage < totalPages - 1) pageNumbers.push("...");
+    if (endPage < totalPages) pageNumbers.push(totalPages);
+  }
+
   return (
     <div>
-      {/* 더 친근한 헤딩 */}
-      <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 drop-shadow-sm">
-        ✨ 오늘의 추천 여행지, 어디로 떠나볼까요?
-      </h2>
-      {/* 검색창 */}
+      {/* 검색창은 항상 노출 */}
       <div className="mb-8 flex justify-center gap-2">
         <div className="relative w-72">
           <input
@@ -121,7 +136,7 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
           검색
         </button>
       </div>
-      {/* 리스트/로딩/결과없음/페이징 */}
+      {/* 리스트/로딩/결과없음/페이징 등은 조건부로 */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: numOfRows }).map((_, i) => (
@@ -135,14 +150,14 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
         <p className="text-center text-red-500 py-8">{error}</p>
       ) : !places.length ? (
         <p className="text-center text-gray-500 py-8">
-          검색 결과가 없습니다. 새로운 여행지를 직접 추가해보세요!
+          검색 결과가 없습니다...!!
         </p>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {places.map((place) => (
+            {places.map((place, idx) => (
               <div
-                key={place.contentid}
+                key={`${place.contentid}-${idx}`}
                 className="bg-white/60 rounded-2xl shadow-lg p-6 flex flex-col items-center hover:shadow-xl transition-shadow duration-300"
               >
                 {place.firstimage ? (
@@ -191,7 +206,7 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
           </div>
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-8">
+            <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
               <button
                 className="px-3 py-1 rounded-lg bg-white/80 text-gray-700 shadow hover:bg-pink-100 disabled:opacity-50"
                 onClick={() => setPageNo(pageNo - 1)}
@@ -199,19 +214,25 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
               >
                 이전
               </button>
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <button
-                  key={idx + 1}
-                  className={`px-3 py-1 rounded-lg font-semibold transition-colors duration-200 ${
-                    pageNo === idx + 1
-                      ? "bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow"
-                      : "bg-white text-gray-700 hover:bg-pink-50"
-                  }`}
-                  onClick={() => setPageNo(idx + 1)}
-                >
-                  {idx + 1}
-                </button>
-              ))}
+              {pageNumbers.map((num, idx) =>
+                num === "..." ? (
+                  <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={`page-${num}`}
+                    className={`px-3 py-1 rounded-lg font-semibold transition-colors duration-200 ${
+                      pageNo === num
+                        ? "bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow"
+                        : "bg-white text-gray-700 hover:bg-pink-50"
+                    }`}
+                    onClick={() => setPageNo(num)}
+                  >
+                    {num}
+                  </button>
+                )
+              )}
               <button
                 className="px-3 py-1 rounded-lg bg-white/80 text-gray-700 shadow hover:bg-pink-100 disabled:opacity-50"
                 onClick={() => setPageNo(pageNo + 1)}

@@ -5,26 +5,18 @@ export default function SubCategoryTabs({
   subCategories,
 }) {
   if (!subCategories.length) return null;
+  const subs = [{ name: "전체", code: "" }, ...subCategories];
   return (
-    <div className="flex gap-2 bg-white/60 rounded-xl p-2 shadow-sm">
-      <button
-        className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
-          subCategory === ""
-            ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow"
-            : "bg-white text-gray-700 hover:bg-blue-50"
-        }`}
-        onClick={() => setSubCategory("")}
-      >
-        전체
-      </button>
-      {subCategories.map((sub) => (
+    <div className="grid grid-cols-3 gap-4">
+      {subs.map((sub) => (
         <button
           key={sub.code}
-          className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
-            subCategory === sub.code
-              ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow"
-              : "bg-white text-gray-700 hover:bg-blue-50"
-          }`}
+          className={`rounded-full px-6 py-3 min-w-[120px] shadow text-lg font-bold transition
+            ${
+              subCategory === sub.code
+                ? "bg-gradient-to-r from-blue-400 to-cyan-400 text-white scale-105"
+                : "bg-gray-100 text-gray-700 hover:bg-blue-50"
+            }`}
           onClick={() => setSubCategory(sub.code)}
         >
           {sub.name}
