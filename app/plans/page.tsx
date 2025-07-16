@@ -63,10 +63,10 @@ export default function PlanPage() {
 
   const handleSave = async () => {
     
-    // if (!user) {
-    //   alert("로그인이 필요합니다.");
-    //   return;
-    // }
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
   
       if (!range || !range.from || !range.to) {
@@ -146,34 +146,36 @@ export default function PlanPage() {
     };
 
     return (
-      <div className="container mx-auto p-6 max-w-6xl">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* 왼쪽: 달력+제목+설명 */}
-          <div className="w-full md:w-1/3">
-            <PlanForm
-              range={range}
-              setRange={setRange}
-              title={title}
-              setTitle={setTitle}
-              description={description}
-              setDescription={setDescription}
-            />
-          </div>
-    
-          {/* 오른쪽: 일정 입력 */}
-          <div className="w-full flex-1">
-            <DayInputs
-              range={range}
-              dailyPlans={dailyPlans}
-              setDailyPlans={setDailyPlans}
-            />
-            <div className="text-right mt-6">
-              <button
-                onClick={handleSave}
-                className="px-6 py-2 bg-purple-600 text-white font-semibold rounded hover:bg-purple-700"
-              >
-                {planId ? '수정하기' : '저장하기'}
-              </button>
+      <div className="min-h-screen bg-pink-100 py-12">
+        <div className="container mx-auto p-6 max-w-6xl">
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            {/* 왼쪽: 달력+제목+설명 */}
+            <div className="w-full md:w-1/3">
+              <PlanForm
+                range={range}
+                setRange={setRange}
+                title={title}
+                setTitle={setTitle}
+                description={description}
+                setDescription={setDescription}
+              />
+            </div>
+      
+            {/* 오른쪽: 일정 입력 */}
+            <div className="w-full flex-1">
+              <DayInputs
+                range={range}
+                dailyPlans={dailyPlans}
+                setDailyPlans={setDailyPlans}
+              />
+              <div className="text-right mt-6">
+                <button
+                  onClick={handleSave}
+                  className="px-8 py-3 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-2xl shadow-lg hover:from-pink-500 hover:to-purple-600 transition-all text-lg"
+                >
+                  {planId ? '수정하기' : '저장하기'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function PlanForm({
 }: Props) { //PlanForm 컴포넌트 내부에서 사용되는 함수
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 w-full">
-      <h2 className="text-xl font-bold mb-4">날짜 선택</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800">날짜 선택</h2>
       <DayPicker mode="range" selected={range} onSelect={setRange} /> 
       {/* 날짜 범위 선택 가능한 달력 표시. 선택값은 range이고, 선택 시 setRange 실행 */}
 

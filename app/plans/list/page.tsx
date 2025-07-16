@@ -17,24 +17,21 @@ type Plan = {
 export default function PlansListPage() {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
   const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; // 테스트용 ID
   
   useEffect(() => {
     
-    //if (!user?.id) return;
+    if (!user?.id) return;
 
     const fetchPlans = async () => {
         const { data, error } = await supabase
           .from('plans')
           .select('*')
-          .eq('user_id', testUserId) // 이후 user?.id 로 바꾸면 됨
-          .order('start_date', { ascending: true });
+          .eq('user_id', testUserId) // 이후 user?.id 로 바꾸기
+          .order('start_date', { ascending: true }); //오름차순 정렬
   
         if (error) console.error('불러오기 실패:', error.message);
         else setPlans(data || []);
-  
-        setLoading(false);
       };
   
       fetchPlans();
@@ -52,7 +49,7 @@ export default function PlansListPage() {
         .from('plans')
         .delete()
         .eq('id', planId)
-        .eq('user_id', testUserId); // 나중에 user?.id로 교체
+        .eq('user_id', testUserId); // 이후 user?.id 로 바꾸기
   
       if (error) {
         alert('삭제 실패');
@@ -63,45 +60,47 @@ export default function PlansListPage() {
       }
     };
 
-//   if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
+   if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
 
 return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">나의 여행 계획</h1>
-      {plans.length === 0 ? (
-        <p className="text-gray-500">아직 저장된 계획이 없어요.</p>
-      ) : (
-        <ul className="space-y-4">
-          {plans.map((plan) => (
-            <li key={plan.id} className="border rounded-lg p-4 shadow hover:shadow-md">
-              <div>
-                <h2 className="text-lg font-semibold">{plan.title}</h2>
-                <p className="text-sm text-gray-600">
-                  {format(new Date(plan.start_date), 'yyyy-MM-dd')} ~{' '}
-                  {format(new Date(plan.end_date), 'yyyy-MM-dd')}
-                </p>
-                <p className="text-gray-700 mt-1">{plan.description}</p>
+    <div className="min-h-screen bg-pink-100 py-12">
+      <div className="max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-md border rounded-2xl shadow-xl">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">나의 여행 계획</h1>
+        {plans.length === 0 ? (
+          <p className="text-gray-500">아직 저장된 계획이 없어요.</p>
+        ) : (
+          <ul className="space-y-4">
+            {plans.map((plan) => (
+              <li key={plan.id} className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-800">{plan.title}</h2>
+                  <p className="text-sm text-purple-700 font-semibold">
+                    {format(new Date(plan.start_date), 'yyyy-MM-dd')} ~{' '}
+                    {format(new Date(plan.end_date), 'yyyy-MM-dd')}
+                  </p>
+                  <p className="text-gray-700 mt-1">{plan.description}</p>
 
-                {/* 버튼 영역 */}
-                <div className="mt-3 flex gap-2">
-                  <Link
-                    href={`/plans?id=${plan.id}`}
-                    className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-                  >
-                    수정
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(plan.id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
-                  >
-                    삭제
-                  </button>
+                  {/* 버튼 영역 */}
+                  <div className="mt-3 flex gap-2 justify-end">
+                    <Link
+                      href={`/plans?id=${plan.id}`}
+                      className="px-4 py-2 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-xl text-sm font-medium shadow"
+                    >
+                      수정
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(plan.id)}
+                      className="px-4 py-2 bg-gradient-to-r from-pink-200 to-purple-200 text-pink-700 rounded-xl text-sm font-semibold shadow"
+                    >
+                      삭제
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

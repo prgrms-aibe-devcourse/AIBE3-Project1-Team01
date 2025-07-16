@@ -15,7 +15,7 @@ type DailyPlans = {
 type Props = { //DayInputs 컴포넌트가 받는 props 3가지
   range: DateRange | undefined; //날짜 범위
   dailyPlans: DailyPlans; //날짜별 일정 데이터
-  setDailyPlans: (plans: DailyPlans) => void; //날짜별 일정 데이터 업데이트 함수
+  setDailyPlans: React.Dispatch<React.SetStateAction<DailyPlans>>; //함수형 업데이트 허용
 };
 
 export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
@@ -75,70 +75,78 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-h-[80vh] overflow-y-auto">
-      <h2 className="text-xl font-bold mb-4">일정 입력</h2>
+    <div className="bg-white/80 backdrop-blur-md border border-pink-200 rounded-2xl shadow-xl p-6 w-full max-h-[80vh] overflow-y-auto">
+      <h2 className="text-xl font-bold mb-4 text-black">일정 입력</h2>
       {selectedDates.length === 0 ? (
         <p className="text-gray-500">날짜를 선택하면 일정 입력란이 표시됩니다.</p>
       ) : (
-        selectedDates.map((date) => { //각 날짜별로 입력 필드 표시
+        selectedDates.map((date) => {
           const dateStr = format(date, 'yyyy-MM-dd');
           const entries = dailyPlans[dateStr] || [];
 
+          // 순서 바꾸기 함수
+          const moveEntry = (date: string, idx: number, direction: 'up' | 'down') => {
+            const arr = [...(dailyPlans[date] || [])];
+            if (direction === 'up' && idx > 0) {
+              [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
+            } else if (direction === 'down' && idx < arr.length - 1) {
+              [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+            }
+            setDailyPlans({ ...dailyPlans, [date]: arr });
+          };
+
           return (
-            <div key={dateStr} className="mb-10 border-b pb-6">
-              <h3 className="font-semibold mb-3 text-lg text-purple-700">
-                {dateStr}
-              </h3>
+            <div key={dateStr} className="mb-10 border-b border-pink-100 pb-6">
+              <h3 className="font-semibold mb-3 text-lg text-gray-800">{dateStr}</h3>
 
               <div className="flex flex-col gap-4">
-                {entries.map((entry, idx) => ( //각 날짜별 장소/설명 입력 필드 표시
+                {entries.map((entry, idx) => (
                   <div key={idx} className="space-y-2">
                     <div className="flex items-center gap-2 mt-2">
-                    
                       <input
-                        className="w-[93%] border p-2 rounded"
+                        className="w-[80%] border p-2 rounded bg-white text-black placeholder:text-gray-400"
                         value={entry.place}
                         onChange={(e) => handleInputChange(dateStr, idx, 'place', e.target.value)}
                         placeholder="여행지 이름"
                       />
+                      {/* 순서 바꾸기 버튼 */}
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'up')}
-                        className="w-8 h-8 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                        className="w-8 h-8 rounded-full bg-transparent hover:bg-pink-100 text-gray-900 flex items-center justify-center transition-colors"
+                        title="위로"
                       >
                         ↑
                       </button>
-
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'down')}
-                        className="w-8 h-8 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                        className="w-8 h-8 rounded-full bg-transparent hover:bg-purple-100 text-gray-800 flex items-center justify-center transition-colors"
+                        title="아래로"
                       >
                         ↓
                       </button>
-
-                      {/* ❌ 삭제 버튼 */}
+                      {/* 삭제 버튼 */}
                       <button 
                         onClick={() => handleDeleteItem(dateStr, idx)}
-                        className="w-10 h-10 bg-purple-100 text-black rounded flex items-center justify-center hover:bg-purple-200"
+                        className="w-10 h-10 bg-gradient-to-br from-pink-200 to-purple-200 text-pink-700 rounded-full flex items-center justify-center hover:from-pink-300 hover:to-purple-300 hover:text-purple-700 shadow"
                       >
                         ✕
                       </button>
-                  </div>
+                    </div>
                     <textarea
                       placeholder="상세 설명"
                       value={entry.detail}
                       onChange={(e) =>
                         handleInputChange(dateStr, idx, 'detail', e.target.value)
                       }
-                      className="w-full p-2 rounded border"
+                      className="w-full p-2 rounded border bg-white text-black placeholder:text-gray-400"
                     />
-                  
                   </div>
                 ))}
               </div>
 
               <button
                 onClick={() => handleAddEntry(dateStr)}
-                className="mt-4 px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300"
+                className="mt-4 px-3 py-1 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 text-sm rounded-xl hover:from-pink-200 hover:to-purple-200 hover:text-purple-700 shadow"
               >
                 + 항목 추가
               </button>
