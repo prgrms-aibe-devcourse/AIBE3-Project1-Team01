@@ -20,8 +20,15 @@ export default function PlanPage() {
   const { user } = useAuth();
 
   const handleSave = async () => {
-    if (!range?.from || !range?.to || !title || !description || !user?.id) {
-      alert('모든 항목을 입력해주세요.');
+    const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID
+
+    // if (!user) {
+    //   alert("로그인이 필요합니다.");
+    //   return;
+    // }
+
+    if (!range || !range.from || !range.to) {
+      alert("날짜는 반드시 선택해야 합니다.");
       return;
     }
 
@@ -32,7 +39,7 @@ export default function PlanPage() {
         description,
         start_date: range.from.toISOString().slice(0, 10), //toISOString().slice(0,10)은 날짜를 YYYY-MM-DD 형식으로 자르기 위함.
         end_date: range.to.toISOString().slice(0, 10),
-        user_id: user.id,
+        user_id: testUserId // 테스트용 유저 ID 사용. 이후 user_id: user.id로 수정
       })
       .select()
       .single();
@@ -66,7 +73,7 @@ export default function PlanPage() {
       console.error(itemInsertError);
     } else {
       alert('저장 완료!');
-      // router.push('/plans'); // 저장 후 이동하고 싶으면 여기
+      router.push('/plans/list');
     }
   };
 
