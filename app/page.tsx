@@ -68,17 +68,19 @@ export default function Home() {
             </p>
           </Link>
 
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i className="ri-lightbulb-line text-2xl text-white"></i>
+          <Link href="/recommendation" className="block cursor-pointer">
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i className="ri-lightbulb-line text-2xl text-white"></i>
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                여행지 추천
+              </h3>
+              <p className="text-gray-600">
+                취향과 여행 스타일에 맞는 개인화된 장소와 코스를 추천받으세요
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              여행지 추천
-            </h3>
-            <p className="text-gray-600">
-              취향과 여행 스타일에 맞는 개인화된 장소와 코스를 추천받으세요
-            </p>
-          </div>
+          </Link>
         </div>
       </section>
 

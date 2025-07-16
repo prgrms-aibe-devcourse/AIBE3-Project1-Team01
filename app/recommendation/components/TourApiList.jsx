@@ -54,7 +54,13 @@ function DetailModal({ contentid, onClose }) {
   if (!contentid) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn max-h-[90vh] overflow-y-auto">
+        {/* 좌측 상단 로고 */}
+        <img
+          src="/h1trip-logo.png"
+          alt="h1Trip 로고"
+          className="absolute top-4 left-4 w-14 h-14 object-contain"
+        />
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-pink-400"
@@ -70,7 +76,7 @@ function DetailModal({ contentid, onClose }) {
         ) : detail ? (
           <div>
             {/* 제목 */}
-            <h3 className="text-3xl font-extrabold mb-4 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 drop-shadow">
+            <h3 className="text-3xl font-extrabold mb-4 text-center text-pink-300 drop-shadow">
               {detail.title}
             </h3>
             {/* 이미지 */}
@@ -101,22 +107,23 @@ function DetailModal({ contentid, onClose }) {
                   <span>{detail.tel}</span>
                 </div>
               )}
-              {detail.homepage && (
-                <div className="flex items-center gap-2">
-                  <span>🌐</span>
-                  <a
-                    href={detail.homepage
-                      .replace(/<[^>]+>/g, "")
-                      .replace('href="', "")
-                      .replace('"', "")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    홈페이지 바로가기
-                  </a>
-                </div>
-              )}
+              {detail.homepage &&
+                detail.homepage.replace(/<[^>]+>/g, "").trim() && (
+                  <div className="flex items-center gap-2">
+                    <span>🌐</span>
+                    <a
+                      href={detail.homepage
+                        .replace(/<[^>]+>/g, "")
+                        .replace('href="', "")
+                        .replace('"', "")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      홈페이지 바로가기
+                    </a>
+                  </div>
+                )}
             </div>
 
             {/* 구분선 */}
@@ -128,11 +135,6 @@ function DetailModal({ contentid, onClose }) {
                 {detail.overview}
               </div>
             )}
-
-            {/* 콘텐츠ID (작게) */}
-            <div className="text-xs text-gray-400 text-center mt-6">
-              콘텐츠ID: {detail.contentid}
-            </div>
           </div>
         ) : null}
       </div>
@@ -232,7 +234,7 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
             }}
             className="rounded-full border border-gray-200 px-5 py-3 shadow bg-white/80 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-700 text-base w-full pr-12"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-400">
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -250,7 +252,7 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
           </span>
         </div>
         <button
-          className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold shadow hover:scale-105 transition"
+          className="px-6 py-3 rounded-full bg-pink-300 text-white font-bold shadow hover:scale-105 transition"
           onClick={() => setPageNo(1)}
         >
           검색
