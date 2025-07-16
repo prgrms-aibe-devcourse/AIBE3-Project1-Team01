@@ -18,6 +18,7 @@ export default function LoginModal({
   const [email, setEmail] = useState(""); // 이메일
   const [password, setPassword] = useState(""); // 비밀번호
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(""); // 에러 메시지  처리
   const { handleLogIn } = useAuth();
   const router = useRouter();
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,11 +29,10 @@ export default function LoginModal({
 
     //에러 처리
     if (error) {
-      alert(error.message);
-      console.log(error);
       setEmail("");
       setPassword("");
     } else {
+      setErrorMsg("");
       onClose();
       router.push("/");
       window.location.reload();
@@ -41,11 +41,17 @@ export default function LoginModal({
 
   if (!isOpen) return null;
 
+  // 에러 메시지 초기화 후 모달 닫기
+  const handleClose = () => {
+    setErrorMsg("");
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
         >
           <i className="ri-close-line text-xl"></i>
@@ -54,6 +60,11 @@ export default function LoginModal({
           <h2 className="text-2xl font-bold text-gray-800 mb-2">로그인</h2>
           <p className="text-gray-500">여행 계획을 시작해보세요!</p>
         </div>
+        {errorMsg && (
+          <div className="text-red-500 text-sm text-center mb-4">
+            {errorMsg}
+          </div>
+        )}
         <form className="space-y-4" onSubmit={handleOnSubmit}>
           <div>
             <input
@@ -62,6 +73,13 @@ export default function LoginModal({
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+              onInvalid={(e) => {
+                e.preventDefault();
+                setErrorMsg("이메일 또는 비밀번호가 올바르지 않습니다.");
+                setEmail("");
+                setPassword("");
+              }}
             />
           </div>
           <div>
