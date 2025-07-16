@@ -1,14 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
 import SignupModal from "./SignupModal";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    getUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   // 모달 전환 핸들러
   const openSignup = () => {
@@ -54,12 +74,24 @@ export default function Header() {
             </div>
           </nav>
 
-          <button
-            onClick={() => setIsLoginModalOpen(true)}
-            className="bg-gradient-to-r from-pink-300 to-purple-300 text-white px-6 py-2 rounded-full hover:from-pink-400 hover:to-purple-400 transition-all duration-300 font-medium shadow-md hover:shadow-lg whitespace-nowrap cursor-pointer"
-          >
-            로그인
-          </button>
+          {user ? (
+            <>
+              <span>안녕하세요, {user.email}님</span>
+              <button
+                onClick={() => handleLogout()}
+                className="bg-gradient-to-r from-pink-300 to-purple-300 text-white px-6 py-2 rounded-full hover:from-pink-400 hover:to-purple-400 transition-all duration-300 font-medium shadow-md hover:shadow-lg whitespace-nowrap cursor-pointer"
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              className="bg-gradient-to-r from-pink-300 to-purple-300 text-white px-6 py-2 rounded-full hover:from-pink-400 hover:to-purple-400 transition-all duration-300 font-medium shadow-md hover:shadow-lg whitespace-nowrap cursor-pointer"
+            >
+              로그인
+            </button>
+          )}
         </div>
       </header>
 

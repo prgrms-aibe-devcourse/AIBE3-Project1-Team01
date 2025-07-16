@@ -1,11 +1,12 @@
 "use client";
 
+import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSignup?: () => void; // 회원가입 전환용 prop 추가
+  onSignup?: () => void;
 }
 
 export default function LoginModal({
@@ -16,9 +17,19 @@ export default function LoginModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // 로그인 처리 로직
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      alert(error.message);
+      console.log(error);
+    } else {
+      alert("로그인되었습니다.");
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
