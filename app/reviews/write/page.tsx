@@ -116,15 +116,25 @@ export default function WriteReviewPage() {
       {uploadedUrls.length > 0 && (
         <div className="mt-6">
           <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>
-          <ul className="space-y-2 text-sm break-words">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {uploadedUrls.map((url, idx) => (
-              <li key={idx}>
-                <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+              <div key={idx} className="border rounded p-2">
+                <img
+                  src={url}
+                  alt={`업로드 이미지 ${idx + 1}`}
+                  className="w-full h-auto object-cover rounded"
+                />
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-xs text-blue-600 underline mt-1 break-all"
+                >
                   {url}
                 </a>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
