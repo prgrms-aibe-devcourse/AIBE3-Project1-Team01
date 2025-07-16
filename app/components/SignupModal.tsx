@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin?: () => void; // 로그인 전환용 prop 추가
+  onLogin?: () => void;
 }
 
 export default function SignupModal({
@@ -16,10 +17,25 @@ export default function SignupModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
 
-  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const isPasswordMismatch =
+    Boolean(password) &&
+    Boolean(confirmPassword) &&
+    password !== confirmPassword;
+
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // 회원가입 처리 로직
+
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      alert(error.message);
+      console.log(error);
+    } else {
+      alert("회원 가입 성공");
+      onClose();
+      router.push("/");
+    }
   };
 
   if (!isOpen) return null;
@@ -65,13 +81,18 @@ export default function SignupModal({
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+          {isPasswordMismatch && (
+            <div className="text-red-500 text-sm text-center mb-2">
+              비밀번호가 일치하지 않습니다.
+            </div>
+          )}
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
+            disabled={isPasswordMismatch}
           >
             회원가입
           </button>
-
           {onLogin && (
             <div className="text-center mt-6">
               <button
