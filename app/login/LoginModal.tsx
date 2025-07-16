@@ -33,7 +33,6 @@ export default function LoginModal({
       setEmail("");
       setPassword("");
     } else {
-      alert("로그인되었습니다.");
       onClose();
       router.push("/");
       window.location.reload();

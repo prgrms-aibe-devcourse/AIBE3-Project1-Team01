@@ -21,6 +21,7 @@ export default function SignupModal({
   const [password, setPassword] = useState(""); // 비밀번호
   const [confirmPassword, setConfirmPassword] = useState(""); //비밀번호 확인
   const [isLoading, setIsLoading] = useState(false); //로딩
+  const [errorMsg, setErrorMsg] = useState(""); // 에러 메시지
   const router = useRouter();
   const { handleSignUp } = useAuth();
 
@@ -33,15 +34,35 @@ export default function SignupModal({
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
+    const emailRegex = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+    // 입력값 검증
+    if (!emailRegex.test(email)) {
+      setErrorMsg("올바른 이메일을 입력하세요.");
+      setIsLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setErrorMsg("비밀번호는 6자 이상이어야 합니다.");
+      setIsLoading(false);
+      return;
+    }
+    if (isPasswordMismatch) {
+      setErrorMsg(""); // 이미 아래에 안내가 있으므로 중복 안내 X
+      setIsLoading(false);
+      return;
+    }
     const { error } = await handleSignUp(email, password); // 회원가입
     setIsLoading(false);
 
     //회원가입 시 에러 처리
     if (error) {
-      alert(error.message);
-      console.log(error);
+      setErrorMsg(error.message);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     } else {
       alert("회원 가입 성공");
+      setErrorMsg("");
       onClose(); //성공 시 창 닫기, 메인 화면 이동
       router.push("/");
     }
@@ -49,11 +70,20 @@ export default function SignupModal({
 
   if (!isOpen) return null;
 
+  // 입력값 초기화 후 모달 닫기
+  const handleClose = () => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setErrorMsg("");
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
         >
           <i className="ri-close-line text-xl"></i>
@@ -62,6 +92,11 @@ export default function SignupModal({
           <h2 className="text-2xl font-bold text-gray-800 mb-2">회원가입</h2>
           <p className="text-gray-500">새로운 여행 친구가 되어주세요!</p>
         </div>
+        {errorMsg && (
+          <div className="text-red-500 text-sm text-center mb-2">
+            {errorMsg}
+          </div>
+        )}
         <form className="space-y-4" onSubmit={handleOnSubmit}>
           <div>
             <input
@@ -70,6 +105,11 @@ export default function SignupModal({
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onInvalid={(e) => {
+                e.preventDefault();
+                setErrorMsg("올바른 이메일을 입력하세요.");
+              }}
+              required
             />
           </div>
           <div>
