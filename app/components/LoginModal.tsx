@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 
 interface LoginModalProps {
@@ -15,16 +14,18 @@ export default function LoginModal({
   onClose,
   onSignup,
 }: LoginModalProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); // 이메일
+  const [password, setPassword] = useState(""); // 비밀번호
   const [isLoading, setIsLoading] = useState(false);
   const { handleLogIn } = useAuth();
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
-    const { error } = await handleLogIn(email, password);
+    const { error } = await handleLogIn(email, password); // 로그인
     setIsLoading(false);
+
+    //에러 처리
     if (error) {
       alert(error.message);
       console.log(error);
@@ -73,6 +74,7 @@ export default function LoginModal({
             type="submit"
             className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
           >
+            //로딩 시 버튼 글자를 로딩 중으로 변경
             {isLoading ? "로딩 중..." : "로그인"}
           </button>
           {onSignup && (

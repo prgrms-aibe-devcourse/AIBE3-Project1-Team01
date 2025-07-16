@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
+//타입 정의
 import {
   createContext,
   useContext,
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     getUser();
 
+    //인증 상태 변경 감지하는 리스너
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -35,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     });
 
+    // 클린업 함수 - 이벤트 중복 호출 방지
     return () => subscription.unsubscribe();
   }, []);
 
@@ -54,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     setIsLoading(true);
     await supabase.auth.signOut();
-    window.location.reload();
+    window.location.reload(); // 로그아웃 시 바로 윈도우 리로딩
     setIsLoading(false);
   };
 

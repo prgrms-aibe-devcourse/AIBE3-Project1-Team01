@@ -2,9 +2,10 @@
 /*
  */
 import React, { useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+
+//타입 소개
 interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,13 +17,14 @@ export default function SignupModal({
   onClose,
   onLogin,
 }: SignupModalProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState(""); // 이메일
+  const [password, setPassword] = useState(""); // 비밀번호
+  const [confirmPassword, setConfirmPassword] = useState(""); //비밀번호 확인
+  const [isLoading, setIsLoading] = useState(false); //로딩
   const router = useRouter();
   const { handleSignUp } = useAuth();
 
+  // 비밀번호와 확인 시 비밀번호가 다른 경우 하단에 비밀번호가 일치하지 않는다는 경고글 띄움
   const isPasswordMismatch =
     Boolean(password) &&
     Boolean(confirmPassword) &&
@@ -31,14 +33,16 @@ export default function SignupModal({
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
-    const { error } = await handleSignUp(email, password);
+    const { error } = await handleSignUp(email, password); // 회원가입
     setIsLoading(false);
+
+    //회원가입 시 에러 처리
     if (error) {
       alert(error.message);
       console.log(error);
     } else {
       alert("회원 가입 성공");
-      onClose();
+      onClose(); //성공 시 창 닫기, 메인 화면 이동
       router.push("/");
     }
   };
@@ -86,6 +90,7 @@ export default function SignupModal({
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+          //비밀번호 일치 확인 & 로딩 시 로딩중으로 글자 변경
           {isPasswordMismatch && (
             <div className="text-red-500 text-sm text-center mb-2">
               비밀번호가 일치하지 않습니다.
