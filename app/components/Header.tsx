@@ -11,15 +11,17 @@ import { supabase } from "@/lib/supabase";
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
+      setIsLoading(true);
       const {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
+      setIsLoading(false);
     };
 
     getUser();
@@ -28,15 +30,22 @@ export default function Header() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
+    setIsLoading(true);
     await supabase.auth.signOut();
     window.location.reload();
+    setIsLoading(false);
   };
+
+  if (isLoading) {
+    return <>로딩 중...</>;
+  }
 
   // 모달 전환 핸들러
   const openSignup = () => {

@@ -1,5 +1,6 @@
 "use client";
-
+/*
+ */
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ export default function SignupModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const isPasswordMismatch =
@@ -25,9 +27,10 @@ export default function SignupModal({
     password !== confirmPassword;
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     e.preventDefault();
-
     const { error } = await supabase.auth.signUp({ email, password });
+    setIsLoading(false);
     if (error) {
       alert(error.message);
       console.log(error);
@@ -89,9 +92,9 @@ export default function SignupModal({
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
-            disabled={isPasswordMismatch}
+            disabled={isPasswordMismatch || isLoading}
           >
-            회원가입
+            {isLoading ? "로딩 중..." : "회원가입"}
           </button>
           {onLogin && (
             <div className="text-center mt-6">

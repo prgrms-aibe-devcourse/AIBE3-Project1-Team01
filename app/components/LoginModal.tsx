@@ -16,13 +16,16 @@ export default function LoginModal({
 }: LoginModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    setIsLoading(false);
     if (error) {
       alert(error.message);
       console.log(error);
@@ -71,7 +74,7 @@ export default function LoginModal({
             type="submit"
             className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
           >
-            로그인
+            {isLoading ? "로딩 중..." : "로그인"}
           </button>
           {onSignup && (
             <div className="text-center mt-6">
