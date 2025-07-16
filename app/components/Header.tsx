@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LoginModal from "./LoginModal";
-import SignupModal from "./SignupModal";
+import LoginModal from "../login/LoginModal";
+import SignupModal from "../signup/SignupModal";
 import { useAuth } from "@/context/AuthContext";
 
 /*

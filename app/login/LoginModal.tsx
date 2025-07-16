@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface LoginModalProps {
@@ -18,7 +19,7 @@ export default function LoginModal({
   const [password, setPassword] = useState(""); // 비밀번호
   const [isLoading, setIsLoading] = useState(false);
   const { handleLogIn } = useAuth();
-
+  const router = useRouter();
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
@@ -29,9 +30,12 @@ export default function LoginModal({
     if (error) {
       alert(error.message);
       console.log(error);
+      setEmail("");
+      setPassword("");
     } else {
       alert("로그인되었습니다.");
       onClose();
+      router.push("/");
       window.location.reload();
     }
   };
