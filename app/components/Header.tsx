@@ -7,45 +7,12 @@ import LoginModal from "./LoginModal";
 import SignupModal from "./SignupModal";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const getUser = async () => {
-      setIsLoading(true);
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setIsLoading(false);
-    };
-
-    getUser();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    setIsLoading(true);
-    await supabase.auth.signOut();
-    window.location.reload();
-    setIsLoading(false);
-  };
-
-  if (isLoading) {
-    return <>로딩 중...</>;
-  }
+  const { user, isLoading, handleLogout } = useAuth();
 
   // 모달 전환 핸들러
   const openSignup = () => {
@@ -56,6 +23,9 @@ export default function Header() {
     setIsSignupModalOpen(false);
     setIsLoginModalOpen(true);
   };
+  if (isLoading) {
+    return <>로딩 중...</>;
+  }
 
   return (
     <>

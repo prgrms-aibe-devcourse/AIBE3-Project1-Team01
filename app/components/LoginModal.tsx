@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import React, { useState } from "react";
 
@@ -17,14 +18,12 @@ export default function LoginModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { handleLogIn } = useAuth();
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await handleLogIn(email, password);
     setIsLoading(false);
     if (error) {
       alert(error.message);

@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,6 +21,7 @@ export default function SignupModal({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { handleSignUp } = useAuth();
 
   const isPasswordMismatch =
     Boolean(password) &&
@@ -29,7 +31,7 @@ export default function SignupModal({
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await handleSignUp(email, password);
     setIsLoading(false);
     if (error) {
       alert(error.message);
