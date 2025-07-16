@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import Header from '@/components/Header';
-import KoreaMap from '@/components/KoreaMap';
-import PopularDestinations from '@/components/PopularDestinations';
-import Link from 'next/link';
+import Header from "@/app/components/Header";
+import KoreaMap from "@/app/components/KoreaMap";
+import PopularDestinations from "@/app/components/PopularDestinations";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-16">
         <div className="text-center mb-16">
@@ -21,8 +21,8 @@ export default function Home() {
             계획해보세요 ✈️
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            대한민국 전국 어디든, 당신만의 특별한 여행 계획을 세우고 
-            다른 여행자들과 후기를 공유해보세요
+            대한민국 전국 어디든, 당신만의 특별한 여행 계획을 세우고 다른
+            여행자들과 후기를 공유해보세요
           </p>
         </div>
 
@@ -44,7 +44,10 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Link href="/reviews" className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+          <Link
+            href="/reviews"
+            className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+          >
             <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
               <i className="ri-map-pin-line text-2xl text-white"></i>
             </div>
@@ -54,13 +57,17 @@ export default function Home() {
             </p>
           </Link>
 
-          <Link href="/reviews" className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+          <Link
+            href="/reviews"
+            className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+          >
             <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
               <i className="ri-chat-3-line text-2xl text-white"></i>
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-4">여행 후기</h3>
             <p className="text-gray-600">
-              생생한 여행 경험을 사진과 함께 공유하고 다른 여행자들의 후기도 확인하세요
+              생생한 여행 경험을 사진과 함께 공유하고 다른 여행자들의 후기도
+              확인하세요
             </p>
           </Link>
 
