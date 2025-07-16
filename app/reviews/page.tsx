@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import ReviewCard from '@/components/ReviewCard';
-import ReviewFilter from '@/components/ReviewFilter';
+import ReviewCard from '../components/ReviewCard';
+import ReviewFilter from '../components/ReviewFilter';
 
 const mockReviews = [
   {
