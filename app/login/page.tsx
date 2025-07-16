@@ -1,6 +1,16 @@
 "use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import LoginModal from "./LoginModal";
 
 export default function LoginPage() {
-  return <LoginModal isOpen={true} onClose={() => {}} />;
+  const [isOpen, setIsOpen] = useState(true);
+  const router = useRouter();
+
+  const handleClose = () => {
+    setIsOpen(false);
+    router.push("/");
+  };
+
+  return <LoginModal isOpen={isOpen} onClose={handleClose} />;
 }
