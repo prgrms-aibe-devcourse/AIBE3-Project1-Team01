@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface Review {
   id: string;
@@ -12,7 +12,6 @@ interface Review {
   images: string[];
   createdAt: string;
   likes: number;
-  category: string;
 }
 
 interface ReviewCardProps {
@@ -25,32 +24,23 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
   const handleLike = () => {
     if (isLiked) {
-      setLikesCount(prev => prev - 1);
+      setLikesCount((prev) => prev - 1);
     } else {
-      setLikesCount(prev => prev + 1);
+      setLikesCount((prev) => prev + 1);
     }
     setIsLiked(!isLiked);
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  const getCategoryName = (category: string) => {
-    const categories: { [key: string]: string } = {
-      'nature': '자연',
-      'culture': '문화',
-      'food': '맛집',
-      'history': '역사',
-      'activity': '액티비티'
-    };
-    return categories[category] || category;
-  };
+  // ...existing code...
 
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
@@ -66,11 +56,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             {review.region}
           </span>
         </div>
-        <div className="absolute top-3 right-3">
-          <span className="bg-pink-500/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white">
-            {getCategoryName(review.category)}
-          </span>
-        </div>
+        {/* 카테고리 UI 제거됨 */}
       </div>
 
       {/* 내용 */}
@@ -81,13 +67,17 @@ export default function ReviewCard({ review }: ReviewCardProps) {
               {Array.from({ length: 5 }, (_, i) => (
                 <i
                   key={i}
-                  className={`ri-star${i < review.rating ? '-fill' : '-line'} text-sm`}
+                  className={`ri-star${
+                    i < review.rating ? "-fill" : "-line"
+                  } text-sm`}
                 ></i>
               ))}
             </div>
             <span className="text-sm text-gray-600">{review.rating}</span>
           </div>
-          <span className="text-xs text-gray-500">{formatDate(review.createdAt)}</span>
+          <span className="text-xs text-gray-500">
+            {formatDate(review.createdAt)}
+          </span>
         </div>
 
         <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">
@@ -113,12 +103,12 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           <button
             onClick={handleLike}
             className={`flex items-center space-x-1 px-3 py-1 rounded-full transition-colors cursor-pointer ${
-              isLiked 
-                ? 'bg-pink-100 text-pink-600' 
-                : 'bg-gray-100 text-gray-600 hover:bg-pink-50 hover:text-pink-500'
+              isLiked
+                ? "bg-pink-100 text-pink-600"
+                : "bg-gray-100 text-gray-600 hover:bg-pink-50 hover:text-pink-500"
             }`}
           >
-            <i className={`ri-heart${isLiked ? '-fill' : '-line'} text-sm`}></i>
+            <i className={`ri-heart${isLiked ? "-fill" : "-line"} text-sm`}></i>
             <span className="text-xs font-medium">{likesCount}</span>
           </button>
         </div>

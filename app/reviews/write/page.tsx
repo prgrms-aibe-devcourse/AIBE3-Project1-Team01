@@ -1,84 +1,100 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { supabase } from "@/lib/supabase";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function WriteReviewPage() {
   const [formData, setFormData] = useState({
-    title: '',
-    region: '',
-    category: '',
+    title: "",
+    region: "",
     rating: 5,
-    content: '',
-    images: [] as File[]
+    content: "",
+    images: [] as File[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const regions = [
-    '서울', '부산', '제주도', '강원도', '경기도', '인천', '대구', '광주', '대전', '울산'
+    "서울",
+    "부산",
+    "제주도",
+    "강원도",
+    "경기도",
+    "인천",
+    "대구",
+    "광주",
+    "대전",
+    "울산",
   ];
 
-  const categories = [
-    { id: 'nature', name: '자연' },
-    { id: 'culture', name: '문화' },
-    { id: 'food', name: '맛집' },
-    { id: 'history', name: '역사' },
-    { id: 'activity', name: '액티비티' },
-    { id: 'shopping', name: '쇼핑' },
-  ];
+  // ...existing code...
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + formData.images.length > 5) {
-      alert('최대 5장까지 업로드 가능합니다.');
+      alert("최대 5장까지 업로드 가능합니다.");
       return;
     }
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: [...prev.images, ...files]
+      images: [...prev.images, ...files],
     }));
 
     // 미리보기 생성
-    files.forEach(file => {
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPreviewImages(prev => [...prev, e.target?.result as string]);
+        setPreviewImages((prev) => [...prev, e.target?.result as string]);
       };
       reader.readAsDataURL(file);
     });
   };
 
   const removeImage = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
-    setPreviewImages(prev => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title.trim() || !formData.region || !formData.category || !formData.content.trim()) {
-      alert('모든 필수 항목을 입력해주세요.');
+
+    if (
+      !formData.title.trim() ||
+      !formData.region ||
+      !formData.content.trim()
+    ) {
+      alert("모든 필수 항목을 입력해주세요.");
       return;
     }
 
     if (formData.content.length > 500) {
-      alert('후기 내용은 500자를 초과할 수 없습니다.');
+      alert("후기 내용은 500자를 초과할 수 없습니다.");
       return;
     }
 
     setIsSubmitting(true);
-    
-    // 실제로는 서버에 데이터를 전송
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('후기가 성공적으로 등록되었습니다!');
-      // 후기 목록으로 이동
-    }, 2000);
+
+    // Supabase에 데이터 전송
+    const { data, error } = await supabase.from("reviews").insert({
+      title: formData.title,
+      region: formData.region,
+      rating: formData.rating,
+      content: formData.content,
+      created_at: new Date().toISOString(), // 필요 시
+    });
+
+    setIsSubmitting(false);
+    if (error) {
+      alert("후기 등록에 실패했습니다: " + error.message);
+      return;
+    }
+    alert("후기가 성공적으로 등록되었습니다!");
+    // 후기 목록으로 이동 (원하는 경우 추가)
   };
 
   return (
@@ -87,7 +103,10 @@ export default function WriteReviewPage() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link href="/reviews" className="text-pink-500 hover:text-pink-600 cursor-pointer">
+            <Link
+              href="/reviews"
+              className="text-pink-500 hover:text-pink-600 cursor-pointer"
+            >
               <i className="ri-arrow-left-line text-xl"></i>
             </Link>
             <h1 className="text-2xl font-bold text-gray-800">후기 작성</h1>
@@ -96,7 +115,11 @@ export default function WriteReviewPage() {
       </header>
 
       <div className="container mx-auto px-6 py-8 max-w-2xl">
-        <form id="review-form" onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8">
+        <form
+          id="review-form"
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl shadow-lg p-8"
+        >
           {/* 제목 */}
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -106,47 +129,34 @@ export default function WriteReviewPage() {
               type="text"
               name="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="여행 후기 제목을 입력해주세요"
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors"
             />
           </div>
 
-          {/* 지역 및 카테고리 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                여행 지역 *
-              </label>
-              <select
-                name="region"
-                value={formData.region}
-                onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors pr-8"
-              >
-                <option value="">지역을 선택해주세요</option>
-                {regions.map(region => (
-                  <option key={region} value={region}>{region}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                카테고리 *
-              </label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors pr-8"
-              >
-                <option value="">카테고리를 선택해주세요</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
-                ))}
-              </select>
-            </div>
+          {/* 지역 선택 */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              여행 지역 *
+            </label>
+            <select
+              name="region"
+              value={formData.region}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, region: e.target.value }))
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors pr-8"
+            >
+              <option value="">지역을 선택해주세요</option>
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* 평점 */}
@@ -159,22 +169,26 @@ export default function WriteReviewPage() {
                 <button
                   key={i}
                   type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, rating: i + 1 }))}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, rating: i + 1 }))
+                  }
                   className={`text-2xl transition-colors cursor-pointer ${
-                    i < formData.rating ? 'text-yellow-400' : 'text-gray-300'
+                    i < formData.rating ? "text-yellow-400" : "text-gray-300"
                   }`}
                 >
                   <i className="ri-star-fill"></i>
                 </button>
               ))}
-              <span className="ml-4 text-sm text-gray-600">{formData.rating}점</span>
+              <span className="ml-4 text-sm text-gray-600">
+                {formData.rating}점
+              </span>
             </div>
           </div>
 
           {/* 후기 내용 */}
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              후기 내용 * 
+              후기 내용 *
               <span className="text-xs text-gray-500 font-normal">
                 ({formData.content.length}/500자)
               </span>
@@ -184,7 +198,7 @@ export default function WriteReviewPage() {
               value={formData.content}
               onChange={(e) => {
                 if (e.target.value.length <= 500) {
-                  setFormData(prev => ({ ...prev, content: e.target.value }));
+                  setFormData((prev) => ({ ...prev, content: e.target.value }));
                 }
               }}
               placeholder="여행에서 경험한 생생한 후기를 공유해주세요"
@@ -198,7 +212,7 @@ export default function WriteReviewPage() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               사진 업로드 (최대 5장)
             </label>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {previewImages.map((image, index) => (
                 <div key={index} className="relative group">
@@ -216,7 +230,7 @@ export default function WriteReviewPage() {
                   </button>
                 </div>
               ))}
-              
+
               {formData.images.length < 5 && (
                 <label className="border-2 border-dashed border-gray-300 rounded-lg h-24 flex flex-col items-center justify-center cursor-pointer hover:border-pink-300 transition-colors">
                   <i className="ri-camera-line text-xl text-gray-400 mb-1"></i>
@@ -231,7 +245,7 @@ export default function WriteReviewPage() {
                 </label>
               )}
             </div>
-            
+
             <p className="text-xs text-gray-500">
               JPG, PNG 파일만 업로드 가능합니다. (각 파일 최대 5MB)
             </p>
@@ -256,7 +270,7 @@ export default function WriteReviewPage() {
                   등록 중...
                 </>
               ) : (
-                '후기 등록'
+                "후기 등록"
               )}
             </button>
           </div>
