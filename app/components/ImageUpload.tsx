@@ -1,15 +1,18 @@
 // components/ImageUpload.tsx
 'use client';
-
+import { supabase } from '@/lib/supabase';
 import { useRef } from 'react';
 
+const BUCKET = "images"; //버킷 이름 
+
 interface ImageUploadProps {
-  images: File[];
-  previewImages: string[];
-  onChange: (newFiles: File[], newPreviews: string[]) => void;
-  onRemove: (index: number) => void;
+  images: File[]; //선택된 File 객체 배열
+  previewImages: string[]; //미리보기용 URL 배열 (DataURL)
+  onChange: (newFiles: File[], newPreviews: string[]) => void; // 변경되었을 때의 로직
+  onRemove: (index: number) => void; // 제거되었을 때의 로직 
 }
 
+//내보내기~
 export default function ImageUpload({
   images,
   previewImages,
@@ -18,6 +21,7 @@ export default function ImageUpload({
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  //이미지 선택 시 처리
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + images.length > 5) {
@@ -25,6 +29,7 @@ export default function ImageUpload({
       return;
     }
 
+    //선택한 이미지들 DataURL로 변환(미리보기용)
     const newPreviews: string[] = [];
     files.forEach(file => {
       const reader = new FileReader();

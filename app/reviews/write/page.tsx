@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import ImageUpload from './components/ImageUpload';
+import ImageUpload from '../../components/ImageUpload';
 
 export default function WriteReviewPage() {
   const [formData, setFormData] = useState({
