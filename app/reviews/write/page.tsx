@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ImageUpload from './components/ImageUpload';
 
 export default function WriteReviewPage() {
   const [formData, setFormData] = useState({
@@ -193,49 +194,22 @@ export default function WriteReviewPage() {
             />
           </div>
 
-          {/* 사진 업로드 */}
-          <div className="mb-8">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              사진 업로드 (최대 5장)
-            </label>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-              {previewImages.map((image, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={image}
-                    alt={`미리보기 ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors cursor-pointer"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-              
-              {formData.images.length < 5 && (
-                <label className="border-2 border-dashed border-gray-300 rounded-lg h-24 flex flex-col items-center justify-center cursor-pointer hover:border-pink-300 transition-colors">
-                  <i className="ri-camera-line text-xl text-gray-400 mb-1"></i>
-                  <span className="text-xs text-gray-500">사진 추가</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
-            
-            <p className="text-xs text-gray-500">
-              JPG, PNG 파일만 업로드 가능합니다. (각 파일 최대 5MB)
-            </p>
-          </div>
+          {/* 사진 업로드 -> 컴포넌트로 분리*/}
+          <ImageUpload
+            images={formData.images}
+            previewImages={previewImages}
+            onChange={(newFiles, newPreviews) => {
+              setFormData(prev => ({ ...prev, images: newFiles }));
+              setPreviewImages(newPreviews);
+            }}
+            onRemove={(index) => {
+              setFormData(prev => ({
+                ...prev,
+                images: prev.images.filter((_, i) => i !== index)
+              }));
+              setPreviewImages(prev => prev.filter((_, i) => i !== index));
+            }}
+          />
 
           {/* 제출 버튼 */}
           <div className="flex gap-4">
