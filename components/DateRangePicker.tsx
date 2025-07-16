@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import { format } from 'date-fns';
-import 'react-day-picker/dist/style.css';
 import type { DateRange } from 'react-day-picker';
 
 export default function DateRangePicker() {
