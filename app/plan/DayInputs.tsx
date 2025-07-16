@@ -59,6 +59,21 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
     setDailyPlans(updated);
   };
 
+  const moveEntry = (date: string, index: number, direction: 'up' | 'down') => {
+    setDailyPlans((prev) => {
+      const current = [...(prev[date] || [])];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      
+      // 범위 밖이면 무시
+      if (targetIndex < 0 || targetIndex >= current.length) return prev;
+  
+      // 스왑
+      [current[index], current[targetIndex]] = [current[targetIndex], current[index]];
+  
+      return { ...prev, [date]: current };
+    });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-h-[80vh] overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">일정 입력</h2>
@@ -86,6 +101,19 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                         onChange={(e) => handleInputChange(dateStr, idx, 'place', e.target.value)}
                         placeholder="여행지 이름"
                       />
+                      <button
+                        onClick={() => moveEntry(dateStr, idx, 'up')}
+                        className="w-8 h-8 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                      >
+                        ↑
+                      </button>
+
+                      <button
+                        onClick={() => moveEntry(dateStr, idx, 'down')}
+                        className="w-8 h-8 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                      >
+                        ↓
+                      </button>
 
                       {/* ❌ 삭제 버튼 */}
                       <button 
