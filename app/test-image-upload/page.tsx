@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ImageUpload from "@/app/components/ImageUpload";
-import { supabase } from "@/lib/supabase"; // 경로 꼭 확인!
+import { supabase } from "@/lib/supabase";
 
 export default function TestImageUpload() {
 
@@ -56,33 +56,47 @@ export default function TestImageUpload() {
     }
 
     setIsUploading(true);
-    const uploaded: string[] = [];
+    const uploaded: string[] = []; //업로드 완료된 이미지들의 공개 URL 저장하는 배열
 
-    //파일 하나씩 꺼내기 
-    for (const file of images) {
-      //안전한 파일명 생성 
-      const safeFileName = generateSafeFileName(file);
-      //images 버킷에 업로드  
-      const { data, error } = await supabase.storage
+    const tempReviewId = 999; //임시 리뷰 아이디 
+
+    //파일 하나씩 꺼내기 (순서 저장을 위해 for-of문이 아니라 for문 사용)
+    for(let i = 0; i < images.length; i++) {
+      const file = images[i]; //파일 하나 꺼내기
+      const safeFileName = generateSafeFileName(file); //안전한 파일명 생성
+
+      //버킷에 이미지 업로드
+      const { data, error } = await supabase.storage 
         .from("images")
         .upload(safeFileName, file);
 
-      //에러 처리 
-      if (error) {
+      //에러 처리
+      if(error) {
         alert(`업로드 실패: ${error.message}`);
         setIsUploading(false);
         return;
       }
 
-      // 공개 URL 얻기(여기선 업로드 확인용)
+      //공개 URL 얻기
       const { data: urlData } = supabase.storage
         .from("images")
         .getPublicUrl(safeFileName);
 
-      if (urlData?.publicUrl) {
-        uploaded.push(urlData.publicUrl);
-      }
-    }
+      //없으면 넘어가기
+      if(!urlData?.publicUrl) continue;
+
+      //있으면 공개 URL 저장
+      const imageUrl = urlData.publicUrl;
+      uploaded.push(imageUrl);
+      
+      //images테이블에 이미지 저장
+      const {error : insertError} = await supabase.from("images").insert({
+        review_id: tempReviewId,
+        img_url: imageUrl,
+        order: i,
+        place: null
+    });
+}
 
     //업로드된 이미지들 공개 URL 상태에 추가 
     setUploadedUrls(uploaded);
@@ -138,3 +152,4 @@ export default function TestImageUpload() {
     </div>
   );
 }
+
