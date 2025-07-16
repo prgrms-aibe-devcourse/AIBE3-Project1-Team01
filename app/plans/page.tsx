@@ -1,37 +1,72 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '../../context/Authcontext';
 import type { DateRange } from 'react-day-picker';
 import PlanForm from '../plan/PlanForm';
 import DayInputs from '../plan/DayInputs';
 
+
 export default function PlanPage() {
-  const [range, setRange] = useState<DateRange | undefined>();
+  const [range, setRange] = useState<DateRange | undefined>(); //여행 날짜 범위를 저장하는 상태 (from, to로 구성됨)
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dailyPlans, setDailyPlans] = useState<{
     [date: string]: { place: string; detail: string }[];
-  }>({});
+  }>({}); //날짜별 일정 dailyPlans는 날짜별로 배열을 가짐 (한 날짜에 여러 장소 가능).
+  const router = useRouter();
+  const { user } = useAuth();
 
   const handleSave = async () => {
-    if (!range?.from || !range?.to) return alert('날짜를 선택하세요.');
+    if (!range?.from || !range?.to || !title || !description || !user?.id) {
+      alert('모든 항목을 입력해주세요.');
+      return;
+    }
 
-    const response = await fetch('/api/save-plan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const { data: planInsertData, error: planInsertError } = await supabase
+      .from('plans')
+      .insert({
         title,
         description,
-        start_date: range.from,
-        end_date: range.to,
-        dailyPlans,
-      }),
-    });
+        start_date: range.from.toISOString().slice(0, 10), //toISOString().slice(0,10)은 날짜를 YYYY-MM-DD 형식으로 자르기 위함.
+        end_date: range.to.toISOString().slice(0, 10),
+        user_id: user.id,
+      })
+      .select()
+      .single();
 
-    if (response.ok) {
-      alert('저장 완료!');
+    if (planInsertError || !planInsertData) {
+      alert('여행 계획 저장에 실패했습니다.');
+      console.error(planInsertError);
+      return;
+    }
+    //저장 중 에러가 있거나 결과가 없으면 알림 띄우고 함수 종료.
+
+    const planId = planInsertData.id;
+
+    //dailyPlans 객체를 평평한 배열로 변환하고, 각 항목을 순서와 함께 저장.
+    const itemsToInsert = Object.entries(dailyPlans).flatMap(([date, entries]) =>
+      entries.map((entry, idx) => ({
+        date,
+        place: entry.place,
+        detail: entry.detail,
+        order: idx,
+        plan_id: planId,
+      }))
+    );
+
+    const { error: itemInsertError } = await supabase
+      .from('plan_items')
+      .insert(itemsToInsert);
+
+    if (itemInsertError) {
+      alert('일정 항목 저장 중 오류가 발생했습니다.');
+      console.error(itemInsertError);
     } else {
-      alert('저장 실패');
+      alert('저장 완료!');
+      // router.push('/plans'); // 저장 후 이동하고 싶으면 여기
     }
   };
 
