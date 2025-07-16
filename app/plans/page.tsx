@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '../../context/Authcontext';
 import type { DateRange } from 'react-day-picker';
 import PlanForm from '../plan/PlanForm';
-import DayInputs from '../plan/DayInputs';
+import DayInputs from '../plan/DayInputs'; 
 
 
 export default function PlanPage() {
@@ -15,12 +15,12 @@ export default function PlanPage() {
   const [description, setDescription] = useState('');
   const [dailyPlans, setDailyPlans] = useState<{
     [date: string]: { place: string; detail: string }[];
-  }>({}); //날짜별 일정 dailyPlans는 날짜별로 배열을 가짐 (한 날짜에 여러 장소 가능).
+  }>({}); //날짜별 일정 dailyPlans는 날짜별로 배열을 가짐 (한 날짜에 여러 장소 가능)
   const router = useRouter();
   const { user } = useAuth();
 
   const handleSave = async () => {
-    const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID
+    const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID. 이후 삭제
 
     // if (!user) {
     //   alert("로그인이 필요합니다.");
