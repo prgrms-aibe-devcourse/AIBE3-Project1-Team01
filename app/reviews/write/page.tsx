@@ -4,99 +4,85 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import ReviewContentForm, { ReviewContentData } from "@/app/reviews/components/ReviewContentForm";
 import ReviewImageUpload, { ReviewImageUploadData } from "@/app/reviews/components/ReviewImageUpload";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import { useReviewContentForm } from "@/hooks/useReviewContentForm";
+import { useImageUploadForm } from "@/hooks/useImageUploadForm";
 
 export default function WriteReviewPage() {
-  // 후기 내용 상태
-  const [contentData, setContentData] = useState<ReviewContentData>({
-    title: "",
-    region: "",
-    rating: 5,
-    content: "",
-  });
-  // 이미지 업로드 상태
-  const [imageData, setImageData] = useState<ReviewImageUploadData>({
-    files: [],
-    previews: [],
-  });
-  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  // 후기 내용 상태 및 로직 (커스텀 훅)
+  const {
+    form: contentData,
+    setForm: setContentData,
+    handleChange: handleContentChange,
+    reset: resetContent,
+    validate: validateContent,
+  } = useReviewContentForm();
 
-  // 안전한 파일명 생성
-  const generateSafeFileName = (originalFile: File): string => {
-    const extension = originalFile.name.split(".").pop()?.toLowerCase() || "jpg";
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 10);
-    return `${timestamp}-${randomString}.${extension}`;
+  // 이미지 업로드 상태 및 로직 (커스텀 훅)
+  const {
+    files: imageFiles,
+    previews: imagePreviews,
+    addFiles: addImageFiles,
+    removeFile: removeImageFile,
+    reset: resetImages,
+  } = useImageUploadForm();
+
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
+  const { upload, loading: isUploading, error: uploadError } = useImageUploader();
+
+  // ReviewImageUpload에 맞는 value 객체 생성
+  const imageValue = { files: imageFiles, previews: imagePreviews };
+
+  // onChange 핸들러: ReviewImageUploadData 타입을 받아 훅의 상태로 반영
+  const handleImageUploadChange = (data: { files: File[]; previews: string[] }) => {
+    // 상태를 완전히 대체
+    // (useImageUploadForm 훅에 setFiles, setPreviews가 있다면 그걸 써도 됨)
+    // 여기서는 reset 후 addFiles로 대체
+    resetImages();
+    if (data.files.length > 0 || data.previews.length > 0) {
+      // 새로 받은 파일/미리보기로 상태를 채움
+      addImageFiles(data.files, data.previews);
+    }
+  };
+
+  // 이미지 제거 핸들러
+  const handleImageRemove = (index: number) => {
+    removeImageFile(index);
   };
 
   // 제출 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { title, region, rating, content } = contentData;
-    if (!title.trim() || !region || !content.trim()) {
-      alert("모든 필수 항목을 입력해주세요.");
+    // 입력 유효성 검사
+    const errorMsg = validateContent();
+    if (errorMsg) {
+      alert(errorMsg);
       return;
     }
-    if (content.length > 500) {
-      alert("후기 내용은 500자를 초과할 수 없습니다.");
-      return;
-    }
-    setIsUploading(true);
-    // 1. 후기 저장
-    const { data: reviewData, error: reviewError } = await supabase
-      .from("reviews")
-      .insert({
-        title,
-        region,
-        rating,
-        content,
-        created_at: new Date().toISOString(),
-      })
-      .select()
-      .single();
-    if (reviewError || !reviewData) {
-      alert("후기 저장 실패: " + reviewError?.message);
-      setIsUploading(false);
-      return;
-    }
-    const reviewId = reviewData.id;
-    // 2. 이미지 업로드 및 DB 저장
-    const uploaded: string[] = [];
-    for (let i = 0; i < imageData.files.length; i++) {
-      const file = imageData.files[i];
-      const safeFileName = generateSafeFileName(file);
-      const { data, error } = await supabase.storage
-        .from("images")
-        .upload(safeFileName, file);
-      if (error) {
-        alert(`이미지 업로드 실패: ${error.message}`);
-        setIsUploading(false);
+    try {
+      // 리뷰 내용을 reviews 테이블에 저장
+      const { data: reviewData, error: reviewError } = await supabase
+        .from("reviews")
+        .insert({
+          ...contentData,
+          created_at: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+        })
+        .select()
+        .single();
+      if (reviewError || !reviewData) {
+        alert("후기 저장 실패: " + reviewError?.message);
         return;
       }
-      const { data: urlData } = supabase.storage
-        .from("images")
-        .getPublicUrl(safeFileName);
-      if (!urlData?.publicUrl) continue;
-      const imageUrl = urlData.publicUrl;
-      uploaded.push(imageUrl);
-      const { error: insertError } = await supabase.from("images").insert({
-        review_id: reviewId,
-        img_url: imageUrl,
-        order: i,
-        place: null,
-      });
-      if (insertError) {
-        alert(`이미지 DB 저장 실패: ${insertError.message}`);
-        setIsUploading(false);
-        return;
-      }
+      const reviewId = reviewData.id;
+      // 이미지 업로드 및 images 테이블 저장
+      const uploaded = await upload(imageFiles, reviewId);
+      setUploadedUrls(uploaded);
+      // 상태 초기화
+      resetImages();
+      resetContent();
+    } catch (e: any) {
+      alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
     }
-    // 상태 초기화 및 알림
-    setUploadedUrls(uploaded);
-    setImageData({ files: [], previews: [] });
-    setContentData({ title: "", region: "", rating: 5, content: "" });
-    alert("후기 및 이미지 업로드 완료!");
-    setIsUploading(false);
   };
 
   return (
@@ -104,7 +90,11 @@ export default function WriteReviewPage() {
       <h1 className="text-2xl font-bold mb-6">✍️ 후기 작성</h1>
       <form onSubmit={handleSubmit}>
         <ReviewContentForm value={contentData} onChange={setContentData} disabled={isUploading} />
-        <ReviewImageUpload value={imageData} onChange={setImageData} disabled={isUploading} />
+        <ReviewImageUpload
+          value={imageValue}
+          onChange={handleImageUploadChange}
+          disabled={isUploading}
+        />
         <button
           type="submit"
           disabled={isUploading}
@@ -136,6 +126,10 @@ export default function WriteReviewPage() {
             ))}
           </div>
         </div>
+      )}
+      {/* 업로드 에러 메시지 */}
+      {uploadError && (
+        <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
       )}
     </div>
   );

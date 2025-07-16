@@ -1,3 +1,8 @@
+/**
+ * 이미지 폼 
+ * UI에서 이미지 선택, 미리보기, 삭제 기능 제공 
+ */
+
 import React, { useRef, useState } from "react";
 
 export interface ReviewImageUploadData {
