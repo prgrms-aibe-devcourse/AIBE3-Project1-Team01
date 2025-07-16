@@ -5,6 +5,7 @@ import RegionSelector from "./components/RegionSelector";
 import CategoryTabs from "./components/CategoryTabs";
 import SubCategoryTabs from "./components/SubCategoryTabs";
 import TourApiList from "./components/TourApiList";
+import Link from "next/link";
 
 const AREA_CODES = [
   { name: "서울", code: 1 },
@@ -77,15 +78,26 @@ export default function RecommendationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500 drop-shadow-sm">
-          ✨ 오늘의 추천 여행지, 어디로 떠나볼까요?
+        <div className="flex justify-start mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold shadow hover:scale-105 transition"
+          >
+            <span role="img" aria-label="home">
+              🏠
+            </span>{" "}
+            홈으로 돌아가기
+          </Link>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 drop-shadow-lg tracking-tight">
+          ✨ 추천 여행지 리스트 ✈️
         </h1>
         <div className="flex flex-col md:flex-row gap-8">
           {/* 선택 UI 영역 */}
           <div className="md:w-1/3 w-full flex flex-col gap-6">
             <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg font-bold text-gray-700 mb-2">
-                어디로 떠나볼까요?
+              <h2 className="text-2xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 drop-shadow">
+                📍 어디로 떠나볼까요?
               </h2>
               <RegionSelector
                 areaCode={areaCode}
@@ -95,8 +107,8 @@ export default function RecommendationPage() {
             </div>
             {areaCode && (
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-                <h2 className="text-lg font-bold text-gray-700 mb-2">
-                  어떤 여행을 원하세요?
+                <h2 className="text-2xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 drop-shadow">
+                  🗺️ 어떤 여행을 원하세요?
                 </h2>
                 <CategoryTabs
                   category={category}
@@ -107,8 +119,8 @@ export default function RecommendationPage() {
             )}
             {areaCode && category && SUBCATEGORIES[category] && (
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-                <h2 className="text-lg font-bold text-gray-700 mb-2">
-                  더 자세히 골라볼까요?
+                <h2 className="text-2xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 drop-shadow">
+                  🔎 더 자세히 골라볼까요?
                 </h2>
                 <SubCategoryTabs
                   category={category}

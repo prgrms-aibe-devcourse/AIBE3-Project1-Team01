@@ -21,6 +21,125 @@ const AREA_COORDS = {
   39: { mapX: 126.5312, mapY: 33.4996 }, // 제주
 };
 
+function DetailModal({ contentid, onClose }) {
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!contentid) return;
+    setLoading(true);
+    setError(null);
+    setDetail(null);
+    const fetchDetail = async () => {
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_TOUR_API_KEY;
+        const encodedKey = encodeURIComponent(apiKey);
+        const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?serviceKey=${encodedKey}&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=${contentid}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("상세 정보 호출 실패");
+        const data = await res.json();
+        const item = data.response?.body?.items?.item;
+        setDetail(Array.isArray(item) ? item[0] : item || null);
+        console.log("상세 응답:", item);
+      } catch (e) {
+        setError("상세 정보를 불러오지 못했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [contentid]);
+
+  if (!contentid) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-pink-400"
+        >
+          ×
+        </button>
+        {loading ? (
+          <div className="text-center py-12 text-lg font-bold text-pink-400">
+            불러오는 중...
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">{error}</div>
+        ) : detail ? (
+          <div>
+            {/* 제목 */}
+            <h3 className="text-3xl font-extrabold mb-4 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 drop-shadow">
+              {detail.title}
+            </h3>
+            {/* 이미지 */}
+            {detail.firstimage ? (
+              <img
+                src={detail.firstimage}
+                alt={detail.title}
+                className="w-full h-56 object-cover rounded-2xl mb-6 border-4 border-pink-100 shadow-lg"
+              />
+            ) : (
+              <div className="w-full h-56 flex flex-col items-center justify-center rounded-2xl mb-6 bg-gray-200 text-gray-400">
+                {/* ...이미지 없음 SVG... */}
+                <span className="text-sm">이미지 없음</span>
+              </div>
+            )}
+
+            {/* 주소/전화/홈페이지 */}
+            <div className="flex flex-col gap-2 items-center mb-4">
+              {detail.addr1 && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <span>📍</span>
+                  <span>{detail.addr1}</span>
+                </div>
+              )}
+              {detail.tel && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <span>📞</span>
+                  <span>{detail.tel}</span>
+                </div>
+              )}
+              {detail.homepage && (
+                <div className="flex items-center gap-2">
+                  <span>🌐</span>
+                  <a
+                    href={detail.homepage
+                      .replace(/<[^>]+>/g, "")
+                      .replace('href="', "")
+                      .replace('"', "")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    홈페이지 바로가기
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* 구분선 */}
+            <div className="border-t border-pink-200 my-4"></div>
+
+            {/* 설명 */}
+            {detail.overview && (
+              <div className="text-gray-800 text-base whitespace-pre-line leading-relaxed">
+                {detail.overview}
+              </div>
+            )}
+
+            {/* 콘텐츠ID (작게) */}
+            <div className="text-xs text-gray-400 text-center mt-6">
+              콘텐츠ID: {detail.contentid}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,6 +148,7 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
   const [totalCount, setTotalCount] = useState(0);
   const [keyword, setKeyword] = useState("");
   const numOfRows = 12;
+  const [selectedId, setSelectedId] = useState(null);
 
   // 검색 조건/키워드 변경 시 페이지 초기화
   useEffect(() => {
@@ -158,7 +278,10 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
             {places.map((place, idx) => (
               <div
                 key={`${place.contentid}-${idx}`}
-                className="bg-white/60 rounded-2xl shadow-lg p-6 flex flex-col items-center hover:shadow-xl transition-shadow duration-300"
+                className="bg-white/60 rounded-2xl shadow-lg p-6 flex flex-col items-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl active:scale-95"
+                onClick={() => setSelectedId(place.contentid)}
+                tabIndex={0}
+                aria-label={place.title}
               >
                 {place.firstimage ? (
                   <img
@@ -243,6 +366,13 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
             </div>
           )}
         </>
+      )}
+      {/* 상세 정보 모달 */}
+      {selectedId && (
+        <DetailModal
+          contentid={selectedId}
+          onClose={() => setSelectedId(null)}
+        />
       )}
     </div>
   );

@@ -1,10 +1,9 @@
+"use client";
 
-'use client';
-
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import AuthModal from './AuthModal';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import AuthModal from "./AuthModal";
 
 export default function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -15,7 +14,7 @@ export default function Header() {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <Image 
+              <Image
                 src="https://static.readdy.ai/image/df8eb1caceba02e6bad89568ddd977d7/31702154ca6be3ac016660554323f798.png"
                 alt="h1 Trip"
                 width={120}
@@ -24,17 +23,26 @@ export default function Header() {
               />
             </Link>
           </div>
-          
+
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer">
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer"
+            >
               홈
             </Link>
-            <Link href="/reviews" className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer">
+            <Link
+              href="/reviews"
+              className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer"
+            >
               여행 후기
             </Link>
-            <div className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer">
-              AI 추천
-            </div>
+            <Link
+              href="/recommendation"
+              className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer"
+            >
+              여행지 추천
+            </Link>
           </nav>
 
           <button
@@ -46,7 +54,7 @@ export default function Header() {
         </div>
       </header>
 
-      <AuthModal 
+      <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />

@@ -72,7 +72,9 @@ export default function Home() {
             <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
               <i className="ri-lightbulb-line text-2xl text-white"></i>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">AI 추천</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              여행지 추천
+            </h3>
             <p className="text-gray-600">
               취향과 여행 스타일에 맞는 개인화된 장소와 코스를 추천받으세요
             </p>
@@ -99,7 +101,7 @@ export default function Home() {
       <footer className="bg-white/50 backdrop-blur-sm py-8 mt-16">
         <div className="container mx-auto px-6 text-center">
           <p className="text-gray-600">
-            © 2024 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+            © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
           </p>
         </div>
       </footer>
