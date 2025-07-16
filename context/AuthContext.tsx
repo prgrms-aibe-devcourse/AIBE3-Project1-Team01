@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleSignUp = async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({ email, password });
-    return error;
+    return { error }; // 객체로 반환
   };
 
   const handleLogIn = async (email: string, password: string) => {
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
     });
-    return error;
+    return { error };
   };
 
   const handleLogout = async () => {

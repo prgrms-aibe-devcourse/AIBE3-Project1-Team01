@@ -90,7 +90,7 @@ export default function SignupModal({
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          //비밀번호 일치 확인 & 로딩 시 로딩중으로 글자 변경
+          {/*비밀번호 일치 확인 & 로딩 시 로딩중으로 글자 변경 */}
           {isPasswordMismatch && (
             <div className="text-red-500 text-sm text-center mb-2">
               비밀번호가 일치하지 않습니다.

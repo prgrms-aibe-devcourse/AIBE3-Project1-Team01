@@ -74,7 +74,7 @@ export default function LoginModal({
             type="submit"
             className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
           >
-            //로딩 시 버튼 글자를 로딩 중으로 변경
+            {/*로딩 시 버튼 글자를 로딩 중으로 변경*/}
             {isLoading ? "로딩 중..." : "로그인"}
           </button>
           {onSignup && (

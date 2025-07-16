@@ -67,7 +67,7 @@ export default function Header() {
               AI 추천
             </div>
           </nav>
-          // 로그인/로그아웃 표시 변경
+          {/*로그인/로그아웃 표시 변경*/}
           {user ? (
             <>
               <span>안녕하세요, {user.email}님</span>
