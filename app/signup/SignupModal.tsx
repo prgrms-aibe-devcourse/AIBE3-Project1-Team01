@@ -63,7 +63,10 @@ export default function SignupModal({
     } else {
       alert("회원 가입 성공");
       setErrorMsg("");
-      onClose(); //성공 시 창 닫기, 메인 화면 이동
+      onClose(); //성공 시 창 닫기
+      if (onLogin) {
+        onLogin(); // 로그인 모달 띄우기
+      }
       router.push("/");
     }
   };
@@ -138,11 +141,37 @@ export default function SignupModal({
           )}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer"
+            className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer flex items-center justify-center"
             disabled={isPasswordMismatch || isLoading}
           >
-            {isLoading ? "로딩 중..." : "회원가입"}
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 inline-block"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                로딩 중...
+              </>
+            ) : (
+              "회원가입"
+            )}
           </button>
+
           {onLogin && (
             <div className="text-center mt-6">
               <button
