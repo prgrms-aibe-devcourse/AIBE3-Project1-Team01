@@ -100,11 +100,11 @@ AIBE3 1팀 &lt;h1>
 
 🗺️ 여행지 추천 기능 - 프론트엔드 컴포넌트 및 로직 정리
 
-| 파일명                | 역할 (담당 기능)                            | props (입력)                                                                                                                       | 반환값/특이사항                               |
-| :-------------------- | :------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- | ------- |
-| **TourCard.jsx**      | 개별 여행지 카드 UI                         | `place` (여행지 데이터 객체), `onClick` (상세 모달 오픈 콜백 함수)                                                                 | -                                             |
-| **Pagination.jsx**    | 페이지네이션 UI 및 로직                     | `pageNo` (현재 페이지 번호), `totalPages` (전체 페이지 수),<br>`pageNumbers` (페이지 버튼 배열), `onPageChange` (페이지 변경 콜백) | -                                             |
-| **SearchBar.jsx**     | 검색창 UI 및 로직                           | `keyword` (검색어), `setKeyword` (검색어 변경 함수), `onSearch` (검색 실행 콜백)                                                   | -                                             |
-| **DetailModal.jsx**   | 상세 정보 모달 UI 및 로직                   | `contentid` (상세 정보 조회용 ID), `onClose` (모달 닫기 콜백 함수)                                                                 | -                                             |
-| **useTourApiList.js** | API 호출, 데이터/로딩/에러 관리 (커스텀 훅) | `{ areaCode, contentTypeId, cat1, cat2, keyword, pageNo, numOfRows }` (파라미터 객체)                                              | `{ places, loading, error, totalCount }` 반환 |
-| **TourApiList.jsx**   | 컴포넌트/훅 조립 및 전반적인 상태 관리      | `areaCode`, `contentTypeId`, `cat1`, `cat2`                                                                                        | - (렌더링되는 여행지 추천 페이지)             | 페이지) |
+| 파일명                  | 역할 (담당 기능)                            | `props` (입력)                                                                                                                       | 반환값/특이사항                               |
+| :---------------------- | :------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
+| **`TourCard.jsx`**      | 개별 여행지 카드 UI                         | `place` (여행지 데이터 객체), `onClick` (상세 모달 오픈 콜백 함수)                                                                   | -                                             |
+| **`Pagination.jsx`**    | 페이지네이션 UI 및 로직                     | `pageNo` (현재 페이지 번호), `totalPages` (전체 페이지 수), <br> `pageNumbers` (페이지 버튼 배열), `onPageChange` (페이지 변경 콜백) | -                                             |
+| **`SearchBar.jsx`**     | 검색창 UI 및 로직                           | `keyword` (검색어), `setKeyword` (검색어 변경 함수), `onSearch` (검색 실행 콜백)                                                     | -                                             |
+| **`DetailModal.jsx`**   | 상세 정보 모달 UI 및 로직                   | `contentid` (상세 정보 조회용 ID), `onClose` (모달 닫기 콜백 함수)                                                                   | -                                             |
+| **`useTourApiList.js`** | API 호출, 데이터/로딩/에러 관리 (커스텀 훅) | `{ areaCode, contentTypeId, cat1, cat2, keyword, pageNo, numOfRows }` (파라미터 객체)                                                | `{ places, loading, error, totalCount }` 반환 |
+| **`TourApiList.jsx`**   | 컴포넌트/훅 조립 및 전반적인 상태 관리      | `areaCode`, `contentTypeId`, `cat1`, `cat2`                                                                                          | - (렌더링되는 여행지 추천 페이지)             |
