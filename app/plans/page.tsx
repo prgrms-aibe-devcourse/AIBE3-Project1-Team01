@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '../../context/Authcontext';
 import type { DateRange } from 'react-day-picker';
@@ -18,92 +18,166 @@ export default function PlanPage() {
   }>({}); //날짜별 일정 dailyPlans는 날짜별로 배열을 가짐 (한 날짜에 여러 장소 가능)
   const router = useRouter();
   const { user } = useAuth();
+  const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID. 이후 삭제
+  const searchParams = useSearchParams(); 
+  const planId = searchParams.get('id');
+
+  // 수정 모드일 경우 planId 기반으로 데이터 불러오기
+  useEffect(() => {
+    const fetchPlan = async () => {
+      if (!planId) return; // 없으면 새로 작성하는 중이므로 아무것도 안 함
+
+      const { data: plan, error: planError } = await supabase
+        .from('plans')
+        .select('*')
+        .eq('id', planId)
+        .eq('user_id', testUserId)
+        .single();
+
+      if (planError || !plan) return;
+
+      setTitle(plan.title);
+      setDescription(plan.description);
+      setRange({
+        from: new Date(plan.start_date),
+        to: new Date(plan.end_date),
+      });
+
+      const { data: items } = await supabase
+        .from('plan_items')
+        .select('*')
+        .eq('plan_id', planId)
+        .order('order', { ascending: true });
+
+      const grouped: { [date: string]: { place: string; detail: string }[] } = {};
+      items?.forEach((item) => {
+        if (!grouped[item.date]) grouped[item.date] = [];
+        grouped[item.date].push({ place: item.place, detail: item.detail });
+      });
+
+      setDailyPlans(grouped);
+    };
+
+    fetchPlan();
+  }, [planId]);
 
   const handleSave = async () => {
-    const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID. 이후 삭제
-
+    
     // if (!user) {
     //   alert("로그인이 필요합니다.");
     //   return;
     // }
 
-    if (!range || !range.from || !range.to) {
-      alert("날짜는 반드시 선택해야 합니다.");
-      return;
-    }
-
-    const { data: planInsertData, error: planInsertError } = await supabase
-      .from('plans')
-      .insert({
-        title,
-        description,
-        start_date: range.from.toISOString().slice(0, 10), //toISOString().slice(0,10)은 날짜를 YYYY-MM-DD 형식으로 자르기 위함.
-        end_date: range.to.toISOString().slice(0, 10),
-        user_id: testUserId // 테스트용 유저 ID 사용. 이후 user_id: user.id로 수정
-      })
-      .select()
-      .single();
-
-    if (planInsertError || !planInsertData) {
-      alert('여행 계획 저장에 실패했습니다.');
-      console.error(planInsertError);
-      return;
-    }
-    //저장 중 에러가 있거나 결과가 없으면 알림 띄우고 함수 종료.
-
-    const planId = planInsertData.id;
-
-    //dailyPlans 객체를 평평한 배열로 변환하고, 각 항목을 순서와 함께 저장.
-    const itemsToInsert = Object.entries(dailyPlans).flatMap(([date, entries]) =>
-      entries.map((entry, idx) => ({
-        date,
-        place: entry.place,
-        detail: entry.detail,
-        order: idx,
-        plan_id: planId,
-      }))
-    );
-
-    const { error: itemInsertError } = await supabase
-      .from('plan_items')
-      .insert(itemsToInsert);
-
-    if (itemInsertError) {
-      alert('일정 항목 저장 중 오류가 발생했습니다.');
-      console.error(itemInsertError);
-    } else {
-      alert('저장 완료!');
+  
+      if (!range || !range.from || !range.to) {
+        alert("날짜는 반드시 선택해야 합니다.");
+        return;
+      }
+  
+      //수정 모드일 경우 (planId가 있음)
+      if (planId) {
+        const { error: updateError } = await supabase
+          .from('plans')
+          .update({
+            title,
+            description,
+            start_date: range.from.toISOString().slice(0, 10),
+            end_date: range.to.toISOString().slice(0, 10),
+          })
+          .eq('id', planId)
+          .eq('user_id', testUserId);
+  
+        if (updateError) {
+          alert('계획 수정 실패');
+          return;
+        }
+  
+        //기존 일정 항목 삭제 후 다시 삽입
+        await supabase.from('plan_items').delete().eq('plan_id', planId);
+  
+        const itemsToInsert = Object.entries(dailyPlans).flatMap(([date, entries]) =>
+          entries.map((entry, idx) => ({
+            date,
+            place: entry.place,
+            detail: entry.detail,
+            order: idx,
+            plan_id: planId,
+          }))
+        );
+  
+        await supabase.from('plan_items').insert(itemsToInsert);
+        alert('수정 완료!');
+      } else {
+        //새로 작성 모드일 경우 (planId 없음)
+        const { data: planInsertData, error: planInsertError } = await supabase
+          .from('plans')
+          .insert({
+            title,
+            description,
+            start_date: range.from.toISOString().slice(0, 10),
+            end_date: range.to.toISOString().slice(0, 10),
+            user_id: testUserId,
+          })
+          .select()
+          .single();
+  
+        if (planInsertError || !planInsertData) {
+          alert('저장 실패');
+          return;
+        }
+  
+        const planId = planInsertData.id;
+  
+        const itemsToInsert = Object.entries(dailyPlans).flatMap(([date, entries]) =>
+          entries.map((entry, idx) => ({
+            date,
+            place: entry.place,
+            detail: entry.detail,
+            order: idx,
+            plan_id: planId,
+          }))
+        );
+  
+        await supabase.from('plan_items').insert(itemsToInsert);
+        alert('저장 완료!');
+      }
+  
       router.push('/plans/list');
-    }
-  };
+    };
 
-  return (
-    <div className="bg-gradient-to-b from-pink-50 to-purple-50 min-h-screen py-12">
-      <div className="container mx-auto flex gap-8">
-        <div className="w-1/2">
-          <PlanForm
-            range={range}
-            setRange={setRange}
-            title={title}
-            setTitle={setTitle}
-            description={description}
-            setDescription={setDescription}
-          />
-        </div>
-        <div className="w-1/2">
-          <DayInputs
-            range={range}
-            dailyPlans={dailyPlans}
-            setDailyPlans={setDailyPlans}
-          />
-          <button
-            onClick={handleSave}
-            className="mt-6 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-          >
-            저장하기
-          </button>
+    return (
+      <div className="container mx-auto p-6 max-w-6xl">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          {/* 왼쪽: 달력+제목+설명 */}
+          <div className="w-full md:w-1/3">
+            <PlanForm
+              range={range}
+              setRange={setRange}
+              title={title}
+              setTitle={setTitle}
+              description={description}
+              setDescription={setDescription}
+            />
+          </div>
+    
+          {/* 오른쪽: 일정 입력 */}
+          <div className="w-full flex-1">
+            <DayInputs
+              range={range}
+              dailyPlans={dailyPlans}
+              setDailyPlans={setDailyPlans}
+            />
+            <div className="text-right mt-6">
+              <button
+                onClick={handleSave}
+                className="px-6 py-2 bg-purple-600 text-white font-semibold rounded hover:bg-purple-700"
+              >
+                {planId ? '수정하기' : '저장하기'}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  };
+  

@@ -51,6 +51,14 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
     });
   };
 
+  const handleDeleteItem = (date: string, index: number) => {
+    const updated = { ...dailyPlans };
+
+    if (!updated[date]) return;
+    updated[date] = updated[date].filter((_, i) => i !== index);
+    setDailyPlans(updated);
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-h-[80vh] overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">일정 입력</h2>
@@ -70,15 +78,23 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
               <div className="flex flex-col gap-4">
                 {entries.map((entry, idx) => ( //각 날짜별 장소/설명 입력 필드 표시
                   <div key={idx} className="space-y-2">
-                    <input
-                      type="text"
-                      placeholder="여행지 이름"
-                      value={entry.place}
-                      onChange={(e) =>
-                        handleInputChange(dateStr, idx, 'place', e.target.value)
-                      }
-                      className="w-full p-2 rounded border"
-                    />
+                    <div className="flex items-center gap-2 mt-2">
+                    
+                      <input
+                        className="w-[93%] border p-2 rounded"
+                        value={entry.place}
+                        onChange={(e) => handleInputChange(dateStr, idx, 'place', e.target.value)}
+                        placeholder="여행지 이름"
+                      />
+
+                      {/* ❌ 삭제 버튼 */}
+                      <button 
+                        onClick={() => handleDeleteItem(dateStr, idx)}
+                        className="w-10 h-10 bg-purple-100 text-black rounded flex items-center justify-center hover:bg-purple-200"
+                      >
+                        ✕
+                      </button>
+                  </div>
                     <textarea
                       placeholder="상세 설명"
                       value={entry.detail}
@@ -87,6 +103,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                       }
                       className="w-full p-2 rounded border"
                     />
+                  
                   </div>
                 ))}
               </div>
