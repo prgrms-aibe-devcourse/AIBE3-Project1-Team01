@@ -29,6 +29,7 @@ export default function LoginModal({
     } else {
       alert("로그인되었습니다.");
       onClose();
+      window.location.reload();
     }
   };
 
