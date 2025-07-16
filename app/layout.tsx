@@ -3,11 +3,11 @@ import { Geist, Geist_Mono, Pacifico } from "next/font/google";
 import "./globals.css";
 
 const pacifico = Pacifico({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-pacifico',
-})
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-pacifico",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
