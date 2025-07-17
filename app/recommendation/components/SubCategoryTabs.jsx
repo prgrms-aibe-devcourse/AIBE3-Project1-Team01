@@ -25,4 +25,4 @@ export default function SubCategoryTabs({
     </div>
   );
 }
-// 상세 카테고리 선택 함수수
+// 상세 카테고리 선택 함수

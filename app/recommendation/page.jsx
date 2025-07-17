@@ -5,61 +5,10 @@ import RegionSelector from "./components/RegionSelector";
 import CategoryTabs from "./components/CategoryTabs";
 import SubCategoryTabs from "./components/SubCategoryTabs";
 import TourApiList from "./components/TourApiList";
-import SearchBar from "./components/SearchBar";
+import SearchBar from "./components/common/SearchBar";
 import Link from "next/link";
-import CustomGameModal from "./components/CustomGameModal";
-
-const AREA_CODES = [
-  { name: "서울", code: 1 },
-  { name: "부산", code: 6 },
-  { name: "대구", code: 4 },
-  { name: "인천", code: 2 },
-  { name: "광주", code: 5 },
-  { name: "대전", code: 3 },
-  { name: "울산", code: 7 },
-  { name: "세종", code: 8 },
-  { name: "경기", code: 31 },
-  { name: "강원", code: 32 },
-  { name: "충북", code: 33 },
-  { name: "충남", code: 34 },
-  { name: "전북", code: 35 },
-  { name: "전남", code: 36 },
-  { name: "경북", code: 37 },
-  { name: "경남", code: 38 },
-  { name: "제주", code: 39 },
-];
-
-const CATEGORIES = [
-  { name: "관광지", id: 12 },
-  { name: "숙박", id: 32 },
-  { name: "음식점", id: 39 },
-  { name: "축제/행사", id: 15 },
-  { name: "레포츠", id: 28 },
-  { name: "쇼핑", id: 38 },
-  { name: "문화시설", id: 14 },
-];
-
-const SUBCATEGORIES = {
-  12: [
-    { name: "자연관광지", code: "A01" },
-    { name: "산", code: "A0101" },
-    { name: "계곡", code: "A0102" },
-    { name: "폭포", code: "A0103" },
-    { name: "문화관광지", code: "A02" },
-    { name: "유적지", code: "A0201" },
-    { name: "박물관/미술관", code: "A0202" },
-  ],
-  32: [
-    { name: "호텔", code: "B0201" },
-    { name: "콘도/리조트", code: "B0202" },
-    { name: "모텔", code: "B0203" },
-  ],
-  39: [
-    { name: "한식", code: "C0101" },
-    { name: "중식", code: "C0102" },
-    { name: "일식", code: "C0103" },
-  ],
-};
+import CustomGameModal from "./components/game/CustomGameModal";
+import { AREA_CODES, CATEGORIES, SUBCATEGORIES } from "./constants/travelData";
 
 export default function RecommendationPage() {
   const [areaCode, setAreaCode] = useState("");

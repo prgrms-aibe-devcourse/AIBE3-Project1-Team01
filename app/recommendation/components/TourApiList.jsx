@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import TourCard from "./TourCard";
-import Pagination from "./Pagination";
-import SearchBar from "./SearchBar";
-import DetailModal from "./DetailModal";
+import Pagination from "./common/Pagination";
+import SearchBar from "./common/SearchBar";
+import DetailModal from "./detail/DetailModal";
 import useTourApiList from "../hooks/useTourApiList";
-import { AREA_COORDS } from "../constants/areaCoords";
+import { AREA_COORDS } from "../constants/travelData";
 
 export default function TourApiList({
   areaCode,

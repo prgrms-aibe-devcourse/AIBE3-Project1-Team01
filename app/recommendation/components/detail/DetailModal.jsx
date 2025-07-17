@@ -1,6 +1,6 @@
 // app/recommendation/components/DetailModal.jsx
 import { useState, useEffect } from "react";
-import useTourApiList from "../hooks/useTourApiList";
+import useTourApiList from "../../hooks/useTourApiList";
 
 export default function DetailModal({ contentid, onClose }) {
   const { detail, loading, error } = useTourApiList({

@@ -1,6 +1,6 @@
 // app/recommendation/components/useTourApiList.js
 import { useState, useEffect } from "react";
-import { AREA_COORDS } from "../constants/areaCoords";
+import { AREA_COORDS } from "../constants/travelData";
 
 export default function useTourApiList({
   areaCode,

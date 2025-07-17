@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RandomBarGame from "./RandomBarGame";
+import RandomBarGame from "../game/RandomBarGame";
 
 const GAME_TYPES = [
   {
