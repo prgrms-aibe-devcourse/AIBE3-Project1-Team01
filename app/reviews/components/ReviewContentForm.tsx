@@ -1,6 +1,6 @@
 /**
  * 후기 내용 폼
- * 후기 제목, 지역, 평점, 내용 입력 기능 제공
+ * - 제목, 지역, 평점, 내용 입력
  */
 import React, { useState, useEffect } from "react";
 

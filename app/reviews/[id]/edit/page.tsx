@@ -48,6 +48,7 @@ export default function EditReviewPage({
     if (!reviewId) return;
     const load = async () => {
       try {
+        // reviews 테이블에서 id에 맞는 정보 가져오기
         const { data: review } = await supabase
           .from("reviews")
           .select("*")
@@ -56,6 +57,7 @@ export default function EditReviewPage({
 
         if (!review) throw new Error("리뷰 정보 없음");
 
+        // 조회 내용 form에 세팅 
         setContentData({
           title: review.title,
           region: review.region,
@@ -63,6 +65,7 @@ export default function EditReviewPage({
           content: review.content,
         });
 
+        // 해당 리뷰에 저장된 이미지 가져오기 
         const { data: images } = await supabase
           .from("images")
           .select("img_url, order")
@@ -84,7 +87,7 @@ export default function EditReviewPage({
     load();
   }, [reviewId, setContentData, setExistingImages]);
 
-  // 제출 핸들러
+  // 수정 제출 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -95,30 +98,35 @@ export default function EditReviewPage({
     }
 
     try {
-      // 1) 후기 내용 업데이트
+      // 후기 내용 업데이트
       const { error: reviewError } = await supabase
         .from("reviews")
-        .update({ ...contentData, updated_at: new Date().toISOString() })
+        .update({ ...contentData, updated_at:  new Date(
+          Date.now() - new Date().getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .slice(0, -1), }) //현지 시간으로 업데이트 
         .eq("id", reviewId);
       if (reviewError) throw new Error(reviewError.message);
 
-      // 2) 이미지 업데이트
+      // 이미지 업데이트
       await updateImages(reviewId);
 
       alert("후기 수정 완료!");
-      router.push(`/reviews/${reviewId}`);
+      router.push(`/reviews/${reviewId}`); //리뷰 상세 페이지로 돌아가기 
     } catch (e: any) {
       alert(e.message || "오류가 발생했습니다.");
     }
   };
 
+  // 수정 취소 핸들러
   const handleCancel = () => {
     if (confirm("수정을 취소하시겠습니까?")) {
       router.push("/reviews");
     }
   };
 
-  if (loading) {
+  if (loading) { // 저장된 정보 다 불러올 때까지 loading 상태
     return <div className="text-center py-10">리뷰 정보를 불러오는 중...</div>;
   }
 

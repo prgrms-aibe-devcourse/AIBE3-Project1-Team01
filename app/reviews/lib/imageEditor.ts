@@ -1,9 +1,10 @@
 /**
- * Supabase 이미지 수정 관련 유틸리티 함수
+ * Supabase 이미지 수정
  */
 import { supabase } from "../../../lib/supabase";
 import { generateImageFileName, uploadImageToStorage } from "./imageUtils";
 
+// 기존 이미지 -> 순서 정렬을 위해서 url 뿐만 아니라 order 도 필요
 interface ExistingImage {
   url: string;
   order: number;
@@ -35,7 +36,7 @@ export async function replaceImage(
   oldImage: ExistingImage,
   newFile: File
 ) {
-  // 기존 파일 삭제
+  // 기존 파일 삭제(스토리지)
   const oldFileName = oldImage.url.split("/").pop();
   if (oldFileName) {
     const { error: storageRemoveError } = await supabase.storage
@@ -66,7 +67,7 @@ export async function updateImagesOrder(
   remainingExistingImages: ExistingImage[],
   newFiles: File[]
 ) {
-  // 새 이미지 업로드
+  // 새 이미지 업로드(스토리지)
   const uploadedUrls: string[] = [];
   for (let i = 0; i < newFiles.length; i++) {
     const file = newFiles[i];

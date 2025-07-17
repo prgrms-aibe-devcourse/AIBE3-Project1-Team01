@@ -1,9 +1,9 @@
 /**
- * 이미지 폼
- * UI에서 이미지 선택, 미리보기, 삭제, 교체 기능 제공
+ * 이미지 업로드 폼
+ * - 이미지 선택, 삭제 
  */
 
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 export interface ReviewImageUploadData {
   files: File[];
@@ -26,28 +26,17 @@ export default function ReviewImageUpload({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 이미지 선택
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + value.files.length > 5) {
       alert("최대 5장까지 업로드 가능합니다.");
       return;
     }
 
-    // Promise.all로 순서 보장
-    Promise.all(
-      files.map(
-        (file) =>
-          new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target?.result as string);
-            reader.readAsDataURL(file);
-          })
-      )
-    ).then((newPreviews) => {
-      onChange({
-        files: [...value.files, ...files],
-        previews: [...value.previews, ...newPreviews],
-      });
+    // 미리보기 URL 생성은 훅에서 처리하도록 변경
+    onChange({
+      files: [...value.files, ...files],
+      previews: value.previews, // 미리보기는 훅에서 자동 생성
     });
   };
 

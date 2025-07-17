@@ -1,5 +1,5 @@
 /**
- * 리뷰 이미지 수정 컴포넌트
+ * 리뷰 이미지 수정 폼
  * - 기존 이미지 수정/삭제
  * - 새 이미지 추가
  */
@@ -11,14 +11,14 @@ interface ExistingImage {
 }
 
 interface ReviewImageEditProps {
-  // 기존 이미지 섹션
+  // 기존 이미지
   existingImages: ExistingImage[];
   onExistingImageDelete: (index: number) => void;
   onExistingImageReplace: (index: number, file: File) => void;
   deletedIndexes: number[];
   replacementPreviews: Record<number, string>;
 
-  // 새 이미지 섹션
+  // 새 이미지
   newFiles: File[];
   newPreviews: string[];
   onNewImageAdd: (files: File[]) => void;
@@ -28,13 +28,13 @@ interface ReviewImageEditProps {
 }
 
 export default function ReviewImageEdit({
-  // 기존 이미지 섹션
+  // 기존 이미지
   existingImages,
   onExistingImageDelete,
   onExistingImageReplace,
   deletedIndexes,
   replacementPreviews,
-  // 새 이미지 섹션
+  // 새 이미지
   newFiles,
   newPreviews,
   onNewImageAdd,

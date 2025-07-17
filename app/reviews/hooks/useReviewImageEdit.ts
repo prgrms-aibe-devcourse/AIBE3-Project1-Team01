@@ -1,3 +1,13 @@
+/**
+ * 이미지 수정 관련 커스텀 훅
+ * - 기존 이미지 관리
+ * - 새 이미지 관리
+ * - 이미지 업로드 관리
+ * - 이미지 삭제 관리
+ * - 이미지 교체 관리
+ * - 이미지 순서 재할당 관리
+ * - 이미지 업로드 상태 관리
+ */
 import { useState } from "react";
 import { deleteImage, replaceImage, updateImagesOrder } from "../lib/imageEditor";
 
@@ -7,11 +17,12 @@ interface ExistingImage {
 }
 
 export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
+
   // 기존 이미지 상태
   const [existingImages, setExistingImages] = useState<ExistingImage[]>(initialImages);
-  const [deletedIndexes, setDeletedIndexes] = useState<number[]>([]);
-  const [imageReplacements, setImageReplacements] = useState<Record<number, File>>({});
-  const [replacementPreviews, setReplacementPreviews] = useState<Record<number, string>>({});
+  const [deletedIndexes, setDeletedIndexes] = useState<number[]>([]); // 기존 이미지 배열에서 삭제된 이미지들의 인덱스들 
+  const [imageReplacements, setImageReplacements] = useState<Record<number, File>>({}); // <교체가 요청된 이미지 인덱스(키) : 교체될 새 파일(값)> 객체
+  const [replacementPreviews, setReplacementPreviews] = useState<Record<number, string>>({}); // <교체가 요청된 이미지 인덱스(키) : 교체될 새 파일의 base64 url(값)> 객체
 
   // 새 이미지 상태
   const [newFiles, setNewFiles] = useState<File[]>([]);
@@ -21,11 +32,11 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // 기존 이미지 교체
+  // 기존 이미지 교체 (미리보기 변경)
   const handleExistingImageReplace = (index: number, file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImageReplacements((prev) => ({
+      setImageReplacements((prev) => ({ // useState 말고 useRef로 하면 리렌더링이 줄어서 성능이 좋아질까...?
         ...prev,
         [index]: file,
       }));
@@ -46,12 +57,12 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
       if (!prev.includes(index)) return [...prev, index];
       return prev;
     });
-    setImageReplacements((prev) => {
+    setImageReplacements((prev) => { // 교체 대상 중에 삭제된 애 제거 
       const copy = { ...prev };
       delete copy[index];
       return copy;
     });
-    setReplacementPreviews((prev) => {
+    setReplacementPreviews((prev) => { // 교체 대상 중에 삭제된 애 제거 
       const copy = { ...prev };
       delete copy[index];
       return copy;
@@ -60,7 +71,7 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
 
   // 새 이미지 추가
   const handleNewImageAdd = (files: File[]) => {
-    Promise.all(
+    Promise.all( // all 안하면 미리보기 순서 보장 X
       files.map(
         (file) =>
           new Promise<string>((resolve) => {

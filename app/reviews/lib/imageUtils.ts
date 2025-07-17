@@ -1,5 +1,5 @@
 /**
- * 이미지 관련 공통 유틸리티 함수들
+ * 후기 작성/수정 이미지 관련 공통 함수
  */
 import { supabase } from "../../../lib/supabase";
 

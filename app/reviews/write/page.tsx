@@ -13,7 +13,7 @@ import { useImageUpload } from "../hooks/useImageUpload";
 import { useReviewContent } from "../hooks/useReviewContent";
 
 export default function WriteReviewPage() {
-  // 후기 내용 상태 및 로직 (커스텀 훅)
+  // 후기 내용 상태 및 로직 
   const {
     form: contentData,
     setForm: setContentData,
@@ -22,7 +22,7 @@ export default function WriteReviewPage() {
     validate: validateContent,
   } = useReviewContent();
 
-  // 이미지 업로드 통합 훅 사용
+  // 이미지 업로드 상태 및 로직 
   const {
     files: imageFiles,
     previews: imagePreviews,
@@ -34,6 +34,7 @@ export default function WriteReviewPage() {
     error: uploadError,
   } = useImageUpload();
 
+  // 스토리지에 업로드된 이미지의 공개 url (여기서는 업로드 완료 확인용으로 사용)
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   // ReviewImageUpload에 맞는 value 객체 생성
@@ -46,13 +47,8 @@ export default function WriteReviewPage() {
   }) => {
     resetImages();
     if (data.files.length > 0 || data.previews.length > 0) {
-      addImageFiles(data.files, data.previews);
+      addImageFiles(data.files);
     }
-  };
-
-  // 이미지 제거 핸들러
-  const handleImageRemove = (index: number) => {
-    removeImageFile(index);
   };
 
   // 제출 처리
@@ -129,6 +125,7 @@ export default function WriteReviewPage() {
           {isUploading ? "등록 중..." : "후기 등록"}
         </button>
       </form>
+      {/** 업로드 완료된 이미지 -> 추후 삭제 예정 */}
       {uploadedUrls.length > 0 && (
         <div className="mt-6">
           <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>

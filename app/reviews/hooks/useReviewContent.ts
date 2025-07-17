@@ -2,14 +2,12 @@
  * 후기 내용 입력 상태 및 로직 커스텀 훅
  * - 제목, 지역, 평점, 본문 상태 관리
  * - 입력값 변경, 초기화, 유효성 검사 등 제공
- *
- * @param initial 초기값(선택)
- * @returns { form, setForm, handleChange, reset, validate }
  */
 import { useState } from "react";
 import { ReviewContentData } from "../components/ReviewContentForm";
 
 export function useReviewContent(initial?: ReviewContentData) {
+  
   // 후기 내용 상태
   const [form, setForm] = useState<ReviewContentData>(
     initial || { title: "", region: "", rating: 5, content: "" }

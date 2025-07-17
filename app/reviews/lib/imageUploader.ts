@@ -1,5 +1,5 @@
 /**
- * Supabase 이미지 업로드 및 DB 저장
+ * Supabase 이미지 업로드
  */
 import { supabase } from "../../../lib/supabase";
 import { generateImageFileName, uploadImageToStorage } from "./imageUtils";
