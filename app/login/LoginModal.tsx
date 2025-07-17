@@ -42,6 +42,7 @@ export default function LoginModal({
     if (error) {
       setEmail("");
       setPassword("");
+      setErrorMsg("이메일 또는 비밀번호가 일치하지 않습니다.");
     } else {
       setErrorMsg("");
       onClose();
