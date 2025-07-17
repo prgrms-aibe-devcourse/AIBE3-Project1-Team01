@@ -128,7 +128,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                       </button>
 
                       {/* 삭제 버튼 */}
-                      <button
+                      <button className="bold"
                         onClick={() => handleDeleteItem(dateStr, idx)}
                         className="w-10 h-10 bg-gradient-to-br from-pink-200 to-purple-200 text-pink-700 rounded-full flex items-center justify-center hover:from-pink-300 hover:to-purple-300 hover:text-purple-700 shadow"
                       >

@@ -69,14 +69,24 @@ return (
 
     {/* 제목 + 홈 버튼 */}
     <div className="relative mb-6">
-      <h1 className="text-2xl font-bold text-gray-800">나의 여행 계획</h1>
+      <h1 className="text-2xl pl-2 font-bold text-gray-800">나의 여행 계획</h1>
 
       {/* ✅ 오른쪽 상단 홈 버튼 */}
       <button
-        onClick={() => window.location.href = "/"}
-        className="absolute right-0 top-0 text-white bg-gradient-to-r from-pink-400 to-purple-400 px-4 py-1.5 rounded-xl text-sm font-semibold shadow hover:from-pink-500 hover:to-purple-500 transition"
+        onClick={() => router.push("/")}
+        className="absolute right-0 top-0 p-2 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 text-sm rounded-xl shadow"
+        aria-label="홈으로 이동"
       >
-        Home
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="w-6 h-6"
+        >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m10-11v10a1 1 0 01-1 1h-5m-4 0v-4h4v4" />
+        </svg>
       </button>
     </div>
 
