@@ -21,7 +21,7 @@ export default function PlansListPage() {
   
   useEffect(() => {
     
-    if (!user?.id) return;
+    //if (!user?.id) return;
 
     const fetchPlans = async () => {
         const { data, error } = await supabase
@@ -60,7 +60,7 @@ export default function PlansListPage() {
       }
     };
 
-   if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
+//    if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
 
 return (
     <div className="min-h-screen bg-pink-100 py-12">

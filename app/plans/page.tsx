@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '../../context/Authcontext';
 import type { DateRange } from 'react-day-picker';
-import PlanForm from '../plan/PlanForm';
-import DayInputs from '../plan/DayInputs'; 
+import PlanForm from './PlanForm';
+import DayInputs from './DayInputs'; 
 
 
 export default function PlanPage() {
@@ -31,7 +31,7 @@ export default function PlanPage() {
         .from('plans')
         .select('*')
         .eq('id', planId)
-        .eq('user_id', testUserId)
+        .eq('user_id', testUserId) // 이후 user?.id 로 바꾸기
         .single();
 
       if (planError || !plan) return;
@@ -63,10 +63,10 @@ export default function PlanPage() {
 
   const handleSave = async () => {
     
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
+    // if (!user) {
+    //   alert("로그인이 필요합니다.");
+    //   return;
+    // }
 
   
       if (!range || !range.from || !range.to) {
@@ -85,7 +85,7 @@ export default function PlanPage() {
             end_date: range.to.toISOString().slice(0, 10),
           })
           .eq('id', planId)
-          .eq('user_id', testUserId);
+          .eq('user_id', testUserId); // 이후 user?.id 로 바꾸기
   
         if (updateError) {
           alert('계획 수정 실패');
@@ -116,7 +116,7 @@ export default function PlanPage() {
             description,
             start_date: range.from.toISOString().slice(0, 10),
             end_date: range.to.toISOString().slice(0, 10),
-            user_id: testUserId,
+            user_id: testUserId, // 이후 user?.id 로 바꾸기
           })
           .select()
           .single();
