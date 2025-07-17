@@ -7,6 +7,7 @@ import ReviewContentForm, { ReviewContentData } from "../../components/ReviewCon
 import ReviewImageUpload from "../../components/ReviewImageUpload";
 import { useImageUpload } from "../../hooks/useImageUpload";
 import { useReviewContent } from "../../hooks/useReviewContent";
+import { uploadImagesToSupabase } from "../../lib/imageUploader";
 
 export default function EditReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -15,7 +16,6 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
   const [loading, setLoading] = useState(true);
   const [existingImages, setExistingImages] = useState<{ url: string, order: number }[]>([]);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
-  const [replacedImages, setReplacedImages] = useState<{ originalUrl: string, newPreview: string }[]>([]);
 
   // 후기 내용 상태 및 로직 (커스텀 훅)
   const {
@@ -78,7 +78,6 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
         const imageObjects = images.map(img => ({ url: img.img_url, order: img.order }));
         setExistingImages(imageObjects);
         setDeletedImages([]);
-        setReplacedImages([]);
         setUploadedUrls(imageObjects.map(img => img.url));
       }
 
@@ -89,93 +88,55 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
     }
   };
 
-  // 기존+새 이미지 합친 미리보기 (교체된 이미지 반영)
-  const allPreviews = existingImages
+  // 기존+새 이미지 합친 미리보기
+  const existingPreviews = existingImages
     .filter(img => !deletedImages.includes(img.url))
     .sort((a, b) => a.order - b.order)
-    .map(img => {
-      // 교체된 이미지인지 확인
-      const replaced = replacedImages.find(r => r.originalUrl === img.url);
-      return replaced ? replaced.newPreview : img.url;
-    })
-    .concat(imagePreviews);
+    .map(img => img.url);
+
+  // 기존 이미지와 중복되지 않는 새 이미지만 포함
+  const allPreviews = [
+    ...existingPreviews,
+    ...imagePreviews.filter(preview => !existingPreviews.includes(preview))
+  ];
     
   const imageValue = { files: imageFiles, previews: allPreviews };
 
   // onChange 핸들러: 새 이미지만 반영
   const handleImageUploadChange = (data: { files: File[]; previews: string[] }) => {
+    // 기존 이미지를 제외한 새 이미지만 추가
+    const existingUrls = existingImages
+      .filter(img => !deletedImages.includes(img.url))
+      .map(img => img.url);
+
+    // 중복되지 않은 새 이미지만 필터링
+    const newFiles: File[] = [];
+    const newPreviews: string[] = [];
+    
+    data.previews.forEach((preview, index) => {
+      const file = data.files[index];
+      if (file && !existingUrls.includes(preview)) {
+        newFiles.push(file);
+        newPreviews.push(preview);
+      }
+    });
+
     resetImages();
-    if (data.files.length > 0 || data.previews.length > 0) {
-      addImageFiles(data.files, data.previews);
+    if (newFiles.length > 0 || newPreviews.length > 0) {
+      addImageFiles(newFiles, newPreviews);
     }
   };
 
-  // 이미지 제거 핸들러: 기존/새 이미지 구분
-  const handleImageRemove = (index: number) => {
+  // 이미지 제거 핸들러
+  const handleImageRemove = async (index: number) => {
     const remainingExistingImages = existingImages.filter((img) => !deletedImages.includes(img.url));
     
     if (index < remainingExistingImages.length) {   // 기존 이미지
       const url = remainingExistingImages[index].url;
       setDeletedImages((prev) => [...prev, url]);
-      // 교체된 이미지도 제거
-      setReplacedImages((prev) => prev.filter(r => r.originalUrl !== url));
     } else {    // 새 이미지
       const newIndex = index - remainingExistingImages.length;
       removeImageFile(newIndex);
-    }
-  };
-
-  // 이미지 교체 핸들러
-  const handleImageReplace = (index: number, file: File) => {
-    const remainingExistingImages = existingImages.filter((img) => !deletedImages.includes(img.url));
-
-    if (index < remainingExistingImages.length) {
-      // 기존 이미지 교체
-      const originalUrl = remainingExistingImages[index].url;
-      setDeletedImages((prev) => [...prev, originalUrl]);
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newPreview = e.target?.result as string;
-
-        // files/previews의 해당 인덱스에 새 파일/프리뷰로 교체
-        const newFiles = [...imageFiles];
-        const newPreviews = [...imagePreviews];
-
-        // 기존 이미지가 빠진 만큼 files/previews의 인덱스는 기존이미지 개수 - deletedImages.length 만큼 앞당겨짐
-        // 즉, 교체된 기존이미지의 인덱스는 files/previews의 index - (기존이미지 중 삭제된 개수)
-        let deletedBefore = 0;
-        for (let i = 0; i < index; i++) {
-          if (deletedImages.includes(remainingExistingImages[i].url)) deletedBefore++;
-        }
-        const filesIndex = index - deletedBefore;
-
-        newFiles[filesIndex] = file;
-        newPreviews[filesIndex] = newPreview;
-
-        resetImages();
-        addImageFiles(newFiles, newPreviews);
-
-        setReplacedImages((prev) => [
-          ...prev.filter(r => r.originalUrl !== originalUrl),
-          { originalUrl, newPreview }
-        ]);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // 새 이미지 교체 (기존 코드)
-      const newIndex = index - remainingExistingImages.length;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newPreview = e.target?.result as string;
-        const newFiles = [...imageFiles];
-        const newPreviews = [...imagePreviews];
-        newFiles[newIndex] = file;
-        newPreviews[newIndex] = newPreview;
-        resetImages();
-        addImageFiles(newFiles, newPreviews);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -211,11 +172,29 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
 
       // 삭제할 기존 이미지 DB에서 삭제
       if (deletedImages.length > 0) {
-        await supabase
+        const { error: deleteError } = await supabase
           .from("images")
           .delete()
           .in("img_url", deletedImages)
           .eq("review_id", reviewId);
+
+        if (deleteError) {
+          throw new Error("이미지 삭제 중 오류가 발생했습니다: " + deleteError.message);
+        }
+
+        // 버킷에서도 이미지 파일 삭제
+        for (const url of deletedImages) {
+          const fileName = url.split('/').pop(); // URL에서 파일명 추출
+          if (fileName) {
+            const { error: storageError } = await supabase.storage
+              .from("images")
+              .remove([fileName]);
+            
+            if (storageError) {
+              console.error("스토리지 이미지 삭제 실패:", storageError);
+            }
+          }
+        }
       }
 
       // 새 이미지 업로드 (교체된 이미지 포함)
@@ -225,7 +204,7 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
       }
 
       alert("후기가 성공적으로 수정되었습니다!");
-      // 수정 완료 후 리뷰 목록으로 이동
+      // 수정 완료 후 상세 페이지로 이동
       router.push(`/reviews/${reviewId}`);
     } catch (e: any) {
       alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
@@ -273,7 +252,6 @@ export default function EditReviewPage({ params }: { params: Promise<{ id: strin
           onChange={handleImageUploadChange}
           disabled={isUploading}
           onRemove={handleImageRemove}
-          onReplace={handleImageReplace}
         />
         <div className="flex gap-3 mt-6">
           <button

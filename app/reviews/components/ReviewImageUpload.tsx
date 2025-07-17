@@ -14,7 +14,6 @@ interface ReviewImageUploadProps {
   value: ReviewImageUploadData;
   onChange: (data: ReviewImageUploadData) => void;
   onRemove?: (index: number) => void;
-  onReplace?: (index: number, file: File) => void;
   disabled?: boolean;
 }
 
@@ -22,7 +21,6 @@ export default function ReviewImageUpload({
   value,
   onChange,
   onRemove,
-  onReplace,
   disabled,
 }: ReviewImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,13 +61,6 @@ export default function ReviewImageUpload({
     }
   };
 
-  // 이미지 교체
-  const handleReplace = (index: number, file: File) => {
-    if (onReplace) {
-      onReplace(index, file);
-    }
-  };
-
   return (
     <div className="mb-8">
       <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -92,23 +83,6 @@ export default function ReviewImageUpload({
             >
               ×
             </button>
-            {/* 교체 버튼 */}
-            <label className="absolute bottom-1 right-1 bg-white/80 text-xs px-2 py-1 rounded cursor-pointer border border-gray-300 hover:bg-pink-100 transition-colors">
-              교체
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                disabled={disabled}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    handleReplace(index, e.target.files[0]);
-                    // input 초기화
-                    e.target.value = '';
-                  }
-                }}
-              />
-            </label>
           </div>
         ))}
         {value.files.length < 5 && (
