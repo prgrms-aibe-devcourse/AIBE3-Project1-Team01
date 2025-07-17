@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
-import ReviewContentForm, { ReviewContentData } from "@/app/reviews/components/ReviewContentForm";
-import ReviewImageUpload, { ReviewImageUploadData } from "@/app/reviews/components/ReviewImageUpload";
-import { useImageUploader } from "@/hooks/useImageUploader";
-import { useReviewContentForm } from "@/hooks/useReviewContentForm";
-import { useImageUploadForm } from "@/hooks/useImageUploadForm";
+import { supabase } from "../../../lib/supabase";
+import ReviewContentForm, { ReviewContentData } from "../components/ReviewContentForm";
+import ReviewImageUpload, { ReviewImageUploadData } from "../components/ReviewImageUpload";
+import { useImageUploader } from "../hooks/useImageUploader";
+import { useReviewContentForm } from "../hooks/useReviewContentForm";
+import { useImageUploadForm } from "../hooks/useImageUploadForm";
 
 export default function WriteReviewPage() {
   // 후기 내용 상태 및 로직 (커스텀 훅)

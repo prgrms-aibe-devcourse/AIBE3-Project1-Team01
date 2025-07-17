@@ -1,10 +1,9 @@
 /**
  * 이미지 업로드 커스텀 훅
  * - 업로드 시 로딩, 에러 상태 관리
- * - 업로드 함수 제공
  */
 import { useState } from "react";
-import { uploadImagesToSupabase } from "@/lib/imageUploader";
+import { uploadImagesToSupabase } from "../lib/imageUploader";
 
 export function useImageUploader() {
   const [loading, setLoading] = useState(false);

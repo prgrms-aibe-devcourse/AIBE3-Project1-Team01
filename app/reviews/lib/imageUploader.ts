@@ -5,7 +5,7 @@
  * 3. 공개 URL 추출
  * 4. images 테이블에 저장
  */
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../../../lib/supabase";
 
 // 안전한 파일명 생성 
 function generateSafeFileName(originalFile: File): string {
