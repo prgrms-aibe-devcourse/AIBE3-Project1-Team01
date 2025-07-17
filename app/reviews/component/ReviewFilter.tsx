@@ -83,8 +83,6 @@ export default function ReviewFilter({
         </div>
       </div>
 
-      {/* ...카테고리 필터 제거됨... */}
-
       {/* 평점 필터 */}
       <div className="mb-6">
         <h4 className="text-sm font-semibold text-gray-700 mb-3">평점</h4>
