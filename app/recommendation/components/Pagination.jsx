@@ -44,3 +44,4 @@ export default function Pagination({
     </div>
   );
 }
+//리스트들 페이지 정리

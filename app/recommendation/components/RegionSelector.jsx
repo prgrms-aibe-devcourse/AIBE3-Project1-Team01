@@ -19,3 +19,4 @@ export default function RegionSelector({ areaCode, setAreaCode, areaCodes }) {
     </div>
   );
 }
+//지역 선택 함수

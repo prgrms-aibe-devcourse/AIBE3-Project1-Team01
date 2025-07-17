@@ -19,3 +19,4 @@ export default function CategoryTabs({ category, setCategory, categories }) {
     </div>
   );
 }
+// 카테고리 선택하는 함수

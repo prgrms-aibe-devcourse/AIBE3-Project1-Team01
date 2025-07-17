@@ -48,3 +48,4 @@ export default function TourCard({ place, onClick }) {
     </div>
   );
 }
+//받아오는 관광지, 식당, 숙소 정보들

@@ -6,6 +6,14 @@ export default function DetailModal({ contentid, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // 모달이 열릴 때 body 스크롤 막기
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   useEffect(() => {
     if (!contentid) return;
     setLoading(true);
@@ -119,3 +127,4 @@ export default function DetailModal({ contentid, onClose }) {
     </div>
   );
 }
+// 필터링 후 사용자가 장소를 선택하면 나오는 상세 페이지 모달

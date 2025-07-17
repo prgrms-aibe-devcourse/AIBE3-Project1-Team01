@@ -39,3 +39,4 @@ export default function SearchBar({ keyword, setKeyword, onSearch }) {
     </div>
   );
 }
+// 키워드 검색 함수

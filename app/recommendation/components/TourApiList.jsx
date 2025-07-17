@@ -26,27 +26,40 @@ const AREA_COORDS = {
   39: { mapX: 126.5312, mapY: 33.4996 }, // 제주
 };
 
-export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
+export default function TourApiList({
+  areaCode,
+  contentTypeId,
+  cat1,
+  cat2,
+  onPlacesUpdate,
+  searchKeyword = "",
+}) {
   const [pageNo, setPageNo] = useState(1);
-  const [keyword, setKeyword] = useState("");
   const numOfRows = 12;
   const [selectedId, setSelectedId] = useState(null);
 
   // 검색 조건/키워드 변경 시 페이지 초기화
   useEffect(() => {
     setPageNo(1);
-  }, [areaCode, contentTypeId, cat1, cat2, keyword]);
+  }, [areaCode, contentTypeId, cat1, cat2, searchKeyword]);
 
   const { places, loading, error, totalCount } = useTourApiList({
     areaCode,
     contentTypeId,
     cat1,
     cat2,
-    keyword,
+    keyword: searchKeyword,
     pageNo,
     numOfRows,
   });
   const totalPages = Math.ceil(totalCount / numOfRows);
+
+  // places 데이터가 변경될 때마다 상위 컴포넌트에 전달
+  useEffect(() => {
+    if (onPlacesUpdate && places) {
+      onPlacesUpdate(places);
+    }
+  }, [places, onPlacesUpdate]);
 
   // 페이지네이션 버튼 계산
   let pageNumbers = [];
@@ -63,12 +76,6 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
 
   return (
     <div>
-      {/* 검색창은 항상 노출 */}
-      <SearchBar
-        keyword={keyword}
-        setKeyword={setKeyword}
-        onSearch={() => setPageNo(1)}
-      />
       {/* 리스트/로딩/결과없음/페이징 등은 조건부로 */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -117,3 +124,4 @@ export default function TourApiList({ areaCode, contentTypeId, cat1, cat2 }) {
     </div>
   );
 }
+//메인 리스트 함수
