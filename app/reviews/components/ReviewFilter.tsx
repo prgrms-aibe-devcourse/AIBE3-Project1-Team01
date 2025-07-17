@@ -6,7 +6,6 @@ interface FilterProps {
   onFilterChange: (filters: any) => void;
   activeFilters: {
     region: string;
-    category: string;
     rating: string;
   };
 }
@@ -20,15 +19,6 @@ const regions = [
   { id: "경기도", name: "경기도" },
   { id: "전라남도", name: "전라남도" },
   { id: "경상북도", name: "경상북도" },
-];
-
-const categories = [
-  { id: "all", name: "전체 카테고리" },
-  { id: "nature", name: "자연" },
-  { id: "culture", name: "문화" },
-  { id: "food", name: "맛집" },
-  { id: "history", name: "역사" },
-  { id: "activity", name: "액티비티" },
 ];
 
 const ratings = [
@@ -93,48 +83,6 @@ export default function ReviewFilter({
         </div>
       </div>
 
-      {/* 카테고리 필터 */}
-      <div className="mb-6">
-        <h4 className="text-sm font-semibold text-gray-700 mb-3">카테고리</h4>
-        <div className="space-y-2">
-          {categories.map((category) => (
-            <label
-              key={category.id}
-              className="flex items-center cursor-pointer"
-            >
-              <input
-                type="radio"
-                name="category"
-                value={category.id}
-                checked={filters.category === category.id}
-                onChange={(e) => handleFilterUpdate("category", e.target.value)}
-                className="sr-only"
-              />
-              <div
-                className={`w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center ${
-                  filters.category === category.id
-                    ? "border-purple-500 bg-purple-500"
-                    : "border-gray-300"
-                }`}
-              >
-                {filters.category === category.id && (
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                )}
-              </div>
-              <span
-                className={`text-sm ${
-                  filters.category === category.id
-                    ? "text-purple-600 font-medium"
-                    : "text-gray-600"
-                }`}
-              >
-                {category.name}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       {/* 평점 필터 */}
       <div className="mb-6">
         <h4 className="text-sm font-semibold text-gray-700 mb-3">평점</h4>
@@ -177,11 +125,7 @@ export default function ReviewFilter({
       {/* 필터 초기화 */}
       <button
         onClick={() => {
-          const resetFilters = {
-            region: "all",
-            category: "all",
-            rating: "all",
-          };
+          const resetFilters = { region: "all", rating: "all" };
           setFilters(resetFilters);
           onFilterChange(resetFilters);
         }}

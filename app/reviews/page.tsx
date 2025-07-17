@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import ReviewFilter from "./component/ReviewFilter";
+import ReviewFilter from "./components/ReviewFilter";
 import Link from "next/link";
 
 interface Review {

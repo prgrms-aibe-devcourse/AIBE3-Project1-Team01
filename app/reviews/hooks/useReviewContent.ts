@@ -7,7 +7,7 @@
  * @returns { form, setForm, handleChange, reset, validate }
  */
 import { useState } from "react";
-import { ReviewContentData } from "@/app/reviews/components/ReviewContentForm";
+import { ReviewContentData } from "../components/ReviewContentForm";
 
 export function useReviewContent(initial?: ReviewContentData) {
   // 후기 내용 상태
