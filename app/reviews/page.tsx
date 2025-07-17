@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import ReviewFilter from "./components/ReviewFilter";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Review {
   id: number;
@@ -26,6 +27,22 @@ export default function ReviewList() {
     region: "all",
     rating: "all",
   });
+
+  const router = useRouter();
+
+  // 로그인한 유저만 후기 작성 가능
+  const handleWriteClick = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("로그인 후에 작성할 수 있습니다!");
+      return;
+    }
+
+    router.push("/reviews/write");
+  };
 
   // 필터 기반 Supabase 데이터 요청
   const fetchReviews = async () => {
@@ -66,12 +83,13 @@ export default function ReviewList() {
     <div className="max-w-6xl mx-auto px-6 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📝 여행 후기 목록</h1>
-        <Link
-          href="/reviews/write"
+        {/* 후기 작성 버튼 */}
+        <button
+          onClick={handleWriteClick}
           className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
         >
           후기 작성
-        </Link>
+        </button>
       </div>
 
       <div className="flex gap-8">
