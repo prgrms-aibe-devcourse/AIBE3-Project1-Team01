@@ -2,7 +2,7 @@
 
 import { DayPicker } from 'react-day-picker'; //날짜 선택용 캘린더 컴포넌트 불러옴
 import { format } from 'date-fns'; //날짜를 '2025-07-17' 형식으로 바꿔주는 유틸 함수
-import 'react-day-picker/dist/style.css'; //얘 왜 호출해야 하는지 모르겠음
+import 'react-day-picker/dist/style.css';
 import type { DateRange } from 'react-day-picker'; //날짜 범위(from, to)를 나타내는 타입만 불러옴
 
 type Props = { //PlanForm 컴포넌트가 page.tsx에서 받은 props 6가지
