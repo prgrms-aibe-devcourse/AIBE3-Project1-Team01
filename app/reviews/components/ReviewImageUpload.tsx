@@ -1,6 +1,6 @@
 /**
  * 이미지 폼
- * UI에서 이미지 선택, 미리보기, 삭제 기능 제공
+ * UI에서 이미지 선택, 미리보기, 삭제, 교체 기능 제공
  */
 
 import React, { useRef, useState } from "react";
@@ -13,12 +13,16 @@ export interface ReviewImageUploadData {
 interface ReviewImageUploadProps {
   value: ReviewImageUploadData;
   onChange: (data: ReviewImageUploadData) => void;
+  onRemove?: (index: number) => void;
+  onReplace?: (index: number, file: File) => void;
   disabled?: boolean;
 }
 
 export default function ReviewImageUpload({
   value,
   onChange,
+  onRemove,
+  onReplace,
   disabled,
 }: ReviewImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,11 +52,22 @@ export default function ReviewImageUpload({
 
   // 이미지 제거
   const handleRemove = (index: number) => {
-    const newFiles = [...value.files];
-    const newPreviews = [...value.previews];
-    newFiles.splice(index, 1);
-    newPreviews.splice(index, 1);
-    onChange({ files: newFiles, previews: newPreviews });
+    if (onRemove) {
+      onRemove(index);
+    } else {
+      const newFiles = [...value.files];
+      const newPreviews = [...value.previews];
+      newFiles.splice(index, 1);
+      newPreviews.splice(index, 1);
+      onChange({ files: newFiles, previews: newPreviews });
+    }
+  };
+
+  // 이미지 교체
+  const handleReplace = (index: number, file: File) => {
+    if (onReplace) {
+      onReplace(index, file);
+    }
   };
 
   return (
@@ -68,6 +83,7 @@ export default function ReviewImageUpload({
               alt={`미리보기 ${index + 1}`}
               className="w-full h-24 object-cover rounded-lg"
             />
+            {/* 삭제 버튼 */}
             <button
               type="button"
               onClick={() => handleRemove(index)}
@@ -76,6 +92,23 @@ export default function ReviewImageUpload({
             >
               ×
             </button>
+            {/* 교체 버튼 */}
+            <label className="absolute bottom-1 right-1 bg-white/80 text-xs px-2 py-1 rounded cursor-pointer border border-gray-300 hover:bg-pink-100 transition-colors">
+              교체
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={disabled}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleReplace(index, e.target.files[0]);
+                    // input 초기화
+                    e.target.value = '';
+                  }
+                }}
+              />
+            </label>
           </div>
         ))}
         {value.files.length < 5 && (
