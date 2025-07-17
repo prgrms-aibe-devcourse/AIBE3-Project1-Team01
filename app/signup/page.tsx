@@ -9,7 +9,6 @@ export default function SignupPage() {
 
   const handleClose = () => {
     setIsOpen(false);
-    router.push("/");
   };
 
   return <SignupModal isOpen={isOpen} onClose={handleClose} />;

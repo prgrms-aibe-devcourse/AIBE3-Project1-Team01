@@ -67,7 +67,6 @@ export default function SignupModal({
       if (onLogin) {
         onLogin(); // 로그인 모달 띄우기
       }
-      router.push("/");
     }
   };
 

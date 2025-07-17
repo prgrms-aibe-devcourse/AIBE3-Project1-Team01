@@ -46,8 +46,8 @@ export default function LoginModal({
     } else {
       setErrorMsg("");
       onClose();
-      router.push("/");
       window.location.reload();
+      router.push("/");
     }
   };
 

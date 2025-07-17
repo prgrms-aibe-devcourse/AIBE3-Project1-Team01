@@ -7,7 +7,8 @@ import { useAuth } from '@/context/AuthContext';
 import type { DateRange } from 'react-day-picker';
 import PlanForm from './PlanForm';
 import DayInputs from './DayInputs'; 
-
+import LoginModal from '../login/LoginModal';
+import SignupModal from '../signup/SignupModal';
 
 export default function PlanPage() {
   const [range, setRange] = useState<DateRange | undefined>(); //여행 날짜 범위를 저장하는 상태 (from, to로 구성됨)
@@ -18,9 +19,22 @@ export default function PlanPage() {
   }>({}); //날짜별 일정 dailyPlans는 날짜별로 배열을 가짐 (한 날짜에 여러 장소 가능)
   const router = useRouter();
   const { user } = useAuth();
-  const testUserId = '72ede0c0-a9bd-4dd9-bcae-93d121378256'; //테스트용 유저 ID. 이후 삭제
   const searchParams = useSearchParams(); 
   const planId = searchParams.get('id');
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+
+  
+  // 모달 간 전환 함수
+  const handleSwitchToSignup = () => {
+    setShowLoginModal(false);
+    setShowSignupModal(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setShowSignupModal(false);
+    setShowLoginModal(true);
+  };
 
   // 수정 모드일 경우 planId 기반으로 데이터 불러오기
   useEffect(() => {
@@ -31,7 +45,7 @@ export default function PlanPage() {
         .from('plans')
         .select('*')
         .eq('id', planId)
-        .eq('user_id', testUserId) // 이후 user?.id 로 바꾸기
+        .eq('user_id', user?.id)
         .single();
 
       if (planError || !plan) return;
@@ -63,11 +77,13 @@ export default function PlanPage() {
 
   const handleSave = async () => {
     
-    // if (!user) {
-    //   alert("로그인이 필요합니다.");
-    //   return;
-    // }
-
+    if (!user) {
+      const confirmLogin = window.confirm("로그인이 필요합니다. 로그인하시겠습니까?");
+      if (confirmLogin) {
+        setShowLoginModal(true); // 로그인 모달 열기
+      }
+      return;
+    }
   
       if (!range || !range.from || !range.to) {
         alert("날짜는 반드시 선택해야 합니다.");
@@ -85,7 +101,7 @@ export default function PlanPage() {
             end_date: range.to.toISOString().slice(0, 10),
           })
           .eq('id', planId)
-          .eq('user_id', testUserId); // 이후 user?.id 로 바꾸기
+          .eq('user_id', user?.id);
   
         if (updateError) {
           alert('계획 수정 실패');
@@ -116,7 +132,7 @@ export default function PlanPage() {
             description,
             start_date: range.from.toISOString().slice(0, 10),
             end_date: range.to.toISOString().slice(0, 10),
-            user_id: testUserId, // 이후 user?.id 로 바꾸기
+            user_id: user?.id,
           })
           .select()
           .single();
@@ -179,6 +195,17 @@ export default function PlanPage() {
             </div>
           </div>
         </div>
+        {/* 로그인/회원가입 모달 렌더링 */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSignup={handleSwitchToSignup}
+      />
+      <SignupModal
+        isOpen={showSignupModal}
+        onClose={() => setShowSignupModal(false)}
+        onLogin={handleSwitchToLogin}
+      />
       </div>
     );
   };
