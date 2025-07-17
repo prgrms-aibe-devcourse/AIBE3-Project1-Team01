@@ -65,6 +65,18 @@ export default function WriteReviewPage() {
       return;
     }
     try {
+      // 사용자 정보 가져오기
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+      if (userError || !user) {//에러나거나, 사용자 정보가 없으면 
+        alert("사용자 정보 가져오기 실패: " + userError.message);
+        return;
+      }
+      const userId = user?.id;
+
+
       // 리뷰 내용을 reviews 테이블에 저장
       const { data: reviewData, error: reviewError } = await supabase
         .from("reviews")
@@ -75,6 +87,7 @@ export default function WriteReviewPage() {
           )
             .toISOString()
             .slice(0, -1),
+          user_id: userId,
         })
         .select()
         .single();
