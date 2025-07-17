@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await supabase.auth.getUser(); //로그인 유지
       setUser(user);
       setIsLoading(false);
     };
