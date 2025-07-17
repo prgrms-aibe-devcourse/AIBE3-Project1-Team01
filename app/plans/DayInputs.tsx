@@ -5,6 +5,7 @@ import { format, eachDayOfInterval } from 'date-fns';
 //→ eachDayOfInterval: 날짜 범위(from~to)를 하루씩 나눈 배열로 만들어줌
 import type { DateRange } from 'react-day-picker';
 //range 타입 정의용 import. { from: Date, to: Date } 구조
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 type DailyPlans = {
   [date: string]: { place: string; detail: string }[];
@@ -109,23 +110,25 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                         onChange={(e) => handleInputChange(dateStr, idx, 'place', e.target.value)}
                         placeholder="여행지 이름"
                       />
+                      
                       {/* 순서 바꾸기 버튼 */}
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'up')}
                         className="w-8 h-8 rounded-full bg-transparent hover:bg-pink-100 text-gray-900 flex items-center justify-center transition-colors"
                         title="위로"
                       >
-                        ↑
+                        <ChevronUp className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'down')}
                         className="w-8 h-8 rounded-full bg-transparent hover:bg-purple-100 text-gray-800 flex items-center justify-center transition-colors"
                         title="아래로"
                       >
-                        ↓
+                        <ChevronDown className="w-5 h-5" />
                       </button>
+
                       {/* 삭제 버튼 */}
-                      <button 
+                      <button
                         onClick={() => handleDeleteItem(dateStr, idx)}
                         className="w-10 h-10 bg-gradient-to-br from-pink-200 to-purple-200 text-pink-700 rounded-full flex items-center justify-center hover:from-pink-300 hover:to-purple-300 hover:text-purple-700 shadow"
                       >
