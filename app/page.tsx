@@ -1,9 +1,9 @@
 "use client";
 
 import Header from "./components/Header";
+import KoreaMap from "./components/KoreaMap";
 import PopularDestinations from "./components/PopularDestinations";
 import Link from "next/link";
-import KoreaMap from "./components/KoreaMap";
 
 export default function Home() {
   return (
