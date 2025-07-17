@@ -19,8 +19,19 @@ export default function LoginModal({
   const [password, setPassword] = useState(""); // 비밀번호
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(""); // 에러 메시지  처리
-  const { handleLogIn } = useAuth();
+  const { handleLogIn, handleLogInWithGoogle } = useAuth();
   const router = useRouter();
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const { error } = await handleLogInWithGoogle();
+    setIsLoading(false);
+
+    if (error) {
+      setErrorMsg("구글 로그인에 실패했습니다.");
+    }
+  };
+
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     e.preventDefault();
@@ -122,6 +133,20 @@ export default function LoginModal({
             ) : (
               "로그인"
             )}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-medium shadow hover:bg-gray-50 transition-all duration-300 mb-2"
+            disabled={isLoading}
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            <span>Google로 로그인</span>
           </button>
           {onSignup && (
             <div className="text-center mt-6">

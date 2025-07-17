@@ -46,6 +46,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error }; // 객체로 반환
   };
 
+  //구글 로그인
+  const handleLogInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+    return { error };
+  };
+
   const handleLogIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -54,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
-  const handleLogout = async () => {
+  const handleLogOut = async () => {
     setIsLoading(true);
     await supabase.auth.signOut();
     window.location.reload(); // 로그아웃 시 바로 윈도우 리로딩
@@ -66,7 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     handleSignUp,
     handleLogIn,
-    handleLogout,
+    handleLogOut,
+    handleLogout: handleLogOut,
+    handleLogInWithGoogle,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
