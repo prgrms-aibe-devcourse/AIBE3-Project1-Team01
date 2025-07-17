@@ -32,19 +32,22 @@ export default function ReviewImageUpload({
       alert("최대 5장까지 업로드 가능합니다.");
       return;
     }
-    const newPreviews: string[] = [];
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        newPreviews.push(e.target?.result as string);
-        if (newPreviews.length === files.length) {
-          onChange({
-            files: [...value.files, ...files],
-            previews: [...value.previews, ...newPreviews],
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+
+    // Promise.all로 순서 보장
+    Promise.all(
+      files.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target?.result as string);
+            reader.readAsDataURL(file);
+          })
+      )
+    ).then((newPreviews) => {
+      onChange({
+        files: [...value.files, ...files],
+        previews: [...value.previews, ...newPreviews],
+      });
     });
   };
 

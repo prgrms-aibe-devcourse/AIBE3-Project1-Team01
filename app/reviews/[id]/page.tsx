@@ -38,13 +38,19 @@ export default function EditReviewPage() {
       // 후기 정보 가져오기
       const { data, error } = await supabase
         .from("reviews")
-        .select("*, images(img_url)")
+        .select("*, images(img_url, order)") //상세 페이지에서 이미지 순서대로 보여주기 위해 order 추가 
         .eq("id", id)
         .single();
 
       if (!error && data) {
         setReview(data);
-        setImages(data.images.map((img) => img.img_url));
+        
+        // order 순으로 정렬
+        const sortedImages = data.images
+          .slice() // 원본 배열 복사
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+          .map((img) => img.img_url);
+        setImages(sortedImages);
       }
 
       setIsLoading(false);

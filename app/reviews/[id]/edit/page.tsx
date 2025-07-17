@@ -140,12 +140,18 @@ export default function EditReviewPage({
     const fileArray = Array.from(files);
     setNewImages((prev) => [...prev, ...fileArray]);
 
-    fileArray.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewImagePreviews((prev) => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+    // 파일 순서 보장: Promise.all로 순서대로 미리보기 생성
+    Promise.all(
+      fileArray.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          })
+      )
+    ).then((previews) => {
+      setNewImagePreviews((prev) => [...prev, ...previews]);
     });
 
     e.target.value = "";
@@ -230,11 +236,9 @@ export default function EditReviewPage({
         if (uploadError) throw new Error(uploadError.message);
 
         // 공개 URL 가져오기
-        const { data: publicUrlData, error: publicUrlError } = supabase.storage
+        const { data: publicUrlData } = supabase.storage
           .from("images")
           .getPublicUrl(uploadData.path);
-        if (publicUrlError) throw new Error(publicUrlError.message);
-
         const newUrl = publicUrlData.publicUrl;
 
         // DB img_url 업데이트
@@ -246,15 +250,8 @@ export default function EditReviewPage({
         if (updateError) throw new Error(updateError.message);
       }
 
-      // 4) 새 이미지 업로드 & DB 삽입
-      // 삭제되지 않은 기존 이미지의 최대 order 계산
-      const remainingOrders = existingImages
-        .map((img, idx) => ({ order: img.order, idx }))
-        .filter(({ idx }) => !deletedIndexes.includes(idx))
-        .map(({ order }) => order);
-
-      const maxOrder = remainingOrders.length > 0 ? Math.max(...remainingOrders) : -1;
-
+      // 4) 새 이미지 업로드 (publicUrl만 모아두기)
+      const uploadedNewImages: string[] = [];
       for (let i = 0; i < newImages.length; i++) {
         const file = newImages[i];
         const ext = file.name.split(".").pop() ?? "jpg";
@@ -265,36 +262,46 @@ export default function EditReviewPage({
           .upload(newFileName, file);
         if (uploadError) throw new Error(uploadError.message);
 
-        const { data: publicUrlData, error: publicUrlError } = supabase.storage
+        const { data: publicUrlData } = supabase.storage
           .from("images")
           .getPublicUrl(uploadData.path);
-        if (publicUrlError) throw new Error(publicUrlError.message);
-
-        // DB insert (order는 maxOrder + 1부터 순차 할당)
-        const { error: insertError } = await supabase.from("images").insert({
-          review_id: reviewId,
-          img_url: publicUrlData.publicUrl,
-          order: maxOrder + 1 + i,
-        });
-        if (insertError) throw new Error(insertError.message);
+        uploadedNewImages.push(publicUrlData.publicUrl);
       }
 
-      // 5) 남은 기존 이미지 order 재정렬 (0부터 연속 숫자)
-      // 남은 기존 이미지 (삭제 제외) 정렬
-      const remainingImages = existingImages
+      // 5) 기존+새 이미지 합쳐서 order 0부터 일괄 재할당
+      // 남은 기존 이미지(삭제 제외, 교체된 것 포함)
+      const remainingExistingImages = existingImages
         .map((img, idx) => ({ ...img, idx }))
         .filter((img) => !deletedIndexes.includes(img.idx));
 
-      // order 재정렬
-      for (let newOrder = 0; newOrder < remainingImages.length; newOrder++) {
-        const oldOrder = remainingImages[newOrder].order;
-        if (oldOrder !== newOrder) {
-          const { error } = await supabase
-            .from("images")
-            .update({ order: newOrder })
-            .eq("review_id", reviewId)
-            .filter('"order"', "eq", oldOrder);
-          if (error) throw new Error(error.message);
+      // 새 이미지 객체 생성
+      const allImages = [
+        ...remainingExistingImages.map((img) => ({ ...img, isNew: false })),
+        ...uploadedNewImages.map((url, i) => ({ url, isNew: true, file: newImages[i] })),
+      ];
+
+      // 0번부터 order 재할당
+      for (let i = 0; i < allImages.length; i++) {
+        const img = allImages[i];
+        if (img.isNew) {
+          // 새 이미지 DB insert (order: i)
+          const { error: insertError } = await supabase.from("images").insert({
+            review_id: reviewId,
+            img_url: img.url,
+            order: i,
+          });
+          if (insertError) throw new Error(insertError.message);
+        } else {
+          // 기존 이미지 DB update (order: i)
+          // 타입 가드: order는 기존 이미지에만 존재
+          if ((img as any).order !== i) {
+            const { error } = await supabase
+              .from("images")
+              .update({ order: i })
+              .eq("review_id", reviewId)
+              .filter('"order"', "eq", (img as any).order);
+            if (error) throw new Error(error.message);
+          }
         }
       }
 
