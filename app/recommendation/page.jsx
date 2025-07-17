@@ -96,38 +96,32 @@ export default function RecommendationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-pink-100">
       <div className="w-full flex items-center justify-between bg-white shadow px-8 h-28 mb-6">
         <div className="flex items-center h-full">
           <img
-            src="/h1trip-logo.png"
+            src="/h1trip-logo2.png"
             alt="h1Trip 로고"
-            className="h-full w-auto object-contain"
+            className="h-32 w-64 object-contain"
           />
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold text-center drop-shadow-lg tracking-tight flex-1">
           <span>✨ </span>
-          <span className="text-pink-300">추천 여행지 리스트</span>
+          <span className="text-gray-400">추천 여행지 리스트</span>
           <span> ✈️</span>
         </h1>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsCustomGameModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold shadow hover:scale-105 transition border border-pink-200"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-300 text-white font-bold shadow hover:scale-105 transition border border-pink-100"
           >
-            <span role="img" aria-label="game">
-              🎮
-            </span>
-            게임으로 선택하기
+            게임 선택
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-400 font-bold shadow hover:scale-105 transition border border-pink-200"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-300 text-white font-bold shadow hover:scale-105 transition border border-pink-100"
           >
-            <span role="img" aria-label="home">
-              🏠
-            </span>{" "}
-            홈으로 돌아가기
+            홈으로
           </Link>
         </div>
       </div>
@@ -138,7 +132,7 @@ export default function RecommendationPage() {
             <div className="bg-white/60 rounded-2xl shadow-lg p-6">
               <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
                 <span>📍 </span>
-                <span className="text-pink-300">어디로 떠나볼까요?</span>
+                <span className="text-gray-400">어디로 떠나볼까요?</span>
               </h2>
               <RegionSelector
                 areaCode={areaCode}
@@ -150,7 +144,7 @@ export default function RecommendationPage() {
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
                   <span>🗺️ </span>
-                  <span className="text-pink-300">어떤 여행을 원하세요?</span>
+                  <span className="text-gray-400">어떤 여행을 원하세요?</span>
                 </h2>
                 <CategoryTabs
                   category={category}
@@ -163,7 +157,7 @@ export default function RecommendationPage() {
               <div className="bg-white/60 rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
                   <span>🔎 </span>
-                  <span className="text-pink-300">더 자세히 골라볼까요?</span>
+                  <span className="text-gray-400">더 자세히 골라볼까요?</span>
                 </h2>
                 <SubCategoryTabs
                   category={category}
@@ -181,16 +175,8 @@ export default function RecommendationPage() {
               <>
                 {/* 검색 및 게임 영역 */}
                 <div className="bg-white/60 rounded-2xl shadow-lg p-6 mb-6">
-                  <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
-                    <span>🔍 </span>
-                    <span className="text-pink-300">검색 및 게임</span>
-                  </h2>
-
                   {/* 검색바를 먼저 표시 */}
                   <div className="mb-6">
-                    <h3 className="text-lg font-bold mb-3 text-gray-700">
-                      📝 키워드로 검색하기
-                    </h3>
                     <SearchBar
                       keyword={searchKeyword}
                       setKeyword={setSearchKeyword}

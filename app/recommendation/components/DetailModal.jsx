@@ -1,10 +1,12 @@
 // app/recommendation/components/DetailModal.jsx
 import { useState, useEffect } from "react";
+import useTourApiList from "../hooks/useTourApiList";
 
 export default function DetailModal({ contentid, onClose }) {
-  const [detail, setDetail] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { detail, loading, error } = useTourApiList({
+    mode: "detail",
+    contentid,
+  });
 
   // 모달이 열릴 때 body 스크롤 막기
   useEffect(() => {
@@ -14,40 +16,10 @@ export default function DetailModal({ contentid, onClose }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!contentid) return;
-    setLoading(true);
-    setError(null);
-    setDetail(null);
-    const fetchDetail = async () => {
-      try {
-        const apiKey = process.env.NEXT_PUBLIC_TOUR_API_KEY;
-        const encodedKey = encodeURIComponent(apiKey);
-        const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?serviceKey=${encodedKey}&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=${contentid}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("상세 정보 호출 실패");
-        const data = await res.json();
-        const item = data.response?.body?.items?.item;
-        setDetail(Array.isArray(item) ? item[0] : item || null);
-      } catch (e) {
-        setError("상세 정보를 불러오지 못했습니다.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDetail();
-  }, [contentid]);
-
   if (!contentid) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn max-h-[90vh] overflow-y-auto">
-        {/* 좌측 상단 로고 */}
-        <img
-          src="/h1trip-logo.png"
-          alt="h1Trip 로고"
-          className="absolute top-4 left-4 w-14 h-14 object-contain"
-        />
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-pink-400"
@@ -63,7 +35,7 @@ export default function DetailModal({ contentid, onClose }) {
         ) : detail ? (
           <div>
             {/* 제목 */}
-            <h3 className="text-3xl font-extrabold mb-4 text-center text-pink-300 drop-shadow">
+            <h3 className="text-3xl font-extrabold mb-4 text-center text-gray-400 drop-shadow">
               {detail.title}
             </h3>
             {/* 이미지 */}

@@ -1,5 +1,5 @@
 export default function CategoryTabs({ category, setCategory, categories }) {
-  const cats = [{ name: "전체", id: "" }, ...categories];
+  const cats = categories;
   return (
     <div className="grid grid-cols-3 gap-4">
       {cats.map((cat) => (

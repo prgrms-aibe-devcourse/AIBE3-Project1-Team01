@@ -1,5 +1,5 @@
 export default function RegionSelector({ areaCode, setAreaCode, areaCodes }) {
-  const regions = [{ name: "전체", code: "" }, ...areaCodes];
+  const regions = areaCodes;
   return (
     <div className="grid grid-cols-3 gap-4">
       {regions.map((region) => (
