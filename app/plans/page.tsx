@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '../../context/Authcontext';
+import { useAuth } from '@/context/AuthContext';
 import type { DateRange } from 'react-day-picker';
 import PlanForm from './PlanForm';
 import DayInputs from './DayInputs'; 
