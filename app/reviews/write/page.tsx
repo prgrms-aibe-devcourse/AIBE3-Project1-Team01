@@ -1,12 +1,12 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import ReviewContentForm, { ReviewContentData } from "../components/ReviewContentForm";
 import ReviewImageUpload, { ReviewImageUploadData } from "../components/ReviewImageUpload";
-import { useImageUploader } from "../hooks/useImageUploader";
-import { useReviewContentForm } from "../hooks/useReviewContentForm";
-import { useImageUploadForm } from "../hooks/useImageUploadForm";
+import { useImageUpload } from "../hooks/useImageUpload";
+import { useReviewContent } from "../hooks/useReviewContent";
 
 export default function WriteReviewPage() {
   // 후기 내용 상태 및 로직 (커스텀 훅)
@@ -16,31 +16,29 @@ export default function WriteReviewPage() {
     handleChange: handleContentChange,
     reset: resetContent,
     validate: validateContent,
-  } = useReviewContentForm();
+  } = useReviewContent();
 
-  // 이미지 업로드 상태 및 로직 (커스텀 훅)
+  // 이미지 업로드 통합 훅 사용
   const {
     files: imageFiles,
     previews: imagePreviews,
     addFiles: addImageFiles,
     removeFile: removeImageFile,
     reset: resetImages,
-  } = useImageUploadForm();
+    upload,
+    loading: isUploading,
+    error: uploadError
+  } = useImageUpload();
 
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
-  const { upload, loading: isUploading, error: uploadError } = useImageUploader();
 
   // ReviewImageUpload에 맞는 value 객체 생성
   const imageValue = { files: imageFiles, previews: imagePreviews };
 
   // onChange 핸들러: ReviewImageUploadData 타입을 받아 훅의 상태로 반영
   const handleImageUploadChange = (data: { files: File[]; previews: string[] }) => {
-    // 상태를 완전히 대체
-    // (useImageUploadForm 훅에 setFiles, setPreviews가 있다면 그걸 써도 됨)
-    // 여기서는 reset 후 addFiles로 대체
     resetImages();
     if (data.files.length > 0 || data.previews.length > 0) {
-      // 새로 받은 파일/미리보기로 상태를 채움
       addImageFiles(data.files, data.previews);
     }
   };
@@ -75,8 +73,8 @@ export default function WriteReviewPage() {
       }
       const reviewId = reviewData.id;
       // 이미지 업로드 및 images 테이블 저장
-      const uploaded = await upload(imageFiles, reviewId);
-      setUploadedUrls(uploaded);
+      const uploaded = await upload(reviewId);
+      setUploadedUrls(uploaded || []);
       // 상태 초기화
       resetImages();
       resetContent();

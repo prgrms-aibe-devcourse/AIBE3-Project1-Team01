@@ -9,7 +9,7 @@
 import { useState } from "react";
 import { ReviewContentData } from "@/app/reviews/components/ReviewContentForm";
 
-export function useReviewContentForm(initial?: ReviewContentData) {
+export function useReviewContent(initial?: ReviewContentData) {
   // 후기 내용 상태
   const [form, setForm] = useState<ReviewContentData>(
     initial || { title: "", region: "", rating: 5, content: "" }
