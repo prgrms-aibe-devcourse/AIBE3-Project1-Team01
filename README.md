@@ -37,6 +37,25 @@ AIBE3 1팀 &lt;h1>
 
 ---
 
+## 🗂️ 폴더 구조
+
+```bash
+DEVCOURSE_PROJECT1/
+├── app/
+│   ├── components/               # 메인 페이지에서 사용하는 컴포넌트 모음
+│   ├── 기능/                     # 내가 구현하고 있는 기능 폴더(recommend, plan, review, login)
+│   │   ├── components/           # 기능별로 사용하는 컴포넌트 모음
+│   │   └── hooks/                # 기능별로 사용하는 훅 모음
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx                 # 메인 페이지
+├── lib/
+│   └── supabase.js              # Supabase 설정
+
+```
+
+---
+
 ## 📝 기획 및 준비
 
 - Figma, Readdy, [v0.dev](http://v0.dev/) 등 AI 기반 디자인 도구를 활용한 UI/UX 설계
@@ -95,6 +114,7 @@ AIBE3 1팀 &lt;h1>
 | 윤주찬 | 여행지 추천       | 국내 여행지 추천 → 식당, 숙소, 관광지 카테고리에 맞게 리스트화 |
 | 이승원 | 전체 관리 및 발표 |                                                                |
 | 공통   | ERD 설계          |                                                                |
+<<<<<<< HEAD
 
 ---
 
@@ -108,3 +128,5 @@ AIBE3 1팀 &lt;h1>
 | **`DetailModal.jsx`**   | 상세 정보 모달 UI 및 로직                   | `contentid` (상세 정보 조회용 ID), `onClose` (모달 닫기 콜백 함수)                                                                   | -                                             |
 | **`useTourApiList.js`** | API 호출, 데이터/로딩/에러 관리 (커스텀 훅) | `{ areaCode, contentTypeId, cat1, cat2, keyword, pageNo, numOfRows }` (파라미터 객체)                                                | `{ places, loading, error, totalCount }` 반환 |
 | **`TourApiList.jsx`**   | 컴포넌트/훅 조립 및 전반적인 상태 관리      | `areaCode`, `contentTypeId`, `cat1`, `cat2`                                                                                          | - (렌더링되는 여행지 추천 페이지)             |
+=======
+>>>>>>> eb11c3a2d90013677df1df293e262cdf662e8529

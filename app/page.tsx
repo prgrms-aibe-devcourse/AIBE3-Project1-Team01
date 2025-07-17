@@ -1,6 +1,10 @@
 "use client";
 
 import Header from "@/app/components/Header";
+<<<<<<< HEAD
+=======
+import KoreaMap from "@/app/components/KoreaMap";
+>>>>>>> eb11c3a2d90013677df1df293e262cdf662e8529
 import PopularDestinations from "@/app/components/PopularDestinations";
 import Link from "next/link";
 
