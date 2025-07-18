@@ -31,12 +31,11 @@ export default function Home() {
               </span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white max-w-xl font-medium">
-              대한민국 전국 어디든, 당신만의 특별한 여행 계획을 세우고
-              <br />
-              다른 여행자들과 후기를 공유해보세요
+              여행 준비의 복잡함은 덜고, 내 취향과 여행 스타일에 꼭 맞는
+              <br></br>장소를 추천받아 설렘 가득한 여행을 시작하세요.
             </p>
             <button className="mt-8 bg-[#7FC4C9] hover:bg-[#5CAAB0] text-white font-semibold px-6 py-3 rounded-full transition shadow-md">
-              함께하기 &gt;
+              나만의 장소 추천 &gt;
             </button>
           </div>
         </section>
