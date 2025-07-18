@@ -94,7 +94,7 @@ export default function ReviewContentForm({
               ★
             </button>
           ))}
-          <span className="ml-2">{value.rating} 점</span>
+          <span className="ml-2 mt-2">{value.rating} 점</span>
         </div>
       </div>
       {/* 후기 내용 */}

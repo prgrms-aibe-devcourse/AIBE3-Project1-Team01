@@ -43,10 +43,10 @@ export default function WriteReviewPage() {
   const router = useRouter();
 
   // ReviewImageUpload에 맞는 value 객체 생성
-  const imageValue = { 
-    files: imageFiles, 
+  const imageValue = {
+    files: imageFiles,
     previews: imagePreviews,
-    coverImageIndex
+    coverImageIndex,
   };
 
   // onChange 핸들러: ReviewImageUploadData 타입을 받아 훅의 상태로 반영
@@ -120,13 +120,8 @@ export default function WriteReviewPage() {
       // 상태 초기화
       resetImages();
       resetContent();
-<<<<<<< HEAD
-      // 작성 다하면 리뷰 목록으로 돌아가기
-      router.push("/reviews");
-=======
       //
       router.push(`/reviews/${reviewId}`);
->>>>>>> a6f9e65 (스타일 일부 수정)
     } catch (e: any) {
       alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
     }
@@ -134,23 +129,7 @@ export default function WriteReviewPage() {
 
   return (
     <div className="max-w-xl mx-auto py-10 px-4">
-<<<<<<< HEAD
-      <h1 className="text-2xl font-bold mb-6">✍️ 후기 작성</h1>
-      <form onSubmit={handleSubmit}>
-        <ReviewContentForm
-          value={contentData}
-          onChange={setContentData}
-          disabled={isUploading}
-        />
-        <ReviewImageUpload
-          value={imageValue}
-          onChange={handleImageUploadChange}
-          onRemove={removeImageFile}
-          disabled={isUploading}
-        />
-=======
       <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
->>>>>>> a6f9e65 (스타일 일부 수정)
         <button
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}
@@ -166,11 +145,14 @@ export default function WriteReviewPage() {
             onChange={setContentData}
             disabled={isUploading}
           />
+
           <ReviewImageUpload
             value={imageValue}
             onChange={handleImageUploadChange}
+            onRemove={removeImageFile}
             disabled={isUploading}
           />
+
           <button
             type="submit"
             disabled={isUploading}
@@ -179,7 +161,7 @@ export default function WriteReviewPage() {
             {isUploading ? "등록 중..." : "후기 등록"}
           </button>
         </form>
-        {/** 업로드 완료된 이미지 -> 추후 삭제 예정 */}
+        {/* 업로드 완료된 이미지 미리보기 -> 추후 삭제 예정 */}
         {uploadedUrls.length > 0 && (
           <div className="mt-6">
             <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>
