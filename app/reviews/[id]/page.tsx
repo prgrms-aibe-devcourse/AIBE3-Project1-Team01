@@ -147,7 +147,7 @@ export default function EditReviewPage() {
                 <img
                   src={url}
                   alt={`이미지 ${idx + 1}`}
-                  className="w-full h-32 sm:h-40 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 sm:h-56 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                 />
                 <a
                   href={url}
