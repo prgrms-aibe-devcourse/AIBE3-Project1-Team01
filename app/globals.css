@@ -2,3 +2,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* DayPicker */
+td.rdp-selected,
+td.rdp-range_start,
+td.rdp-range_end {
+  background: #F4CCC4 !important;
+}
+
+td.rdp-selected .rdp-day_button,
+td.rdp-range_start .rdp-day_button,
+td.rdp-range_end .rdp-day_button {
+  background: #F4CCC4 !important;
+  color: #413D3D !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
