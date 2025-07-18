@@ -34,9 +34,13 @@ export default function Home() {
               여행 준비의 복잡함은 덜고, 내 취향과 여행 스타일에 꼭 맞는
               <br></br>장소를 추천받아 설렘 가득한 여행을 시작하세요.
             </p>
-            <button className="mt-8 bg-[#7FC4C9] hover:bg-[#5CAAB0] text-white font-semibold px-6 py-3 rounded-full transition shadow-md">
-              나만의 장소 추천 &gt;
-            </button>
+            <Link href="/recommendation" passHref>
+              {" "}
+              {/* href 속성 추가 */}
+              <button className="mt-8 bg-[#7FC4C9] hover:bg-[#5CAAB0] text-white font-semibold px-6 py-3 rounded-full transition shadow-md">
+                나만의 장소 추천 &gt;
+              </button>
+            </Link>
           </div>
         </section>
 
@@ -86,8 +90,11 @@ export default function Home() {
               </p>
             </Link>
 
-            {/* AI 추천 */}
-            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+            {/* 장소 추천 */}
+            <Link
+              href="/recommendation"
+              className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group"
+            >
               <div className="w-16 h-16 bg-[#F4CCC4] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <i className="ri-lightbulb-line text-2xl text-white"></i>
               </div>
@@ -97,7 +104,7 @@ export default function Home() {
               <p className="text-[#413D3D] text-sm">
                 나의 취향에 맞는 장소와 코스를 추천해줘요.
               </p>
-            </div>
+            </Link>
           </div>
         </section>
 
@@ -142,7 +149,7 @@ export default function Home() {
         />
 
         {/* 텍스트 */}
-        <p className="relative z-10 pl-[10rem] text-left w-full">
+        <p className="relative z-10 text-center w-full">
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>

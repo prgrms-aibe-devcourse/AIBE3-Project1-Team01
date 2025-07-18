@@ -99,9 +99,12 @@ export default function Header() {
             >
               여행 후기
             </Link>
-            <div className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg">
+            <Link
+              href="/recommendation" // <-- 이동하고자 하는 페이지 경로 (예: /recommendation)
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
+            >
               장소 추천
-            </div>
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-10 z-10">
