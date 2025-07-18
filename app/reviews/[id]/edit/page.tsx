@@ -7,6 +7,7 @@ import ReviewImageEdit from "../../components/ReviewImageEdit";
 import { supabase } from "../../../../lib/supabase";
 import { useReviewContent } from "../../hooks/useReviewContent";
 import { useReviewImageEdit } from "../../hooks/useReviewImageEdit";
+import Header from "../../../components/Header";
 
 export default function EditReviewPage({
   params,
@@ -142,68 +143,80 @@ export default function EditReviewPage({
   }
 
   return (
-    <div className="max-w-xl mx-auto py-10 px-4">
-      <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold"> 후기 수정</h1>
+    <div className="w-full max-w-4xl mx-auto px-6 py-8 text-[#413D3D]">
+      <Header />
+
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold"> 후기 수정</h1>
+        <button
+          onClick={handleCancel}
+          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
+          style={{ lineHeight: 1 }}
+          disabled={isUploading}
+        >
+          ×
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <ReviewContentForm
+          value={contentData}
+          onChange={setContentData}
+          disabled={isUploading}
+        />
+
+        <ReviewImageEdit
+          existingImages={existingImages}
+          onExistingImageDelete={handleExistingImageDelete}
+          onExistingImageReplace={handleExistingImageReplace}
+          onExistingImageCoverChange={handleExistingImageCoverChange}
+          deletedIndexes={deletedIndexes}
+          replacementPreviews={replacementPreviews}
+          newFiles={newFiles}
+          newPreviews={newPreviews}
+          onNewImageAdd={handleNewImageAdd}
+          onNewImageDelete={handleNewImageDelete}
+          onNewImageCoverChange={handleNewImageCoverChange}
+          newCoverImageIndex={newCoverImageIndex}
+          disabled={isUploading}
+        />
+
+        <div className="flex gap-3 mt-6">
           <button
+            type="button"
             onClick={handleCancel}
-            className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
-            style={{ lineHeight: 1 }}
+            className="flex-1 bg-gray-100 py-2 rounded"
             disabled={isUploading}
           >
-            ×
+            취소
+          </button>
+          <button
+            type="submit"
+            className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded-full disabled:bg-gray-300"
+            disabled={isUploading}
+          >
+            {isUploading ? "수정 중..." : "수정 완료"}
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <ReviewContentForm
-            value={contentData}
-            onChange={setContentData}
-            disabled={isUploading}
-          />
+        {uploadError && (
+          <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
+        )}
+      </form>
+      {/* ✅ Footer를 하단에 고정 */}
 
-          <ReviewImageEdit
-            existingImages={existingImages}
-            onExistingImageDelete={handleExistingImageDelete}
-            onExistingImageReplace={handleExistingImageReplace}
-            onExistingImageCoverChange={handleExistingImageCoverChange}
-            deletedIndexes={deletedIndexes}
-            replacementPreviews={replacementPreviews}
-            newFiles={newFiles}
-            newPreviews={newPreviews}
-            onNewImageAdd={handleNewImageAdd}
-            onNewImageDelete={handleNewImageDelete}
-            onNewImageCoverChange={handleNewImageCoverChange}
-            newCoverImageIndex={newCoverImageIndex}
-            disabled={isUploading}
-          />
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
 
-          <div className="flex gap-3 mt-6">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 bg-gray-100 py-2 rounded"
-              disabled={isUploading}
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded-full disabled:bg-gray-300"
-              disabled={isUploading}
-            >
-              {isUploading ? "수정 중..." : "수정 완료"}
-            </button>
-          </div>
-
-          {uploadError && (
-            <div className="mt-4 text-red-500 text-sm">
-              {uploadError.message}
-            </div>
-          )}
-        </form>
-      </div>
+        {/* 텍스트 */}
+        <p className="relative z-10 pl-[10rem] text-left w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
+      </footer>
     </div>
   );
 }
