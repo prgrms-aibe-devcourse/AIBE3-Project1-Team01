@@ -67,9 +67,9 @@ export default function PlansListPage() {
    return (
     <div className="min-h-screen bg-[#F6EFEF] py-12">
       <div className="max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-md border rounded-2xl shadow-xl">
-        <h1 className="text-2xl font-bold mb-6 pl-2 text-gray-800">나의 여행 계획</h1>
+        <h1 className="text-2xl font-bold mb-6 pl-2 text-gray-800">나의 여행 일정</h1>
         {plans.length === 0 ? (
-          <p className="text-gray-500">아직 저장된 계획이 없어요.</p>
+          <p className="text-gray-500">아직 저장된 일정이 없어요.</p>
         ) : (
           <ul className="space-y-4">
             {plans.map((plan) => (
