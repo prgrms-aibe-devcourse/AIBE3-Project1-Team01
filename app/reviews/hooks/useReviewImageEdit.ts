@@ -59,6 +59,8 @@ export function useReviewImageEdit(
   const handleExistingImageDelete = (index: number) => {
     if (!confirm("이 이미지를 삭제하시겠습니까?")) return;
     
+    const targetImage = existingImages[index];
+    
     setDeletedIndexes((prev) => {
       if (!prev.includes(index)) return [...prev, index];
       return prev;
@@ -73,6 +75,17 @@ export function useReviewImageEdit(
       delete copy[index];
       return copy;
     });
+
+    // 삭제된 이미지가 커버였다면 커버 이미지 상태 초기화
+    if (targetImage.is_cover) {
+      setExistingImages(prev => 
+        prev.map(img => ({
+          ...img,
+          is_cover: false
+        }))
+      );
+      setNewCoverImageIndex(null);
+    }
   };
 
   // 기존 이미지 커버 설정/해제
@@ -83,20 +96,14 @@ export function useReviewImageEdit(
     try {
       // 이미 커버 이미지인 경우 해제
       if (image.is_cover) {
-        const { error: resetError } = await supabase
-          .from("images")
-          .update({ is_cover: false })
-          .eq("review_id", reviewId)
-          .filter('"order"', "eq", image.order);
-        
-        if (resetError) throw new Error(resetError.message);
-
+        await updateImageCover(reviewId, null);
         setExistingImages(prev => 
-          prev.map((img, i) => ({
+          prev.map(img => ({
             ...img,
             is_cover: false
           }))
         );
+        setNewCoverImageIndex(null);
       } else {
         // 새로운 커버 이미지 설정
         await updateImageCover(reviewId, image.order);
@@ -106,9 +113,8 @@ export function useReviewImageEdit(
             is_cover: i === index
           }))
         );
+        setNewCoverImageIndex(null);
       }
-      // 새 이미지의 커버 선택 해제
-      setNewCoverImageIndex(null);
     } catch (e: any) {
       setError(e);
       throw e;
@@ -152,7 +158,6 @@ export function useReviewImageEdit(
     if (index === newCoverImageIndex) {
       setNewCoverImageIndex(null);
     } else {
-      setNewCoverImageIndex(index);
       // 기존 이미지의 커버 선택 해제
       setExistingImages(prev => 
         prev.map(img => ({
@@ -160,6 +165,7 @@ export function useReviewImageEdit(
           is_cover: false
         }))
       );
+      setNewCoverImageIndex(index);
     }
   };
 
@@ -188,12 +194,18 @@ export function useReviewImageEdit(
       }
 
       // 3) 새 이미지 업로드 및 순서 재할당
-      if (newFiles.length > 0) {
+      if (newFiles.length > 0 || deletedIndexes.length > 0 || Object.keys(imageReplacements).length > 0) {
         const remainingExistingImages = existingImages
           .map((img, idx) => ({ ...img, idx }))
           .filter((img) => !deletedIndexes.includes(img.idx));
 
-        await updateImagesOrder(reviewId, remainingExistingImages, newFiles, newCoverImageIndex);
+        await updateImagesOrder(
+          reviewId, 
+          remainingExistingImages, 
+          newFiles, 
+          newCoverImageIndex,
+          existingImages.findIndex(img => img.is_cover)
+        );
       }
     } catch (e: any) {
       setError(e);
