@@ -88,7 +88,7 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
             <Link
-              href="/plans/page.tsx"
+              href="/plans"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
             >
               계획 세우기

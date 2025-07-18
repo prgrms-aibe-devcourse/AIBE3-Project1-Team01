@@ -131,7 +131,7 @@ export default function EditReviewPage() {
 
           <span className="text-xs text-gray-400">
             작성일:{" "}
-            {new Date(review.created_at || review.createdAt).toLocaleDateString(
+            {new Date(review.created_at).toLocaleDateString(
               "ko-KR"
             )}
           </span>
