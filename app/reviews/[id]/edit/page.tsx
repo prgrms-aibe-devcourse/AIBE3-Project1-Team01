@@ -163,21 +163,21 @@ export default function EditReviewPage({
             disabled={isUploading}
           />
 
-        <ReviewImageEdit
-          existingImages={existingImages}
-          onExistingImageDelete={handleExistingImageDelete}
-          onExistingImageReplace={handleExistingImageReplace}
-          onExistingImageCoverChange={handleExistingImageCoverChange}
-          deletedIndexes={deletedIndexes}
-          replacementPreviews={replacementPreviews}
-          newFiles={newFiles}
-          newPreviews={newPreviews}
-          onNewImageAdd={handleNewImageAdd}
-          onNewImageDelete={handleNewImageDelete}
-          onNewImageCoverChange={handleNewImageCoverChange}
-          newCoverImageIndex={newCoverImageIndex}
-          disabled={isUploading}
-        />
+          <ReviewImageEdit
+            existingImages={existingImages}
+            onExistingImageDelete={handleExistingImageDelete}
+            onExistingImageReplace={handleExistingImageReplace}
+            onExistingImageCoverChange={handleExistingImageCoverChange}
+            deletedIndexes={deletedIndexes}
+            replacementPreviews={replacementPreviews}
+            newFiles={newFiles}
+            newPreviews={newPreviews}
+            onNewImageAdd={handleNewImageAdd}
+            onNewImageDelete={handleNewImageDelete}
+            onNewImageCoverChange={handleNewImageCoverChange}
+            newCoverImageIndex={newCoverImageIndex}
+            disabled={isUploading}
+          />
 
           <div className="flex gap-3 mt-6">
             <button
@@ -190,7 +190,7 @@ export default function EditReviewPage({
             </button>
             <button
               type="submit"
-              className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded disabled:bg-gray-300"
+              className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded-full disabled:bg-gray-300"
               disabled={isUploading}
             >
               {isUploading ? "수정 중..." : "수정 완료"}

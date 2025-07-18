@@ -128,8 +128,8 @@ export default function WriteReviewPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-10 px-4">
-      <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
+    <div className="w-full py-10 px-4">
+      <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <button
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}
@@ -156,7 +156,7 @@ export default function WriteReviewPage() {
           <button
             type="submit"
             disabled={isUploading}
-            className="w-full bg-[#F4CCC4] text-[#413D3D] py-2 rounded hover:shadow-lg  items-center disabled:bg-gray-300"
+            className="w-full bg-[#F4CCC4] text-[#413D3D] py-2 rounded-xl hover:shadow-lg  items-center disabled:bg-gray-300"
           >
             {isUploading ? "등록 중..." : "후기 등록"}
           </button>

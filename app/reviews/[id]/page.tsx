@@ -102,8 +102,9 @@ export default function EditReviewPage() {
 
   // 후기 상세화면 렌더링
   return (
-    <div className="min-h-screen">
-      <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen py-12 px-4">
+      <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-6 py-10">
+        {/* 내용 */}
         <button
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}

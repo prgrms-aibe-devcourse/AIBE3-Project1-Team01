@@ -49,13 +49,15 @@ export default function ReviewList() {
   const fetchReviews = async () => {
     setLoading(true);
 
-    // 대표 이미지 불러오는 기능 추가 
+    // 대표 이미지 불러오는 기능 추가
     let query = supabase
       .from("reviews")
-      .select(`
+      .select(
+        `
         *,
         images(img_url, is_cover)
-      `)
+      `
+      )
       .order("created_at", { ascending: false });
 
     if (filters.region && filters.region !== "all") {
@@ -75,9 +77,9 @@ export default function ReviewList() {
       console.error("❌ 후기 불러오기 실패:", error.message);
     } else {
       setReviews(
-        data.map(review => ({
+        data.map((review) => ({
           ...review,
-          cover_image: review.images?.find(img => img.is_cover)?.img_url
+          cover_image: review.images?.find((img) => img.is_cover)?.img_url,
         })) || []
       );
     }
@@ -96,7 +98,7 @@ export default function ReviewList() {
         {/* 후기 작성 버튼 */}
         <button
           onClick={handleWriteClick}
-          className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
+          className="bg-[#F4CCC4] text-[#413D3D] px-4 py-2 rounded-xl hover: transition"
         >
           후기 작성
         </button>
@@ -115,7 +117,10 @@ export default function ReviewList() {
           ) : (
             <ul className="space-y-6">
               {reviews.map((review) => (
-                <li key={review.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                <li
+                  key={review.id}
+                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
                   <div className="flex gap-4">
                     {review.cover_image ? (
                       <div className="w-24 h-24 flex-shrink-0">
@@ -139,7 +144,9 @@ export default function ReviewList() {
                       </Link>
                       <p className="text-sm text-gray-600 mt-1">
                         지역: {review.region} / 평점: {review.rating} / 날짜:{" "}
-                        {new Date(review.created_at).toLocaleDateString("ko-KR")}
+                        {new Date(review.created_at).toLocaleDateString(
+                          "ko-KR"
+                        )}
                       </p>
                       <p className="text-sm mt-2 text-gray-800 line-clamp-2">
                         {review.content}
