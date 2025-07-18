@@ -63,7 +63,7 @@ export default function RecommendationPage() {
       {/* 상단 배경: 66vh로 확장 */}
       <div className="absolute top-0 left-0 w-full h-[66vh] min-h-[300px] z-0 pointer-events-none">
         <img
-          src="/ListMain.jpg"
+          src="/images/ListMain.jpg"
           alt=""
           className="w-full h-full object-cover"
           draggable={false}
