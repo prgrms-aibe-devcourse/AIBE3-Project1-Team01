@@ -1,19 +1,21 @@
-export default function CategoryTabs({ category, setCategory, categories }) {
-  const cats = categories;
+import { CATEGORY_TREE } from "../constants/travelData";
+
+export default function CategoryTabs({ category, setCategory, categoryTree }) {
+  const topCategories = Object.keys(categoryTree);
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {cats.map((cat) => (
+    <div className="flex flex-wrap gap-2">
+      {topCategories.map((cat) => (
         <button
-          key={cat.id}
-          className={`rounded-full px-6 py-3 min-w-[120px] shadow text-base font-bold transition whitespace-nowrap
+          key={cat}
+          className={`px-4 py-2 rounded-full border text-sm font-medium transition
             ${
-              category === cat.id
-                ? "bg-pink-300 text-white scale-105"
-                : "bg-gray-100 text-gray-700 hover:bg-pink-50"
+              category === cat
+                ? "bg-my-coral text-white border-my-coral"
+                : "bg-my-off-white text-my-dark-gray border-gray-200 hover:bg-my-peach"
             }`}
-          onClick={() => setCategory(cat.id)}
+          onClick={() => setCategory(cat)}
         >
-          {cat.name}
+          {cat}
         </button>
       ))}
     </div>

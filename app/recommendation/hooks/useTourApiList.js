@@ -7,6 +7,7 @@ export default function useTourApiList({
   contentTypeId,
   cat1,
   cat2,
+  cat3,
   keyword,
   pageNo,
   numOfRows,
@@ -43,6 +44,7 @@ export default function useTourApiList({
             if (contentTypeId !== "") url += `&contentTypeId=${contentTypeId}`;
             if (cat1 !== "") url += `&cat1=${cat1}`;
             if (cat2 !== "") url += `&cat2=${cat2}`;
+            if (cat3 !== "") url += `&cat3=${cat3}`;
           } else {
             const coords = AREA_COORDS[areaCode] || AREA_COORDS[1];
             const { mapX, mapY } = coords;
@@ -51,6 +53,7 @@ export default function useTourApiList({
             if (contentTypeId !== "") url += `&contentTypeId=${contentTypeId}`;
             if (cat1 !== "") url += `&cat1=${cat1}`;
             if (cat2 !== "") url += `&cat2=${cat2}`;
+            if (cat3 !== "") url += `&cat3=${cat3}`;
           }
           const res = await fetch(url);
           data = await res.json();
@@ -77,6 +80,7 @@ export default function useTourApiList({
     contentTypeId,
     cat1,
     cat2,
+    cat3,
     keyword,
     pageNo,
     numOfRows,

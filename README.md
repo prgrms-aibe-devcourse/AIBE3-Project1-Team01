@@ -114,7 +114,6 @@ DEVCOURSE_PROJECT1/
 | 윤주찬 | 여행지 추천       | 국내 여행지 추천 → 식당, 숙소, 관광지 카테고리에 맞게 리스트화 |
 | 이승원 | 전체 관리 및 발표 |                                                                |
 | 공통   | ERD 설계          |                                                                |
-<<<<<<< HEAD
 
 ---
 
@@ -128,5 +127,3 @@ DEVCOURSE_PROJECT1/
 | **`DetailModal.jsx`**   | 상세 정보 모달 UI 및 로직                   | `contentid` (상세 정보 조회용 ID), `onClose` (모달 닫기 콜백 함수)                                                                   | -                                             |
 | **`useTourApiList.js`** | API 호출, 데이터/로딩/에러 관리 (커스텀 훅) | `{ areaCode, contentTypeId, cat1, cat2, keyword, pageNo, numOfRows }` (파라미터 객체)                                                | `{ places, loading, error, totalCount }` 반환 |
 | **`TourApiList.jsx`**   | 컴포넌트/훅 조립 및 전반적인 상태 관리      | `areaCode`, `contentTypeId`, `cat1`, `cat2`                                                                                          | - (렌더링되는 여행지 추천 페이지)             |
-=======
->>>>>>> eb11c3a2d90013677df1df293e262cdf662e8529

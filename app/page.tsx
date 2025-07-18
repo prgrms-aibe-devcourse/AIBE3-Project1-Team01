@@ -1,40 +1,12 @@
 "use client";
 
 import Header from "@/app/components/Header";
-<<<<<<< HEAD
-=======
-import KoreaMap from "@/app/components/KoreaMap";
->>>>>>> eb11c3a2d90013677df1df293e262cdf662e8529
-import PopularDestinations from "@/app/components/PopularDestinations";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-my-off-white">
       <Header />
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-              완벽한 여행
-            </span>
-            을<br />
-            계획해보세요 ✈️
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            대한민국 전국 어디든, 당신만의 특별한 여행 계획을 세우고 다른
-            여행자들과 후기를 공유해보세요
-          </p>
-        </div>
-
-        {/* Interactive Korea Map */}
-        <div className="mb-16"></div>
-      </section>
-
-      {/* Popular Destinations */}
-      <PopularDestinations />
 
       {/* Features Section */}
       <section className="container mx-auto px-6 py-16">
@@ -104,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white/50 backdrop-blur-sm py-8 mt-16">
+      <footer className="bg-my-coral backdrop-blur-sm py-8 mt-16">
         <div className="container mx-auto px-6 text-center">
           <p className="text-gray-600">
             © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟

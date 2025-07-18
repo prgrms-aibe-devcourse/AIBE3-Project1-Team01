@@ -1,15 +1,15 @@
 export default function RegionSelector({ areaCode, setAreaCode, areaCodes }) {
   const regions = areaCodes;
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="flex flex-wrap gap-2">
       {regions.map((region) => (
         <button
           key={region.code}
-          className={`rounded-full px-6 py-3 min-w-[120px] shadow text-base font-bold transition whitespace-nowrap
+          className={`px-4 py-2 rounded-full border text-sm font-medium transition
             ${
               areaCode === region.code
-                ? "bg-pink-300 text-white scale-105"
-                : "bg-gray-100 text-gray-700 hover:bg-pink-50"
+                ? "bg-my-coral text-white border-my-coral"
+                : "bg-my-off-white text-my-dark-gray border-gray-200 hover:bg-my-peach"
             }`}
           onClick={() => setAreaCode(region.code)}
         >

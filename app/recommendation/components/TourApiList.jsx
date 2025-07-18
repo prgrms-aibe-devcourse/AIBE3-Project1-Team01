@@ -11,8 +11,10 @@ export default function TourApiList({
   contentTypeId,
   cat1,
   cat2,
+  cat3,
   onPlacesUpdate,
   searchKeyword = "",
+  onTotalCountUpdate, // 추가!
 }) {
   const [pageNo, setPageNo] = useState(1);
   const numOfRows = 12;
@@ -21,17 +23,25 @@ export default function TourApiList({
   // 검색 조건/키워드 변경 시 페이지 초기화
   useEffect(() => {
     setPageNo(1);
-  }, [areaCode, contentTypeId, cat1, cat2, searchKeyword]);
+  }, [areaCode, contentTypeId, cat1, cat2, cat3, searchKeyword]);
 
   const { places, loading, error, totalCount } = useTourApiList({
     areaCode,
     contentTypeId,
     cat1,
     cat2,
+    cat3,
     keyword: searchKeyword,
     pageNo,
     numOfRows,
   });
+  // totalCount가 바뀔 때마다 상위로 전달
+  useEffect(() => {
+    if (onTotalCountUpdate && typeof totalCount === "number") {
+      onTotalCountUpdate(totalCount);
+    }
+  }, [totalCount, onTotalCountUpdate]);
+
   const totalPages = Math.ceil(totalCount / numOfRows);
 
   // places 데이터가 변경될 때마다 상위 컴포넌트에 전달

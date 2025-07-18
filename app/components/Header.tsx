@@ -37,27 +37,22 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-40">
+      <header className="w-full bg-my-coral backdrop-blur-sm border-b border-pink-100 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="/">
+            <Link href="/" className="relative w-[250px] h-[100px]">
+              {" "}
               <Image
-                src="https://static.readdy.ai/image/df8eb1caceba02e6bad89568ddd977d7/31702154ca6be3ac016660554323f798.png"
+                src="h1trip-logo2.png"
                 alt="h1 Trip"
-                width={120}
-                height={60}
-                className="object-contain cursor-pointer"
+                fill
+                style={{ objectFit: "contain" }}
+                className="cursor-pointer"
               />
             </Link>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer"
-            >
-              홈
-            </Link>
             <Link
               href="/reviews"
               className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer"
@@ -70,9 +65,6 @@ export default function Header() {
             >
               여행지 추천
             </Link>
-            <div className="text-gray-700 hover:text-purple-600 transition-colors font-medium cursor-pointer">
-              AI 추천
-            </div>
           </nav>
           {/*로그인/로그아웃 표시 변경*/}
           {user ? (

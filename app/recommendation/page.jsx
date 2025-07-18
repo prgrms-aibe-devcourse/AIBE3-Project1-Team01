@@ -8,27 +8,40 @@ import TourApiList from "./components/TourApiList";
 import SearchBar from "./components/common/SearchBar";
 import Link from "next/link";
 import CustomGameModal from "./components/game/CustomGameModal";
-import { AREA_CODES, CATEGORIES, SUBCATEGORIES } from "./constants/travelData";
+import {
+  AREA_CODES,
+  CATEGORIES,
+  SUBCATEGORIES,
+  CATEGORY_TREE,
+} from "./constants/travelData";
+import Header from "@/app/components/Header";
 
 export default function RecommendationPage() {
   const [areaCode, setAreaCode] = useState("");
-  const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
+  const [category, setCategory] = useState(""); // 최상위 카테고리명
+  const [cat1, setCat1] = useState("");
+  const [cat2, setCat2] = useState("");
+  const [cat3, setCat3] = useState("");
   const [gameResult, setGameResult] = useState(null);
   const [currentPlaces, setCurrentPlaces] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isCustomGameModalOpen, setIsCustomGameModalOpen] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
 
   // 선택이 바뀔 때마다 하위 선택 초기화
   const handleAreaChange = (code) => {
     setAreaCode(code);
     setCategory("");
-    setSubCategory("");
+    setCat1("");
+    setCat2("");
+    setCat3("");
     setGameResult(null);
   };
-  const handleCategoryChange = (id) => {
-    setCategory(id);
-    setSubCategory("");
+  const handleCategoryChange = (cat) => {
+    setCategory(cat);
+    setCat1("");
+    setCat2("");
+    setCat3("");
     setGameResult(null);
   };
 
@@ -45,43 +58,39 @@ export default function RecommendationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-pink-100">
-      <div className="w-full flex items-center justify-between bg-white shadow px-8 h-28 mb-6">
-        <div className="flex items-center h-full">
-          <img
-            src="/h1trip-logo2.png"
-            alt="h1Trip 로고"
-            className="h-32 w-64 object-contain"
-          />
-        </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-center drop-shadow-lg tracking-tight flex-1">
-          <span>✨ </span>
-          <span className="text-gray-400">추천 여행지 리스트</span>
-          <span> ✈️</span>
-        </h1>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setIsCustomGameModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-300 text-white font-bold shadow hover:scale-105 transition border border-pink-100"
-          >
-            게임 선택
-          </button>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-300 text-white font-bold shadow hover:scale-105 transition border border-pink-100"
-          >
-            홈으로
-          </Link>
-        </div>
+    <div className="relative w-full min-h-screen flex flex-col bg-my-off-white">
+      <Header />
+      {/* 상단 배경: 66vh로 확장 */}
+      <div className="absolute top-0 left-0 w-full h-[66vh] min-h-[300px] z-0 pointer-events-none">
+        <img
+          src="/ListMain.jpg"
+          alt=""
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.5) 70%, #fdf6f5 100%)",
+          }}
+        />
       </div>
-      <div className="container mx-auto px-4">
+      {/* 컨텐츠 */}
+      <main className="relative z-10 container mx-auto px-4 flex-1 flex flex-col">
+        <div className="w-full flex items-center justify-center h-32 md:h-40">
+          <h1
+            className="text-3xl md:text-4xl font-extrabold text-center drop-shadow-lg tracking-tight flex-1 text-my-dark-gray"
+            style={{ fontFamily: "'Pacifico', cursive" }}
+          >
+            Travel Picks
+          </h1>
+        </div>
         <div className="flex flex-col md:flex-row gap-8">
-          {/* 선택 UI 영역 */}
           <div className="md:w-1/3 w-full flex flex-col gap-6">
-            <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
-                <span>📍 </span>
-                <span className="text-gray-400">어디로 떠나볼까요?</span>
+            <div className="bg-my-peach rounded-2xl shadow p-6">
+              <h2 className="text-2xl font-extrabold mb-4 drop-shadow text-my-dark-gray">
+                지역
               </h2>
               <RegionSelector
                 areaCode={areaCode}
@@ -90,94 +99,112 @@ export default function RecommendationPage() {
               />
             </div>
             {areaCode && (
-              <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
-                  <span>🗺️ </span>
-                  <span className="text-gray-400">어떤 여행을 원하세요?</span>
+              <div className="bg-my-peach rounded-2xl shadow p-6">
+                <h2 className="text-2xl font-extrabold mb-4 drop-shadow text-my-dark-gray">
+                  테마
                 </h2>
                 <CategoryTabs
                   category={category}
                   setCategory={handleCategoryChange}
-                  categories={CATEGORIES}
+                  categoryTree={CATEGORY_TREE}
                 />
               </div>
             )}
-            {areaCode && category && SUBCATEGORIES[category] && (
-              <div className="bg-white/60 rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-extrabold mb-4 drop-shadow">
-                  <span>🔎 </span>
-                  <span className="text-gray-400">더 자세히 골라볼까요?</span>
+            {areaCode && category && (
+              <div className="bg-my-peach rounded-2xl shadow p-6">
+                <h2 className="text-2xl font-extrabold mb-4 drop-shadow text-my-dark-gray">
+                  세부 테마
                 </h2>
                 <SubCategoryTabs
                   category={category}
-                  subCategory={subCategory}
-                  setSubCategory={setSubCategory}
-                  subCategories={SUBCATEGORIES[category]}
+                  cat1={cat1}
+                  setCat1={setCat1}
+                  cat2={cat2}
+                  setCat2={setCat2}
+                  cat3={cat3}
+                  setCat3={setCat3}
+                  categoryTree={CATEGORY_TREE}
                 />
               </div>
             )}
-            {/* 게임으로 선택하기 버튼 삭제됨 */}
           </div>
-          {/* 리스트 영역 */}
-          <div className="md:w-2/3 w-full">
+          <div className="md:w-2/3 w-full md:ml-auto">
             {areaCode && category && (
               <>
                 {/* 검색 및 게임 영역 */}
-                <div className="bg-white/60 rounded-2xl shadow-lg p-6 mb-6">
+                <div className="bg-my-peach rounded-2xl shadow p-6 mb-6">
                   {/* 검색바를 먼저 표시 */}
                   <div className="mb-6">
                     <SearchBar
                       keyword={searchKeyword}
                       setKeyword={setSearchKeyword}
                       onSearch={handleSearch}
+                      onGameSelect={() => setIsCustomGameModalOpen(true)}
+                      totalCount={totalCount}
                     />
                   </div>
-
                   {/* 게임 결과 표시 */}
                   {gameResult && (
-                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-2xl shadow-lg p-6 mb-6 border-2 border-yellow-300">
-                      <h3 className="text-2xl font-bold text-center text-orange-600 mb-4">
+                    <div className="bg-gradient-to-r from-my-aqua to-my-peach rounded-2xl shadow p-6 mb-6 border-2 border-my-coral">
+                      <h3 className="text-2xl font-bold text-center text-my-coral mb-4">
                         🎉 게임 결과 - 선택된 여행지
                       </h3>
                       <div className="text-center">
-                        <p className="font-semibold text-xl mb-2">
+                        <p className="font-semibold text-xl mb-2 text-my-dark-gray">
                           {gameResult.title}
                         </p>
-                        <p className="text-gray-600 mb-2">
+                        <p className="text-my-dark-gray mb-2">
                           {gameResult.addr1} {gameResult.addr2}
                         </p>
                         {gameResult.tel && (
-                          <p className="text-gray-600 mb-2">
+                          <p className="text-my-dark-gray mb-2">
                             📞 {gameResult.tel}
                           </p>
                         )}
                         <button
                           onClick={() => setGameResult(null)}
-                          className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                          className="mt-4 px-4 py-2 bg-my-coral text-white rounded-lg hover:bg-my-peach transition-colors"
                         >
                           결과 닫기
                         </button>
                       </div>
                     </div>
                   )}
-
                   {/* 기존 리스트 */}
                   <TourApiList
                     areaCode={areaCode}
-                    contentTypeId={category}
-                    cat1={subCategory.length === 3 ? subCategory : ""}
-                    cat2={subCategory.length === 5 ? subCategory : ""}
+                    contentTypeId={CATEGORY_TREE[category]?.contentTypeId || ""}
+                    cat1={cat1 ? CATEGORY_TREE[category].cat1[cat1]?.code : ""}
+                    cat2={
+                      cat1 && cat2
+                        ? CATEGORY_TREE[category].cat1[cat1].cat2[cat2]?.code
+                        : ""
+                    }
+                    cat3={
+                      cat1 && cat2 && cat3
+                        ? CATEGORY_TREE[category].cat1[cat1].cat2[cat2].cat3[
+                            cat3
+                          ]
+                        : ""
+                    }
                     onPlacesUpdate={handlePlacesUpdate}
                     searchKeyword={searchKeyword}
+                    onTotalCountUpdate={setTotalCount}
                   />
                 </div>
               </>
             )}
           </div>
         </div>
-      </div>
-
-      {/* 게임 모달 */}
+      </main>
+      {/* 푸터 */}
+      <footer className="bg-my-coral py-8 mt-16">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-my-dark-gray">
+            © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+          </p>
+        </div>
+      </footer>
       <CustomGameModal
         isOpen={isCustomGameModalOpen}
         onClose={() => setIsCustomGameModalOpen(false)}

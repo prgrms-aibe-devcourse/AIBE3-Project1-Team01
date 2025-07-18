@@ -14,31 +14,16 @@ export default function TourCard({ place, onClick }) {
           style={{ maxWidth: 320 }}
         />
       ) : (
-        <div
-          className="w-full h-40 flex flex-col items-center justify-center rounded-xl mb-4 bg-gray-200 text-gray-400"
-          style={{ maxWidth: 320 }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-10 w-10 mb-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 11l4 4 4-4"
-            />
-          </svg>
-          <span className="text-sm">이미지 없음</span>
+        <div className="flex flex-col items-center justify-center h-48 w-full bg-gray-100 rounded-xl relative overflow-hidden">
+          <img
+            src="/h1trip-logo.png"
+            alt="로고"
+            className="absolute inset-0 w-full h-full object-contain opacity-25 pointer-events-none select-none"
+            draggable={false}
+          />
+          <span className="relative z-10 text-sm text-gray-400 font-semibold">
+            대체 이미지 입니다.
+          </span>
         </div>
       )}
       <h3 className="text-lg font-bold text-gray-800 mb-2 text-center">

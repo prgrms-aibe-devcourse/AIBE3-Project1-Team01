@@ -1,4 +1,3 @@
-// app/recommendation/components/DetailModal.jsx
 import { useState, useEffect } from "react";
 import useTourApiList from "../../hooks/useTourApiList";
 
@@ -8,7 +7,6 @@ export default function DetailModal({ contentid, onClose }) {
     contentid,
   });
 
-  // 모달이 열릴 때 body 스크롤 막기
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -18,8 +16,11 @@ export default function DetailModal({ contentid, onClose }) {
 
   if (!contentid) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn max-h-[90vh] overflow-y-auto">
+    <div className="fixed left-0 right-0 top-32 bottom-0 z-[9999] flex items-start justify-center bg-black/50">
+      <div
+        className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn"
+        style={{ maxHeight: "calc(100vh - 128px)", overflowY: "auto" }}
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-pink-400"
@@ -35,7 +36,7 @@ export default function DetailModal({ contentid, onClose }) {
         ) : detail ? (
           <div>
             {/* 제목 */}
-            <h3 className="text-3xl font-extrabold mb-4 text-center text-gray-400 drop-shadow">
+            <h3 className="text-3xl font-extrabold mb-4 text-center text-my-dark-gray drop-shadow">
               {detail.title}
             </h3>
             {/* 이미지 */}
@@ -50,8 +51,6 @@ export default function DetailModal({ contentid, onClose }) {
                 <span className="text-sm">이미지 없음</span>
               </div>
             )}
-
-            {/* 주소/전화/홈페이지 */}
             <div className="flex flex-col gap-2 items-center mb-4">
               {detail.addr1 && (
                 <div className="flex items-center gap-2 text-gray-700">
@@ -84,10 +83,8 @@ export default function DetailModal({ contentid, onClose }) {
                 )}
             </div>
 
-            {/* 구분선 */}
             <div className="border-t border-pink-200 my-4"></div>
 
-            {/* 설명 */}
             {detail.overview && (
               <div className="text-gray-800 text-base whitespace-pre-line leading-relaxed">
                 {detail.overview}
