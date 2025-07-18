@@ -77,7 +77,7 @@ export async function updateImageCover(reviewId: number, order: number) {
     .from("images")
     .update({ is_cover: true })
     .eq("review_id", reviewId)
-    .eq("order", order);
+    .filter('"order"', "eq", order);
   
   if (updateError) throw new Error(updateError.message);
 }

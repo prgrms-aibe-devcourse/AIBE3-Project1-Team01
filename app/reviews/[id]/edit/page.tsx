@@ -71,13 +71,17 @@ export default function EditReviewPage({
         // 해당 리뷰에 저장된 이미지 가져오기 
         const { data: images } = await supabase
           .from("images")
-          .select("img_url, order")
+          .select("img_url, order, is_cover")
           .eq("review_id", reviewId)
           .order("order");
 
         if (images) {
           setExistingImages(
-            images.map((img) => ({ url: img.img_url, order: img.order }))
+            images.map((img) => ({
+              url: img.img_url,
+              order: img.order,
+              is_cover: img.is_cover
+            }))
           );
         }
 
@@ -157,12 +161,15 @@ export default function EditReviewPage({
           existingImages={existingImages}
           onExistingImageDelete={handleExistingImageDelete}
           onExistingImageReplace={handleExistingImageReplace}
+          onExistingImageCoverChange={handleExistingImageCoverChange}
           deletedIndexes={deletedIndexes}
           replacementPreviews={replacementPreviews}
           newFiles={newFiles}
           newPreviews={newPreviews}
           onNewImageAdd={handleNewImageAdd}
           onNewImageDelete={handleNewImageDelete}
+          onNewImageCoverChange={handleNewImageCoverChange}
+          newCoverImageIndex={newCoverImageIndex}
           disabled={isUploading}
         />
 

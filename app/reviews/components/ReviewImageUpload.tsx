@@ -39,7 +39,7 @@ export default function ReviewImageUpload({
     onChange({
       files: [...value.files, ...files],
       previews: [], // 미리보기는 훅에서 자동 생성되므로 빈 배열 전달
-      coverImageIndex: null // 새 이미지가 추가되면 커버 이미지 초기화
+      coverImageIndex: value.coverImageIndex // 기존 대표 이미지 설정 유지
     });
   };
 

@@ -11,6 +11,7 @@
  */
 import { useState } from "react";
 import { deleteImage, replaceImage, updateImagesOrder, updateImageCover } from "../lib/imageEditor";
+import { supabase } from "../../../lib/supabase";
 
 interface ExistingImage {
   url: string;
@@ -74,19 +75,40 @@ export function useReviewImageEdit(
     });
   };
 
-  // 기존 이미지 커버 설정
+  // 기존 이미지 커버 설정/해제
   const handleExistingImageCoverChange = async (index: number) => {
     const image = existingImages[index];
     if (!image || !reviewId) return;
 
     try {
-      await updateImageCover(reviewId, image.order);
-      setExistingImages(prev => 
-        prev.map((img, i) => ({
-          ...img,
-          is_cover: i === index
-        }))
-      );
+      // 이미 커버 이미지인 경우 해제
+      if (image.is_cover) {
+        const { error: resetError } = await supabase
+          .from("images")
+          .update({ is_cover: false })
+          .eq("review_id", reviewId)
+          .filter('"order"', "eq", image.order);
+        
+        if (resetError) throw new Error(resetError.message);
+
+        setExistingImages(prev => 
+          prev.map((img, i) => ({
+            ...img,
+            is_cover: false
+          }))
+        );
+      } else {
+        // 새로운 커버 이미지 설정
+        await updateImageCover(reviewId, image.order);
+        setExistingImages(prev => 
+          prev.map((img, i) => ({
+            ...img,
+            is_cover: i === index
+          }))
+        );
+      }
+      // 새 이미지의 커버 선택 해제
+      setNewCoverImageIndex(null);
     } catch (e: any) {
       setError(e);
       throw e;
@@ -107,10 +129,6 @@ export function useReviewImageEdit(
     ).then((previews) => {
       setNewFiles((prev) => [...prev, ...files]);
       setNewPreviews((prev) => [...prev, ...previews]);
-      // 첫 번째 이미지를 자동으로 커버로 설정 (이미지가 없었을 경우)
-      if (newCoverImageIndex === null && newFiles.length === 0) {
-        setNewCoverImageIndex(0);
-      }
     });
   };
 
@@ -128,9 +146,21 @@ export function useReviewImageEdit(
     }
   };
 
-  // 새 이미지 커버 설정
+  // 새 이미지 커버 설정/해제
   const handleNewImageCoverChange = (index: number) => {
-    setNewCoverImageIndex(index);
+    // 이미 선택된 이미지를 다시 클릭하면 해제
+    if (index === newCoverImageIndex) {
+      setNewCoverImageIndex(null);
+    } else {
+      setNewCoverImageIndex(index);
+      // 기존 이미지의 커버 선택 해제
+      setExistingImages(prev => 
+        prev.map(img => ({
+          ...img,
+          is_cover: false
+        }))
+      );
+    }
   };
 
   // 이미지 업로드 및 업데이트

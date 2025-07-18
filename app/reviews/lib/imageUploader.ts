@@ -21,7 +21,7 @@ export async function uploadImagesToSupabase(
       review_id: reviewId,
       img_url: imageUrl,
       order: i,
-      is_cover: i === coverImageIndex,
+      is_cover: i === coverImageIndex, 
     });
     if (insertError) {
       throw new Error(`이미지 DB 저장 실패: ${insertError.message}`);
