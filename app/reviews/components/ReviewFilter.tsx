@@ -27,11 +27,14 @@ const regions = [
   { id: "포항·안도", name: "포항·안도" },
 ];
 
+//평점 필터링 범위 추가 
 const ratings = [
   { id: "all", name: "전체 평점" },
   { id: "5", name: "5점" },
   { id: "4", name: "4점 이상" },
   { id: "3", name: "3점 이상" },
+  { id: "2", name: "2점 이상" },
+  { id: "1", name: "1점 이상" },
 ];
 
 export default function ReviewFilter({
