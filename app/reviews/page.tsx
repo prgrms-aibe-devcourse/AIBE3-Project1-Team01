@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import ReviewFilter from "./components/ReviewFilter";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Header from "../components/Header";
 
 interface Review {
   id: number;
@@ -21,33 +22,48 @@ interface FilterState {
   rating: string;
 }
 
+interface FilterState {
+  region: string;
+  rating: string;
+  myReviewOnly: boolean; // 추가
+}
+
 export default function ReviewList() {
+  const [user, setUser] = useState<any>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     region: "all",
     rating: "all",
+    myReviewOnly: false,
   });
 
   const router = useRouter();
 
-  // 로그인한 유저만 후기 작성 가능
-  const handleWriteClick = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  // 1) 로그인 유저 정보 가져오기
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
-    if (!user) {
-      alert("로그인 후에 작성할 수 있습니다!");
-      return;
-    }
+  // 2) 필터 변경 콜백
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
 
+  // 3) 후기 작성 버튼
+  const handleWriteClick = () => {
     router.push("/reviews/write");
   };
 
   // 필터 기반 Supabase 데이터 요청
   const fetchReviews = async () => {
     setLoading(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     // 대표 이미지 불러오는 기능 추가
     let query = supabase
@@ -69,6 +85,10 @@ export default function ReviewList() {
       if (!isNaN(ratingNum)) {
         query = query.gte("rating", ratingNum);
       }
+    }
+    // 내가 쓴 후기만 보기 - 유저 ID 필터 추가
+    if (filters.myReviewOnly && user) {
+      query = query.eq("user_id", user.id);
     }
 
     const { data, error } = await query;
@@ -93,25 +113,26 @@ export default function ReviewList() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
-      <div className="flex justify-between items-center mb-6">
-        {/*임시 홈버튼*/}
-        <h1 className="text-3xl font-bold">
-          <Link href="http://localhost:3000/">여행 후기 목록</Link>
-        </h1>
-
-        {/* 후기 작성 버튼 */}
-        <button
-          onClick={handleWriteClick}
-          className="bg-[#F4CCC4] text-[#413D3D] px-4 py-2 rounded-xl hover: transition"
-        >
-          후기 작성
-        </button>
-      </div>
+      <Header />
+      <div className="flex justify-between items-center mb-6"></div>
 
       <div className="flex gap-8">
         {/* 왼쪽 필터 영역 */}
         <div className="w-1/4">
-          <ReviewFilter activeFilters={filters} onFilterChange={setFilters} />
+          {/* 로그인된 유저에 한해 버튼 노출 */}
+          {user && (
+            <button
+              onClick={handleWriteClick}
+              className="w-full bg-[#F4CCC4] text-white font-bold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition"
+            >
+              후기 작성
+            </button>
+          )}
+
+          <ReviewFilter
+            activeFilters={filters}
+            onFilterChange={handleFilterChange}
+          />
         </div>
 
         {/* 오른쪽 후기 리스트 */}
@@ -142,16 +163,30 @@ export default function ReviewList() {
                     <div className="flex-grow">
                       <Link
                         href={`/reviews/${review.id}`}
-                        className="text-lg font-semibold text-blue-600 hover:underline"
+                        className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200"
                       >
                         {review.title}
                       </Link>
-                      <p className="text-sm text-gray-600 mt-1">
-                        지역: {review.region} / 평점: {review.rating} / 날짜:{" "}
-                        {new Date(review.created_at).toLocaleDateString(
-                          "ko-KR"
-                        )}
+                      <p className="text-sm text-[#413D3D] mt-2 flex flex-wrap gap-2 items-center">
+                        {/* 지역 */}
+                        <span className="bg-[#C9E6E5] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
+                          {review.region}
+                        </span>
+
+                        {/* 평점 */}
+                        <span className="bg-[#FBDED6] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
+                          ⭐ {review.rating} / 5
+                        </span>
+
+                        {/* 날짜 */}
+                        <span className="bg-[#F6EFEF] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
+                          {" "}
+                          {new Date(review.created_at).toLocaleDateString(
+                            "ko-KR"
+                          )}
+                        </span>
                       </p>
+
                       <p className="text-sm mt-2 text-gray-800 line-clamp-2">
                         {review.content}
                       </p>
@@ -163,6 +198,20 @@ export default function ReviewList() {
           )}
         </div>
       </div>
+      {/* ✅ Footer를 하단에 고정 */}
+
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto flex justify-center relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+
+        {/* 텍스트 */}
+        <p className=" text-center relative z-10  text-left w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
+      </footer>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import ReviewImageUpload, {
 import { useImageUpload } from "../hooks/useImageUpload";
 import { useReviewContent } from "../hooks/useReviewContent";
 import { useRouter } from "next/navigation";
+import Header from "../../components/Header";
 
 export default function WriteReviewPage() {
   // 후기 내용 상태 및 로직
@@ -128,7 +129,8 @@ export default function WriteReviewPage() {
   };
 
   return (
-    <div className="w-full py-10 px-4">
+    <div className="max-w-6xl mx-auto px-6 py-8">
+      <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <button
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
@@ -166,6 +168,20 @@ export default function WriteReviewPage() {
           <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
         )}
       </div>
+      {/* ✅ Footer를 하단에 고정 */}
+
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+
+        {/* 텍스트 */}
+        <p className="relative z-10 pl-[10rem] text-left w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
+      </footer>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { supabase } from "../../../lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Header from "../../components/Header";
 
 // 후기 타입 명시
 type Review = {
@@ -102,7 +103,8 @@ export default function EditReviewPage() {
 
   // 후기 상세화면 렌더링
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="max-w-6xl mx-auto px-6 py-8">
+      <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-6 py-10">
         {/* 내용 */}
         <button
@@ -182,6 +184,20 @@ export default function EditReviewPage() {
           </div>
         )}
       </div>
+      {/* ✅ Footer를 하단에 고정 */}
+
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+
+        {/* 텍스트 */}
+        <p className="relative z-10 pl-[10rem] text-left w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
+      </footer>
     </div>
   );
 }
