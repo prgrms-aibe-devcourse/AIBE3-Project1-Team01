@@ -161,31 +161,6 @@ export default function WriteReviewPage() {
             {isUploading ? "등록 중..." : "후기 등록"}
           </button>
         </form>
-        {/* 업로드 완료된 이미지 미리보기 -> 추후 삭제 예정 */}
-        {uploadedUrls.length > 0 && (
-          <div className="mt-6">
-            <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {uploadedUrls.map((url, idx) => (
-                <div key={idx} className="border rounded p-2">
-                  <img
-                    src={url}
-                    alt={`업로드 이미지 ${idx + 1}`}
-                    className="w-full h-auto object-cover rounded"
-                  />
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-xs text-blue-600 underline mt-1 break-all"
-                  >
-                    {url}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
         {/* 업로드 에러 메시지 */}
         {uploadError && (
           <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
