@@ -12,76 +12,6 @@ export default function Home() {
         <Header />
       </div>
 
-<<<<<<< HEAD
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-              완벽한 여행
-            </span>
-            을<br />
-            계획해보세요 ✈️
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            대한민국 전국 어디든, 당신만의 특별한 여행 계획을 세우고 다른
-            여행자들과 후기를 공유해보세요
-          </p>
-        </div>
-
-        {/* Interactive Korea Map */}
-        <div className="mb-16">
-          <KoreaMap />
-        </div>
-      </section>
-
-      {/* Popular Destinations */}
-      <PopularDestinations />
-
-      {/* Features Section */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            🎯 주요 기능
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Link
-            href="/plans"
-            className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-          >
-            <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-              <i className="ri-map-pin-line text-2xl text-white"></i>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">여행 계획</h3>
-            <p className="text-gray-600">
-              지역별 맞춤 장소 추천과 함께 나만의 여행 일정을 쉽게 계획하세요
-            </p>
-          </Link>
-
-          <Link
-            href="/reviews"
-            className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-          >
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-              <i className="ri-chat-3-line text-2xl text-white"></i>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">여행 후기</h3>
-            <p className="text-gray-600">
-              생생한 여행 경험을 사진과 함께 공유하고 다른 여행자들의 후기도
-              확인하세요
-            </p>
-          </Link>
-
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i className="ri-lightbulb-line text-2xl text-white"></i>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">AI 추천</h3>
-            <p className="text-gray-600">
-              취향과 여행 스타일에 맞는 개인화된 장소와 코스를 추천받으세요
-=======
       <main className="flex-1 pt-24">
         {/* Hero Section */}
         <section
@@ -103,7 +33,6 @@ export default function Home() {
             <p className="mt-6 text-lg md:text-xl text-white max-w-xl font-medium">
               여행 준비의 복잡함은 덜고, 내 취향과 여행 스타일에 꼭 맞는
               <br></br>장소를 추천받아 설렘 가득한 여행을 시작하세요.
->>>>>>> 2ffc6edafe47f518f191dd7c4181ce77c8f95d2e
             </p>
             <button className="mt-8 bg-[#7FC4C9] hover:bg-[#5CAAB0] text-white font-semibold px-6 py-3 rounded-full transition shadow-md">
               나만의 장소 추천 &gt;
@@ -127,7 +56,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* 여행 계획 */}
             <Link
-              href="/reviews"
+              href="/plans"
               className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group"
             >
               <div className="w-16 h-16 bg-[#F4CCC4] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
