@@ -187,7 +187,7 @@ export default function PlanPage() {
               <div className="text-right mt-6">
                 <button
                   onClick={handleSave}
-                  className="px-8 py-3 bg-[#F4CCC4] text-[#413D3D] font-bold rounded-2xl shadow-lg transition-all text-lg"
+                  className="px-8 py-3 bg-[#F4CCC4] text-[#2B2323] font-bold rounded-2xl shadow-lg transition-all text-lg"
                 >
                   {planId ? '수정하기' : '저장하기'}
                 </button>

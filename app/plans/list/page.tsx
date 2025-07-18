@@ -76,7 +76,7 @@ export default function PlansListPage() {
               <li key={plan.id} className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-800">{plan.title}</h2>
-                  <p className="text-sm text-purple-700 font-semibold">
+                  <p className="text-sm text-[#B84A39] font-semibold">
                     {format(new Date(plan.start_date), 'yyyy-MM-dd')} ~{' '}
                     {format(new Date(plan.end_date), 'yyyy-MM-dd')}
                   </p>
@@ -86,13 +86,13 @@ export default function PlansListPage() {
                   <div className="mt-3 flex gap-2 justify-end">
                     <Link
                       href={`/plans?id=${plan.id}`}
-                      className="px-4 py-2 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-xl text-sm font-medium shadow"
+                      className="px-4 py-2 bg-[#C9E6E5] text-[#413D3D] rounded-xl text-sm font-semibold shadow"
                     >
                       수정
                     </Link>
                     <button
                       onClick={() => handleDelete(plan.id)}
-                      className="px-4 py-2 bg-gradient-to-r from-pink-200 to-purple-200 text-pink-700 rounded-xl text-sm font-semibold shadow"
+                      className="px-4 py-2 bg-[#F4CCC4] text-[#413D3D] rounded-xl text-sm font-semibold shadow"
                     >
                       삭제
                     </button>
