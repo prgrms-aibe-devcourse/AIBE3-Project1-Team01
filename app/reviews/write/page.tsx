@@ -129,7 +129,7 @@ export default function WriteReviewPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div>
       <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <button
