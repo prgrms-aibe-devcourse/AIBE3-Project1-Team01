@@ -7,17 +7,21 @@
  * - 이미지 교체 관리
  * - 이미지 순서 재할당 관리
  * - 이미지 업로드 상태 관리
+ * - 커버 이미지 관리
  */
 import { useState } from "react";
-import { deleteImage, replaceImage, updateImagesOrder } from "../lib/imageEditor";
+import { deleteImage, replaceImage, updateImagesOrder, updateImageCover } from "../lib/imageEditor";
 
 interface ExistingImage {
   url: string;
   order: number;
+  is_cover: boolean;
 }
 
-export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
-
+export function useReviewImageEdit(
+  initialImages: ExistingImage[] = [],
+  reviewId?: number
+) {
   // 기존 이미지 상태
   const [existingImages, setExistingImages] = useState<ExistingImage[]>(initialImages);
   const [deletedIndexes, setDeletedIndexes] = useState<number[]>([]); // 기존 이미지 배열에서 삭제된 이미지들의 인덱스들 
@@ -27,6 +31,7 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
   // 새 이미지 상태
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
+  const [newCoverImageIndex, setNewCoverImageIndex] = useState<number | null>(null);
 
   // 업로드 상태
   const [isUploading, setIsUploading] = useState(false);
@@ -69,6 +74,25 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
     });
   };
 
+  // 기존 이미지 커버 설정
+  const handleExistingImageCoverChange = async (index: number) => {
+    const image = existingImages[index];
+    if (!image || !reviewId) return;
+
+    try {
+      await updateImageCover(reviewId, image.order);
+      setExistingImages(prev => 
+        prev.map((img, i) => ({
+          ...img,
+          is_cover: i === index
+        }))
+      );
+    } catch (e: any) {
+      setError(e);
+      throw e;
+    }
+  };
+
   // 새 이미지 추가
   const handleNewImageAdd = (files: File[]) => {
     Promise.all( // all 안하면 미리보기 순서 보장 X
@@ -83,6 +107,10 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
     ).then((previews) => {
       setNewFiles((prev) => [...prev, ...files]);
       setNewPreviews((prev) => [...prev, ...previews]);
+      // 첫 번째 이미지를 자동으로 커버로 설정 (이미지가 없었을 경우)
+      if (newCoverImageIndex === null && newFiles.length === 0) {
+        setNewCoverImageIndex(0);
+      }
     });
   };
 
@@ -92,6 +120,17 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
     
     setNewFiles((prev) => prev.filter((_, i) => i !== index));
     setNewPreviews((prev) => prev.filter((_, i) => i !== index));
+    // 커버 이미지가 삭제되는 경우 처리
+    if (index === newCoverImageIndex) {
+      setNewCoverImageIndex(null);
+    } else if (newCoverImageIndex !== null && index < newCoverImageIndex) {
+      setNewCoverImageIndex(newCoverImageIndex - 1);
+    }
+  };
+
+  // 새 이미지 커버 설정
+  const handleNewImageCoverChange = (index: number) => {
+    setNewCoverImageIndex(index);
   };
 
   // 이미지 업로드 및 업데이트
@@ -124,7 +163,7 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
           .map((img, idx) => ({ ...img, idx }))
           .filter((img) => !deletedIndexes.includes(img.idx));
 
-        await updateImagesOrder(reviewId, remainingExistingImages, newFiles);
+        await updateImagesOrder(reviewId, remainingExistingImages, newFiles, newCoverImageIndex);
       }
     } catch (e: any) {
       setError(e);
@@ -142,13 +181,16 @@ export function useReviewImageEdit(initialImages: ExistingImage[] = []) {
     replacementPreviews,
     newFiles,
     newPreviews,
+    newCoverImageIndex,
     isUploading,
     error,
     // 핸들러
     handleExistingImageReplace,
     handleExistingImageDelete,
+    handleExistingImageCoverChange,
     handleNewImageAdd,
     handleNewImageDelete,
+    handleNewImageCoverChange,
     // 업로드
     updateImages,
   };

@@ -1,6 +1,7 @@
 /**
  * 이미지 업로드 폼
  * - 이미지 선택, 삭제 
+ * - 커버 이미지 선택
  */
 
 import React, { useRef } from "react";
@@ -8,6 +9,7 @@ import React, { useRef } from "react";
 export interface ReviewImageUploadData {
   files: File[];
   previews: string[];
+  coverImageIndex: number | null; // 커버 이미지 인덱스
 }
 
 interface ReviewImageUploadProps {
@@ -33,10 +35,11 @@ export default function ReviewImageUpload({
       return;
     }
 
-    // 미리보기 URL 생성은 훅에서 처리하도록 변경
+    // 파일만 전달하고 미리보기는 훅에서 처리
     onChange({
       files: [...value.files, ...files],
-      previews: value.previews, // 미리보기는 훅에서 자동 생성
+      previews: [], // 미리보기는 훅에서 자동 생성되므로 빈 배열 전달
+      coverImageIndex: null // 새 이미지가 추가되면 커버 이미지 초기화
     });
   };
 
@@ -49,8 +52,29 @@ export default function ReviewImageUpload({
       const newPreviews = [...value.previews];
       newFiles.splice(index, 1);
       newPreviews.splice(index, 1);
-      onChange({ files: newFiles, previews: newPreviews });
+      
+      // 커버 이미지가 삭제되는 경우 처리
+      let newCoverIndex = value.coverImageIndex;
+      if (index === value.coverImageIndex) {
+        newCoverIndex = null;
+      } else if (value.coverImageIndex !== null && index < value.coverImageIndex) {
+        newCoverIndex = value.coverImageIndex - 1;
+      }
+      
+      onChange({ 
+        files: newFiles, 
+        previews: newPreviews,
+        coverImageIndex: newCoverIndex
+      });
     }
+  };
+
+  // 커버 이미지 선택
+  const handleCoverSelect = (index: number) => {
+    onChange({
+      ...value,
+      coverImageIndex: index
+    });
   };
 
   return (
@@ -64,17 +88,35 @@ export default function ReviewImageUpload({
             <img
               src={image}
               alt={`미리보기 ${index + 1}`}
-              className="w-full h-24 object-cover rounded-lg"
+              className={`w-full h-24 object-cover rounded-lg ${
+                value.coverImageIndex === index ? 'ring-2 ring-pink-500' : ''
+              }`}
             />
-            {/* 삭제 버튼 */}
-            <button
-              type="button"
-              onClick={() => handleRemove(index)}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors cursor-pointer"
-              disabled={disabled}
-            >
-              ×
-            </button>
+            <div className="absolute -top-2 -right-2 flex gap-1">
+              {/* 커버 이미지 선택 버튼 */}
+              <button
+                type="button"
+                onClick={() => handleCoverSelect(index)}
+                className={`w-6 h-6 ${
+                  value.coverImageIndex === index 
+                    ? 'bg-pink-500' 
+                    : 'bg-gray-500 hover:bg-pink-400'
+                } text-white rounded-full text-xs transition-colors cursor-pointer flex items-center justify-center`}
+                disabled={disabled}
+                title={value.coverImageIndex === index ? '커버 이미지' : '커버 이미지로 설정'}
+              >
+                ★
+              </button>
+              {/* 삭제 버튼 */}
+              <button
+                type="button"
+                onClick={() => handleRemove(index)}
+                className="w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors cursor-pointer flex items-center justify-center"
+                disabled={disabled}
+              >
+                ×
+              </button>
+            </div>
           </div>
         ))}
         {value.files.length < 5 && (
@@ -95,6 +137,9 @@ export default function ReviewImageUpload({
       </div>
       <p className="text-xs text-gray-500">
         JPG, PNG 파일만 업로드 가능합니다. (각 파일 최대 5MB)
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        ★ 버튼을 클릭하여 커버 이미지를 선택해주세요.
       </p>
     </div>
   );

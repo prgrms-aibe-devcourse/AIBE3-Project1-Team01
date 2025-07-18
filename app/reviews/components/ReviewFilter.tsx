@@ -13,12 +13,18 @@ interface FilterProps {
 const regions = [
   { id: "all", name: "전체 지역" },
   { id: "서울", name: "서울" },
+  { id: "가평·양평", name: "가평·양평" },
+  { id: "강릉·속초", name: "강릉·속초" },
+  { id: "경주", name: "경주" },
   { id: "부산", name: "부산" },
-  { id: "제주도", name: "제주도" },
-  { id: "강원도", name: "강원도" },
-  { id: "경기도", name: "경기도" },
-  { id: "전라남도", name: "전라남도" },
-  { id: "경상북도", name: "경상북도" },
+  { id: "여수", name: "여수" },
+  { id: "인천", name: "인천" },
+  { id: "전주", name: "전주 지역" },
+  { id: "제주", name: "서울" },
+  { id: "춘천·홍천", name: "춘천·홍천" },
+  { id: "태안", name: "태안" },
+  { id: "통영·거제·남해", name: "통영·거제·남해" },
+  { id: "포항·안도", name: "포항·안도" },
 ];
 
 const ratings = [

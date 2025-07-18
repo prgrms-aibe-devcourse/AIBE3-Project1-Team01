@@ -35,14 +35,17 @@ export default function EditReviewPage({
     replacementPreviews,
     newFiles,
     newPreviews,
+    newCoverImageIndex, // 새 커버 이미지 인덱스 
     isUploading,
     error: uploadError,
     handleExistingImageReplace,
     handleExistingImageDelete,
+    handleExistingImageCoverChange, // 기존 이미지 커버 설정
     handleNewImageAdd,
     handleNewImageDelete,
+    handleNewImageCoverChange, // 새 이미지 커버 설정
     updateImages,
-  } = useReviewImageEdit();
+  } = useReviewImageEdit([], reviewId);
 
   useEffect(() => {
     if (!reviewId) return;

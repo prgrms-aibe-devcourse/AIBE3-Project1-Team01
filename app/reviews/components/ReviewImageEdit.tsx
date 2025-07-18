@@ -2,12 +2,14 @@
  * 리뷰 이미지 수정 폼
  * - 기존 이미지 수정/삭제
  * - 새 이미지 추가
+ * - 커버 이미지 선택
  */
 import React from "react";
 
 interface ExistingImage {
   url: string;
   order: number;
+  is_cover: boolean;
 }
 
 interface ReviewImageEditProps {
@@ -15,6 +17,7 @@ interface ReviewImageEditProps {
   existingImages: ExistingImage[];
   onExistingImageDelete: (index: number) => void;
   onExistingImageReplace: (index: number, file: File) => void;
+  onExistingImageCoverChange: (index: number) => void;
   deletedIndexes: number[];
   replacementPreviews: Record<number, string>;
 
@@ -23,6 +26,8 @@ interface ReviewImageEditProps {
   newPreviews: string[];
   onNewImageAdd: (files: File[]) => void;
   onNewImageDelete: (index: number) => void;
+  onNewImageCoverChange: (index: number) => void;
+  newCoverImageIndex: number | null;
 
   disabled?: boolean;
 }
@@ -32,6 +37,7 @@ export default function ReviewImageEdit({
   existingImages,
   onExistingImageDelete,
   onExistingImageReplace,
+  onExistingImageCoverChange,
   deletedIndexes,
   replacementPreviews,
   // 새 이미지
@@ -39,6 +45,8 @@ export default function ReviewImageEdit({
   newPreviews,
   onNewImageAdd,
   onNewImageDelete,
+  onNewImageCoverChange,
+  newCoverImageIndex,
   disabled = false,
 }: ReviewImageEditProps) {
   // 새 이미지 추가 핸들러
@@ -69,7 +77,9 @@ export default function ReviewImageEdit({
               <img
                 src={replacementPreviews[index] || img.url}
                 alt={`미리보기 ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                className={`w-32 h-32 object-cover rounded ${
+                  img.is_cover ? 'ring-2 ring-pink-500' : ''
+                }`}
               />
               <div className="flex flex-col gap-2">
                 <label className="text-sm text-blue-500 cursor-pointer">
@@ -82,6 +92,14 @@ export default function ReviewImageEdit({
                     disabled={disabled}
                   />
                 </label>
+                <button
+                  type="button"
+                  className={`text-sm ${img.is_cover ? 'text-pink-500' : 'text-gray-500'}`}
+                  onClick={() => onExistingImageCoverChange(index)}
+                  disabled={disabled}
+                >
+                  {img.is_cover ? '커버 이미지 ★' : '커버 이미지로 설정'}
+                </button>
                 <button
                   type="button"
                   className="text-sm text-red-500"
@@ -113,16 +131,33 @@ export default function ReviewImageEdit({
               <img
                 src={preview}
                 alt={`새 이미지 미리보기 ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                className={`w-32 h-32 object-cover rounded ${
+                  newCoverImageIndex === index ? 'ring-2 ring-pink-500' : ''
+                }`}
               />
-              <button
-                type="button"
-                onClick={() => onNewImageDelete(index)}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center"
-                disabled={disabled}
-              >
-                ×
-              </button>
+              <div className="absolute top-1 right-1 flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => onNewImageCoverChange(index)}
+                  className={`w-6 h-6 ${
+                    newCoverImageIndex === index 
+                      ? 'bg-pink-500' 
+                      : 'bg-gray-500 hover:bg-pink-400'
+                  } text-white rounded-full text-xs flex items-center justify-center`}
+                  disabled={disabled}
+                  title={newCoverImageIndex === index ? '커버 이미지' : '커버 이미지로 설정'}
+                >
+                  ★
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNewImageDelete(index)}
+                  className="w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
+                  disabled={disabled}
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>

@@ -3,16 +3,19 @@
  * - 파일/미리보기 상태 관리
  * - 업로드 로직 및 로딩/에러 상태 관리
  * - 파일 추가/제거, 초기화 기능 제공
+ * - 커버 이미지 관리
  */
 import { useState } from "react";
 import { uploadImagesToSupabase } from "../lib/imageUploader";
 
 export function useImageUpload(
   initialFiles?: File[],
-  initialPreviews?: string[]
+  initialPreviews?: string[],
+  initialCoverIndex?: number | null
 ) {
   const [files, setFiles] = useState<File[]>(initialFiles || []);
   const [previews, setPreviews] = useState<string[]>(initialPreviews || []);
+  const [coverImageIndex, setCoverImageIndex] = useState<number | null>(initialCoverIndex || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -41,12 +44,24 @@ export function useImageUpload(
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
+    // 커버 이미지가 삭제되는 경우 처리
+    if (index === coverImageIndex) {
+      setCoverImageIndex(null);
+    } else if (coverImageIndex !== null && index < coverImageIndex) {
+      setCoverImageIndex(coverImageIndex - 1);
+    }
+  };
+
+  // 커버 이미지 설정
+  const setCoverImage = (index: number) => {
+    setCoverImageIndex(index);
   };
 
   // 초기화
   const reset = () => {
     setFiles(initialFiles || []);
     setPreviews(initialPreviews || []);
+    setCoverImageIndex(initialCoverIndex || null);
     setError(null);
   };
 
@@ -56,7 +71,7 @@ export function useImageUpload(
     setLoading(true);
     setError(null);
     try {
-      const urls = await uploadImagesToSupabase(files, reviewId);
+      const urls = await uploadImagesToSupabase(files, reviewId, coverImageIndex);
       setLoading(false);
       return urls;
     } catch (e: any) {
@@ -69,10 +84,12 @@ export function useImageUpload(
   return {
     files,
     previews,
+    coverImageIndex,
     loading,
     error,
     addFiles,
     removeFile,
+    setCoverImage,
     reset,
     upload,
   };

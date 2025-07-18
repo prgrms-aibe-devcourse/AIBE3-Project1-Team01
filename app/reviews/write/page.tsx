@@ -11,6 +11,7 @@ import ReviewImageUpload, {
 } from "../components/ReviewImageUpload";
 import { useImageUpload } from "../hooks/useImageUpload";
 import { useReviewContent } from "../hooks/useReviewContent";
+import { useRouter } from "next/navigation";
 
 export default function WriteReviewPage() {
   // 후기 내용 상태 및 로직 
@@ -26,8 +27,10 @@ export default function WriteReviewPage() {
   const {
     files: imageFiles,
     previews: imagePreviews,
+    coverImageIndex,
     addFiles: addImageFiles,
     removeFile: removeImageFile,
+    setCoverImage,
     reset: resetImages,
     upload,
     loading: isUploading,
@@ -37,17 +40,36 @@ export default function WriteReviewPage() {
   // 스토리지에 업로드된 이미지의 공개 url (여기서는 업로드 완료 확인용으로 사용)
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
+  const router = useRouter();
+
   // ReviewImageUpload에 맞는 value 객체 생성
-  const imageValue = { files: imageFiles, previews: imagePreviews };
+  const imageValue = { 
+    files: imageFiles, 
+    previews: imagePreviews,
+    coverImageIndex
+  };
 
   // onChange 핸들러: ReviewImageUploadData 타입을 받아 훅의 상태로 반영
-  const handleImageUploadChange = (data: {
-    files: File[];
-    previews: string[];
-  }) => {
-    resetImages();
-    if (data.files.length > 0 || data.previews.length > 0) {
-      addImageFiles(data.files);
+  const handleImageUploadChange = (data: ReviewImageUploadData) => {
+    // 커버 이미지 선택 변경
+    if (data.coverImageIndex !== coverImageIndex) {
+      setCoverImage(data.coverImageIndex);
+      return;
+    }
+
+    // 파일이 삭제된 경우
+    if (data.files.length < imageFiles.length) {
+      resetImages();
+      if (data.files.length > 0) {
+        addImageFiles(data.files);
+      }
+      return;
+    }
+
+    // 새 이미지 추가
+    if (data.files.length > imageFiles.length) {
+      const newFiles = data.files.slice(imageFiles.length);
+      addImageFiles(newFiles);
     }
   };
 
@@ -66,12 +88,12 @@ export default function WriteReviewPage() {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
-      if (userError || !user) {//에러나거나, 사용자 정보가 없으면 
+      if (userError || !user) {
+        //에러나거나, 사용자 정보가 없으면
         alert("사용자 정보 가져오기 실패: " + userError.message);
         return;
       }
       const userId = user?.id;
-
 
       // 리뷰 내용을 reviews 테이블에 저장
       const { data: reviewData, error: reviewError } = await supabase
@@ -98,6 +120,8 @@ export default function WriteReviewPage() {
       // 상태 초기화
       resetImages();
       resetContent();
+      // 작성 다하면 리뷰 목록으로 돌아가기
+      router.push("/reviews");
     } catch (e: any) {
       alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
     }
@@ -115,6 +139,7 @@ export default function WriteReviewPage() {
         <ReviewImageUpload
           value={imageValue}
           onChange={handleImageUploadChange}
+          onRemove={removeImageFile}
           disabled={isUploading}
         />
         <button

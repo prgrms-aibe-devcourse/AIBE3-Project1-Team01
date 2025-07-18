@@ -19,15 +19,18 @@ interface ReviewContentFormProps {
 
 const regions = [
   "서울",
+  "가평·양평",
+  "강릉·속초",
+  "경주",
   "부산",
-  "제주도",
-  "강원도",
-  "경기도",
+  "여수",
   "인천",
-  "대구",
-  "광주",
-  "대전",
-  "울산",
+  "전주",
+  "제주",
+  "춘천·홍천",
+  "태안",
+  "통영·거제·남해",
+  "포항·안동",
 ];
 
 export default function ReviewContentForm({

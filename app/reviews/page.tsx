@@ -13,6 +13,7 @@ interface Review {
   rating: number;
   content: string;
   created_at: string;
+  cover_image?: string; // 커버 이미지 url
 }
 
 interface FilterState {
@@ -48,9 +49,13 @@ export default function ReviewList() {
   const fetchReviews = async () => {
     setLoading(true);
 
+    // 대표 이미지 불러오는 기능 추가 
     let query = supabase
       .from("reviews")
-      .select("*")
+      .select(`
+        *,
+        images(img_url, is_cover)
+      `)
       .order("created_at", { ascending: false });
 
     if (filters.region && filters.region !== "all") {
@@ -69,7 +74,12 @@ export default function ReviewList() {
     if (error) {
       console.error("❌ 후기 불러오기 실패:", error.message);
     } else {
-      setReviews(data || []);
+      setReviews(
+        data.map(review => ({
+          ...review,
+          cover_image: review.images?.find(img => img.is_cover)?.img_url
+        })) || []
+      );
     }
 
     setLoading(false);
@@ -105,20 +115,37 @@ export default function ReviewList() {
           ) : (
             <ul className="space-y-6">
               {reviews.map((review) => (
-                <li key={review.id} className="border-b pb-4">
-                  <Link
-                    href={`/reviews/${review.id}`}
-                    className="text-lg font-semibold text-blue-600 hover:underline"
-                  >
-                    {review.title}
-                  </Link>
-                  <p className="text-sm text-gray-600">
-                    지역: {review.region} / 평점: {review.rating} / 날짜:{" "}
-                    {new Date(review.created_at).toLocaleDateString("ko-KR")}
-                  </p>
-                  <p className="text-sm mt-1 text-gray-800 line-clamp-2">
-                    {review.content}
-                  </p>
+                <li key={review.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex gap-4">
+                    {review.cover_image ? (
+                      <div className="w-24 h-24 flex-shrink-0">
+                        <img
+                          src={review.cover_image}
+                          alt={review.title}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 bg-gray-100 flex-shrink-0 rounded-lg flex items-center justify-center">
+                        <span className="text-gray-400">No Image</span>
+                      </div>
+                    )}
+                    <div className="flex-grow">
+                      <Link
+                        href={`/reviews/${review.id}`}
+                        className="text-lg font-semibold text-blue-600 hover:underline"
+                      >
+                        {review.title}
+                      </Link>
+                      <p className="text-sm text-gray-600 mt-1">
+                        지역: {review.region} / 평점: {review.rating} / 날짜:{" "}
+                        {new Date(review.created_at).toLocaleDateString("ko-KR")}
+                      </p>
+                      <p className="text-sm mt-2 text-gray-800 line-clamp-2">
+                        {review.content}
+                      </p>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>

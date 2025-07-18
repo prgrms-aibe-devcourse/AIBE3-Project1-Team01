@@ -25,6 +25,7 @@ export default function EditReviewPage() {
 
   const params = useParams();
   const { id } = params;
+  const router = useRouter();
 
   // 후기 및 사용자 정보 가져오기
   useEffect(() => {
@@ -101,8 +102,16 @@ export default function EditReviewPage() {
 
   // 후기 상세화면 렌더링
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-10">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen">
+      <div className="relative max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        <button
+          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
+          style={{ lineHeight: 1 }}
+          aria-label="닫기"
+          onClick={() => router.push("/reviews")}
+        >
+          ×
+        </button>
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
             {review.title}
@@ -156,7 +165,7 @@ export default function EditReviewPage() {
         {currentUserId === review.user_id && (
           <div className="flex justify-end gap-3">
             <button
-              onClick={() => router.push(`/reviews/${id}/edit`)}
+              onClick={() => router.push(`${id}/edit`)}
               className="bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-6 py-2 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
             >
               <i className="ri-edit-2-line mr-2 text-white"></i>수정

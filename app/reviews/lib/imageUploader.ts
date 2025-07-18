@@ -6,7 +6,8 @@ import { generateImageFileName, uploadImageToStorage } from "./imageUtils";
 
 export async function uploadImagesToSupabase(
   files: File[],
-  reviewId: number
+  reviewId: number,
+  coverImageIndex: number | null
 ): Promise<string[]> {
   const uploaded: string[] = [];
 
@@ -20,7 +21,7 @@ export async function uploadImagesToSupabase(
       review_id: reviewId,
       img_url: imageUrl,
       order: i,
-      place: null,
+      is_cover: i === coverImageIndex,
     });
     if (insertError) {
       throw new Error(`이미지 DB 저장 실패: ${insertError.message}`);
