@@ -92,7 +92,7 @@ export default function ReviewList() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">📝 여행 후기 목록</h1>
+        <h1 className="text-3xl font-bold">여행 후기 목록</h1>
         {/* 후기 작성 버튼 */}
         <button
           onClick={handleWriteClick}

@@ -50,7 +50,7 @@ export default function ReviewContentForm({
     <>
       {/* 후기 제목 */}
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-1">후기 제목 *</label>
+        <label className="block text-sm font-semibold mb-1">후기 제목</label>
         <input
           type="text"
           value={value.title}
@@ -62,7 +62,7 @@ export default function ReviewContentForm({
       </div>
       {/* 지역 선택 */}
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-1">여행 지역 *</label>
+        <label className="block text-sm font-semibold mb-1">여행 지역</label>
         <select
           value={value.region}
           onChange={(e) => handleChange("region", e.target.value)}
@@ -79,7 +79,7 @@ export default function ReviewContentForm({
       </div>
       {/* 평점 선택 */}
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-1">평점 *</label>
+        <label className="block text-sm font-semibold mb-1">평점</label>
         <div className="flex space-x-1">
           {Array.from({ length: 5 }, (_, i) => (
             <button
@@ -100,7 +100,7 @@ export default function ReviewContentForm({
       {/* 후기 내용 */}
       <div className="mb-6">
         <label className="block text-sm font-semibold mb-1">
-          후기 내용 * (500자 이내)
+          후기 내용 (500자 이내)
         </label>
         <textarea
           value={value.content}
