@@ -61,28 +61,39 @@ export default function LoginModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
-        >
-          <i className="ri-close-line text-xl"></i>
-        </button>
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">로그인</h2>
-          <p className="text-gray-500">여행 계획을 시작해보세요!</p>
+      <div className="bg-[#F6EFEF] rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
+        <div className="relative w-full h-[180px] mb-8">
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat bg-contain"
+            style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+          />
+
+          {/* 버튼 */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer z-20"
+          >
+            <i className="ri-close-line text-xl"></i>
+          </button>
+
+          {/* 글자: 배경 위에 올라가도록 absolute + z-index */}
+          <div className="absolute inset-x-0 bottom-0 text-center">
+            <p className="text-[#413D3D]">여행 계획을 시작해보세요!</p>
+          </div>
         </div>
+
         {errorMsg && (
           <div className="text-red-500 text-sm text-center mb-4">
             {errorMsg}
           </div>
         )}
+
         <form className="space-y-4" onSubmit={handleOnSubmit}>
           <div>
             <input
               type="email"
               placeholder="이메일"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#F4CCC4] transition-colors"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -94,18 +105,20 @@ export default function LoginModal({
               }}
             />
           </div>
+
           <div>
             <input
               type="password"
               placeholder="비밀번호"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-300 transition-colors"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#F4CCC4] transition-colors"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-medium hover:from-pink-500 hover:to-purple-500 transition-all duration-300 whitespace-nowrap cursor-pointer flex items-center justify-center"
+            className="w-full bg-[#F4CCC4] text-white py-3 rounded-xl font-medium hover:brightness-105 transition-all duration-300 whitespace-nowrap cursor-pointer flex items-center justify-center"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -136,6 +149,13 @@ export default function LoginModal({
             )}
           </button>
 
+          {/* or 구분선 */}
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-solid border-gray-400"></div>
+            <span className="mx-3 text-gray-600 font-medium">or</span>
+            <div className="flex-grow border-t border-solid border-gray-400"></div>
+          </div>
+
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -149,15 +169,14 @@ export default function LoginModal({
             />
             <span>Google로 로그인</span>
           </button>
+
           {onSignup && (
-            <div className="text-center mt-6">
-              <button
-                onClick={onSignup}
-                className="text-pink-400 hover:text-pink-600 transition-colors cursor-pointer"
-              >
-                아직 계정이 없으신가요? 회원가입
-              </button>
-            </div>
+            <button
+              onClick={onSignup}
+              className="text-[#7FC4C9] hover:text-[#B2DAD9] transition-colors cursor-pointer block mx-auto mt-6"
+            >
+              아직 계정이 없으신가요? 회원가입
+            </button>
           )}
         </form>
       </div>
