@@ -65,7 +65,7 @@ export default function PlansListPage() {
    if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
 
    return (
-    <div className="min-h-screen bg-pink-100 py-12">
+    <div className="min-h-screen bg-[#F6EFEF] py-12">
       <div className="max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-md border rounded-2xl shadow-xl">
         <h1 className="text-2xl font-bold mb-6 pl-2 text-gray-800">나의 여행 계획</h1>
         {plans.length === 0 ? (

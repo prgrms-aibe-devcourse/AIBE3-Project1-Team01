@@ -76,10 +76,10 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-pink-200 rounded-2xl shadow-xl p-6 w-full max-h-[80vh] overflow-y-auto">
+    <div className="bg-white/80 backdrop-blur-md border rounded-2xl shadow-lg p-6 w-full max-h-[80vh] overflow-y-auto">
       <h2 className="text-xl font-bold mb-4 text-black">일정 입력</h2>
       {selectedDates.length === 0 ? (
-        <p className="text-gray-500">날짜를 선택하면 일정 입력란이 표시됩니다.</p>
+        <p className="text-[#413D3D]">날짜를 선택하면 일정 입력란이 표시됩니다.</p>
       ) : (
         selectedDates.map((date) => {
           const dateStr = format(date, 'yyyy-MM-dd');
@@ -97,15 +97,15 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
           };
 
           return (
-            <div key={dateStr} className="mb-10 border-b border-pink-100 pb-6">
-              <h3 className="font-semibold mb-3 text-lg text-gray-800">{dateStr}</h3>
+            <div key={dateStr} className="mb-10 border-b border-[#F4CCC4] pb-6">
+              <h3 className="font-semibold mb-3 text-lg text-[#413D3D]">{dateStr}</h3>
 
               <div className="flex flex-col gap-4">
                 {entries.map((entry, idx) => (
                   <div key={idx} className="space-y-2">
                     <div className="flex items-center gap-2 mt-2">
                       <input
-                        className="w-[80%] border p-2 rounded bg-white text-black placeholder:text-gray-400"
+                        className="w-[80%] border border-[#FBDED6] p-2 rounded bg-white text-[#413D3D] placeholder:text-gray-400"
                         value={entry.place}
                         onChange={(e) => handleInputChange(dateStr, idx, 'place', e.target.value)}
                         placeholder="여행지 이름"
@@ -114,23 +114,23 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                       {/* 순서 바꾸기 버튼 */}
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'up')}
-                        className="w-8 h-8 rounded-full bg-transparent hover:bg-pink-100 text-gray-900 flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-full bg-transparent hover:bg-[#FBDED6] text-[#413D3D] flex items-center justify-center transition-colors"
                         title="위로"
                       >
                         <ChevronUp className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => moveEntry(dateStr, idx, 'down')}
-                        className="w-8 h-8 rounded-full bg-transparent hover:bg-purple-100 text-gray-800 flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-full bg-transparent hover:bg-[#FBDED6] text-[#413D3D] flex items-center justify-center transition-colors"
                         title="아래로"
                       >
                         <ChevronDown className="w-5 h-5" />
                       </button>
 
                       {/* 삭제 버튼 */}
-                      <button className="bold"
+                      <button
                         onClick={() => handleDeleteItem(dateStr, idx)}
-                        className="w-10 h-10 bg-gradient-to-br from-pink-200 to-purple-200 text-pink-700 rounded-full flex items-center justify-center hover:from-pink-300 hover:to-purple-300 hover:text-purple-700 shadow"
+                        className="w-10 h-10 bg-[#C9E6E5] text-[#413D3D] rounded-full flex items-center justify-center shadow"
                       >
                         ✕
                       </button>
@@ -141,7 +141,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
                       onChange={(e) =>
                         handleInputChange(dateStr, idx, 'detail', e.target.value)
                       }
-                      className="w-full p-2 rounded border bg-white text-black placeholder:text-gray-400"
+                      className="w-full p-2 rounded border border-[#FBDED6] bg-white text-[#413D3D] placeholder:text-gray-400"
                     />
                   </div>
                 ))}
@@ -149,7 +149,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
 
               <button
                 onClick={() => handleAddEntry(dateStr)}
-                className="mt-4 px-3 py-1 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 text-sm rounded-xl hover:from-pink-200 hover:to-purple-200 hover:text-purple-700 shadow"
+                className="mt-4 px-3 py-1 bg-[#C9E6E5] text-black text-sm rounded-xl shadow"
               >
                 + 항목 추가
               </button>

@@ -162,7 +162,7 @@ export default function PlanPage() {
     };
 
     return (
-      <div className="min-h-screen bg-pink-100 py-12">
+      <div className="min-h-screen bg-[#F6EFEF] py-12">
         <div className="container mx-auto p-6 max-w-6xl">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* 왼쪽: 달력+제목+설명 */}
@@ -187,7 +187,7 @@ export default function PlanPage() {
               <div className="text-right mt-6">
                 <button
                   onClick={handleSave}
-                  className="px-8 py-3 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold rounded-2xl shadow-lg hover:from-pink-500 hover:to-purple-600 transition-all text-lg"
+                  className="px-8 py-3 bg-[#F4CCC4] text-[#413D3D] font-bold rounded-2xl shadow-lg transition-all text-lg"
                 >
                   {planId ? '수정하기' : '저장하기'}
                 </button>

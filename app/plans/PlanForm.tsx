@@ -23,19 +23,19 @@ export default function PlanForm({
   setDescription,
 }: Props) { //PlanForm 컴포넌트 내부에서 사용되는 함수
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-full">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">날짜 선택</h2>
+    <div className="bg-white/80 rounded-2xl shadow-lg p-6 w-full">
+      <h2 className="text-xl font-bold mb-4 text-black">날짜 선택</h2>
       <DayPicker mode="range" selected={range} onSelect={setRange} /> 
       {/* 날짜 범위 선택 가능한 달력 표시. 선택값은 range이고, 선택 시 setRange 실행 */}
 
       {range?.from && range?.to && ( //날짜 범위가 선택되어 있으면 표시
-        <p className="mt-4 text-gray-600 font-semibold">
-          {format(range.from, 'yyyy-MM-dd')} ~ {format(range.to, 'yyyy-MM-dd')}
-        </p> //(예: 2025-07-17 ~ 2025-07-19)
+        <p className="mt-4 text-[#413D3D] font-semibold">
+          {'<'}{format(range.from, 'yyyy-MM-dd')} ~ {format(range.to, 'yyyy-MM-dd')}{'>'}
+        </p>
       )}
 
-      <div className="mt-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
+      <div className= "mt-6">
+        <label className="block text-sm font-semibold text-[#413D3D] mb-1">
           여행 제목
         </label>
         <input //여행 제목 입력 필드
@@ -43,13 +43,13 @@ export default function PlanForm({
           placeholder="제목을 입력하세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-2 rounded border mb-3"
+          className="w-full p-2 rounded border border-[#FBDED6] mb-3 bg-white text-[#413D3D] placeholder:text-gray-400"
         />
         <textarea //여행 설명 입력 필드
           placeholder="설명을 입력하세요"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 rounded border"
+          className="w-full p-2 rounded border border-[#FBDED6] bg-white text-[#413D3D] placeholder:text-gray-400"
         />
       </div>
     </div>
