@@ -163,18 +163,21 @@ export default function EditReviewPage({
             disabled={isUploading}
           />
 
-          <ReviewImageEdit
-            existingImages={existingImages}
-            onExistingImageDelete={handleExistingImageDelete}
-            onExistingImageReplace={handleExistingImageReplace}
-            deletedIndexes={deletedIndexes}
-            replacementPreviews={replacementPreviews}
-            newFiles={newFiles}
-            newPreviews={newPreviews}
-            onNewImageAdd={handleNewImageAdd}
-            onNewImageDelete={handleNewImageDelete}
-            disabled={isUploading}
-          />
+        <ReviewImageEdit
+          existingImages={existingImages}
+          onExistingImageDelete={handleExistingImageDelete}
+          onExistingImageReplace={handleExistingImageReplace}
+          onExistingImageCoverChange={handleExistingImageCoverChange}
+          deletedIndexes={deletedIndexes}
+          replacementPreviews={replacementPreviews}
+          newFiles={newFiles}
+          newPreviews={newPreviews}
+          onNewImageAdd={handleNewImageAdd}
+          onNewImageDelete={handleNewImageDelete}
+          onNewImageCoverChange={handleNewImageCoverChange}
+          newCoverImageIndex={newCoverImageIndex}
+          disabled={isUploading}
+        />
 
           <div className="flex gap-3 mt-6">
             <button
