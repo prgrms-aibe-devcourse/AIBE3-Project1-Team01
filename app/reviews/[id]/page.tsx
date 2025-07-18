@@ -39,13 +39,13 @@ export default function EditReviewPage() {
       // 후기 정보 가져오기
       const { data, error } = await supabase
         .from("reviews")
-        .select("*, images(img_url, order)") //상세 페이지에서 이미지 순서대로 보여주기 위해 order 추가 
+        .select("*, images(img_url, order)") //상세 페이지에서 이미지 순서대로 보여주기 위해 order 추가
         .eq("id", id)
         .single();
 
       if (!error && data) {
         setReview(data);
-        
+
         // order 순으로 정렬
         const sortedImages = data.images
           .slice() // 원본 배열 복사
@@ -103,7 +103,7 @@ export default function EditReviewPage() {
   // 후기 상세화면 렌더링
   return (
     <div className="min-h-screen">
-      <div className="relative max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
         <button
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}
@@ -166,16 +166,17 @@ export default function EditReviewPage() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => router.push(`${id}/edit`)}
-              className="bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-6 py-2 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
+              className="bg-[#C9E6E5] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
             >
-              <i className="ri-edit-2-line mr-2 text-white"></i>수정
+              <i className="ri-edit-2-line mr-2 text-[#413D3D]"></i>수정
             </button>
 
             <button
               onClick={handleDelete}
-              className="bg-gradient-to-r from-red-400 to-pink-400 text-white px-6 py-2 rounded-xl font-medium hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
+              className="bg-[#F4CCC4] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
             >
-              <i className="ri-delete-bin-line mr-2 text-white"></i>후기 삭제
+              <i className="ri-delete-bin-line mr-2 text-[#413D3D]"></i>후기
+              삭제
             </button>
           </div>
         )}

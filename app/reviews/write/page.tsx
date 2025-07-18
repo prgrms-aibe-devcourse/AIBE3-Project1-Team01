@@ -14,7 +14,7 @@ import { useReviewContent } from "../hooks/useReviewContent";
 import { useRouter } from "next/navigation";
 
 export default function WriteReviewPage() {
-  // 후기 내용 상태 및 로직 
+  // 후기 내용 상태 및 로직
   const {
     form: contentData,
     setForm: setContentData,
@@ -23,7 +23,7 @@ export default function WriteReviewPage() {
     validate: validateContent,
   } = useReviewContent();
 
-  // 이미지 업로드 상태 및 로직 
+  // 이미지 업로드 상태 및 로직
   const {
     files: imageFiles,
     previews: imagePreviews,
@@ -120,8 +120,13 @@ export default function WriteReviewPage() {
       // 상태 초기화
       resetImages();
       resetContent();
+<<<<<<< HEAD
       // 작성 다하면 리뷰 목록으로 돌아가기
       router.push("/reviews");
+=======
+      //
+      router.push(`/reviews/${reviewId}`);
+>>>>>>> a6f9e65 (스타일 일부 수정)
     } catch (e: any) {
       alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
     }
@@ -129,6 +134,7 @@ export default function WriteReviewPage() {
 
   return (
     <div className="max-w-xl mx-auto py-10 px-4">
+<<<<<<< HEAD
       <h1 className="text-2xl font-bold mb-6">✍️ 후기 작성</h1>
       <form onSubmit={handleSubmit}>
         <ReviewContentForm
@@ -142,43 +148,67 @@ export default function WriteReviewPage() {
           onRemove={removeImageFile}
           disabled={isUploading}
         />
+=======
+      <div className="relative max-w-2xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg p-8">
+>>>>>>> a6f9e65 (스타일 일부 수정)
         <button
-          type="submit"
-          disabled={isUploading}
-          className="w-full bg-pink-500 text-white py-2 rounded hover:bg-pink-600 disabled:bg-gray-300"
+          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
+          style={{ lineHeight: 1 }}
+          aria-label="닫기"
+          onClick={() => router.push("/reviews")}
         >
-          {isUploading ? "등록 중..." : "후기 등록"}
+          ×
         </button>
-      </form>
-      {/** 업로드 완료된 이미지 -> 추후 삭제 예정 */}
-      {uploadedUrls.length > 0 && (
-        <div className="mt-6">
-          <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {uploadedUrls.map((url, idx) => (
-              <div key={idx} className="border rounded p-2">
-                <img
-                  src={url}
-                  alt={`업로드 이미지 ${idx + 1}`}
-                  className="w-full h-auto object-cover rounded"
-                />
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-xs text-blue-600 underline mt-1 break-all"
-                >
-                  {url}
-                </a>
-              </div>
-            ))}
+        <h1 className="text-2xl font-bold mb-6">후기 작성</h1>
+        <form onSubmit={handleSubmit}>
+          <ReviewContentForm
+            value={contentData}
+            onChange={setContentData}
+            disabled={isUploading}
+          />
+          <ReviewImageUpload
+            value={imageValue}
+            onChange={handleImageUploadChange}
+            disabled={isUploading}
+          />
+          <button
+            type="submit"
+            disabled={isUploading}
+            className="w-full bg-[#F4CCC4] text-[#413D3D] py-2 rounded hover:shadow-lg  items-center disabled:bg-gray-300"
+          >
+            {isUploading ? "등록 중..." : "후기 등록"}
+          </button>
+        </form>
+        {/** 업로드 완료된 이미지 -> 추후 삭제 예정 */}
+        {uploadedUrls.length > 0 && (
+          <div className="mt-6">
+            <h2 className="font-semibold mb-2">업로드된 이미지들:</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {uploadedUrls.map((url, idx) => (
+                <div key={idx} className="border rounded p-2">
+                  <img
+                    src={url}
+                    alt={`업로드 이미지 ${idx + 1}`}
+                    className="w-full h-auto object-cover rounded"
+                  />
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-blue-600 underline mt-1 break-all"
+                  >
+                    {url}
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-      {/* 업로드 에러 메시지 */}
-      {uploadError && (
-        <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
-      )}
+        )}
+        {/* 업로드 에러 메시지 */}
+        {uploadError && (
+          <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
+        )}
+      </div>
     </div>
   );
 }
