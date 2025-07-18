@@ -107,7 +107,7 @@ export default function PopularDestinations() {
               href={`/reviews/${place.id}`}
               className="group cursor-pointer"
             >
-              <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group-hover:scale-105">
+              <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group-hover:scale-105 h-[420px] flex flex-col">
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={place.cover_image}
@@ -116,7 +116,7 @@ export default function PopularDestinations() {
                   />
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-grow">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-pink-500 bg-pink-50 px-2 py-1 rounded-full">
                       {place.region}
@@ -128,9 +128,11 @@ export default function PopularDestinations() {
                   <h3 className="text-xl font-bold text-gray-800 mb-2 truncate">
                     {place.title}
                   </h3>
-                  <p className="text-gray-600 text-sm line-clamp-2">{place.content}</p>
+                  <p className="text-gray-600 text-sm line-clamp-2 overflow-hidden">
+                    {place.content}
+                  </p>
 
-                  <div className="mt-4 flex items-center text-pink-500 group-hover:text-pink-600">
+                  <div className="mt-auto flex items-center text-pink-500 group-hover:text-pink-600">
                     <span className="text-sm font-medium">
                       여행 계획 세우기
                     </span>
