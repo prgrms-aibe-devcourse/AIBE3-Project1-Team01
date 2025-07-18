@@ -198,12 +198,14 @@ export default function RecommendationPage() {
         </div>
       </main>
       {/* 푸터 */}
-      <footer className="bg-my-coral py-8 mt-16">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-my-dark-gray">
-            © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
-          </p>
-        </div>
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+        <p className="relative z-10 text-center w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
       </footer>
       <CustomGameModal
         isOpen={isCustomGameModalOpen}

@@ -5,11 +5,12 @@ export default function RandomBarGame({ items, onComplete, onClose }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [result, setResult] = useState(null);
   const animationRef = useRef();
+  const resultItemRef = useRef(null); // Ref for scrolling to result
   const itemHeight = 30;
   const visibleCount = 3;
   const centerOffset = Math.floor(visibleCount / 2);
-  const repeatCount = 30;
-  const minSpins = 5;
+  const repeatCount = 50; // Increased for more spins
+  const minSpins = 12; // Increased for more spins
   const totalItems = items.length * repeatCount;
   const displayItems = Array.from(
     { length: totalItems },
@@ -42,13 +43,6 @@ export default function RandomBarGame({ items, onComplete, onClose }) {
       } else {
         setCurrentIndex(finalIndex);
         setTimeout(() => {
-          console.log("currentIndex:", currentIndex);
-          console.log("finalIndex:", finalIndex);
-          console.log("displayItems[finalIndex]:", displayItems[finalIndex]);
-          console.log(
-            "displayItems[currentIndex]:",
-            displayItems[currentIndex]
-          );
           setResult(displayItems[finalIndex]);
           setIsSpinning(false);
           if (onComplete) onComplete(displayItems[finalIndex]);
@@ -57,6 +51,16 @@ export default function RandomBarGame({ items, onComplete, onClose }) {
     }
     spin();
   };
+
+  // Scroll to the result item when result is set
+  useEffect(() => {
+    if (result && resultItemRef.current) {
+      resultItemRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [result]);
 
   useEffect(() => {
     return () => {
@@ -84,6 +88,11 @@ export default function RandomBarGame({ items, onComplete, onClose }) {
             {displayItems.map((item, index) => (
               <div
                 key={index}
+                ref={
+                  result && index === currentIndex + centerOffset
+                    ? resultItemRef
+                    : null
+                }
                 className={`flex items-center justify-center font-bold text-lg transition-all duration-200 whitespace-nowrap overflow-hidden text-ellipsis ${
                   index === currentIndex + centerOffset
                     ? "text-pink-600 scale-110 bg-white border-2 border-orange-400 rounded-lg shadow-md z-10"
