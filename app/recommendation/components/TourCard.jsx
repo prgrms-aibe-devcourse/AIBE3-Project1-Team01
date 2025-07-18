@@ -16,7 +16,7 @@ export default function TourCard({ place, onClick }) {
       ) : (
         <div className="flex flex-col items-center justify-center h-48 w-full bg-gray-100 rounded-xl relative overflow-hidden">
           <img
-            src="/h1trip-logo.png"
+            src="/images/h1trip-logo.png"
             alt="로고"
             className="absolute inset-0 w-full h-full object-contain opacity-25 pointer-events-none select-none"
             draggable={false}
