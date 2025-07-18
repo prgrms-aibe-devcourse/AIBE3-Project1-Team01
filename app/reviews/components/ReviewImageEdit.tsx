@@ -53,6 +53,17 @@ export default function ReviewImageEdit({
   const handleNewImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
+
+    // 전체 이미지 개수 체크 (기존 이미지 + 새 이미지 합쳐서 5개로 올라가도록)
+    const totalExistingImages = existingImages.length - deletedIndexes.length;
+    const totalNewImages = newFiles.length;
+    const totalImages = totalExistingImages + totalNewImages;
+
+    if (totalImages + files.length > 5) {
+      alert(`이미지는 최대 5장까지 업로드 가능합니다. (현재 ${totalImages}장)`);
+      return;
+    }
+
     onNewImageAdd(Array.from(files));
     e.target.value = "";
   };
