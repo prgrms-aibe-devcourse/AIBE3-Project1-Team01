@@ -91,7 +91,7 @@ export default function Header() {
               href="/"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
             >
-              홈
+              내 일정
             </Link>
             <Link
               href="/reviews"
@@ -100,7 +100,7 @@ export default function Header() {
               여행 후기
             </Link>
             <div className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg">
-              AI 추천
+              장소 추천
             </div>
           </nav>
 

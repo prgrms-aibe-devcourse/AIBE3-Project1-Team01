@@ -92,9 +92,11 @@ export default function Home() {
               <div className="w-16 h-16 bg-[#F4CCC4] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <i className="ri-lightbulb-line text-2xl text-white"></i>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#413D3D]">AI 추천</h3>
+              <h3 className="text-xl font-bold mb-2 text-[#413D3D]">
+                장소 추천
+              </h3>
               <p className="text-[#413D3D] text-sm">
-                나의 취향에 맞는 장소와 코스를 AI가 추천해줘요.
+                나의 취향에 맞는 장소와 코스를 추천해줘요.
               </p>
             </div>
           </div>
