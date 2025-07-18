@@ -1,11 +1,16 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import LoginModal from './login/LoginModal';
 import Header from "@/app/components/Header";
 import PopularDestinations from "@/app/components/PopularDestinations";
+=======
+import Header from "./components/Header";
+import PopularDestinations from "./components/PopularDestinations";
+>>>>>>> 4a3583f602a2c8f465199fd4fede8f426bbf0f6a
 import Link from "next/link";
 
 export default function Home() {

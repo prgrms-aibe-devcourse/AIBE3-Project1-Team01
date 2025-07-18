@@ -2,7 +2,7 @@
 //로그인을 안 한 경우 호출
 
 "use client";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

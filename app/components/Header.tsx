@@ -5,8 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import LoginModal from "../login/LoginModal";
 import SignupModal from "../signup/SignupModal";
+<<<<<<< HEAD
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+=======
+import { useAuth } from "../../context/AuthContext";
+>>>>>>> 4a3583f602a2c8f465199fd4fede8f426bbf0f6a
 
 /*
 Header에서의 기능은 다음과 같습니다
