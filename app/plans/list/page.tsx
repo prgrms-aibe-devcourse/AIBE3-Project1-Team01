@@ -16,7 +16,7 @@ type Plan = {
 };
 
 export default function PlansListPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
   const router = useRouter();
   
@@ -61,70 +61,48 @@ export default function PlansListPage() {
       }
     };
 
+   if (isLoading) return <p className="p-4">로딩중...</p>;
    if (!user) return <p className="p-4">로그인이 필요합니다.</p>;
 
-return (
+   return (
     <div className="min-h-screen bg-pink-100 py-12">
-  <div className="max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-md border rounded-2xl shadow-xl">
+      <div className="max-w-2xl mx-auto p-6 bg-white/80 backdrop-blur-md border rounded-2xl shadow-xl">
+        <h1 className="text-2xl font-bold mb-6 pl-2 text-gray-800">나의 여행 계획</h1>
+        {plans.length === 0 ? (
+          <p className="text-gray-500">아직 저장된 계획이 없어요.</p>
+        ) : (
+          <ul className="space-y-4">
+            {plans.map((plan) => (
+              <li key={plan.id} className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-800">{plan.title}</h2>
+                  <p className="text-sm text-purple-700 font-semibold">
+                    {format(new Date(plan.start_date), 'yyyy-MM-dd')} ~{' '}
+                    {format(new Date(plan.end_date), 'yyyy-MM-dd')}
+                  </p>
+                  <p className="text-gray-700 mt-1">{plan.description}</p>
 
-    {/* 제목 + 홈 버튼 */}
-    <div className="relative mb-6">
-      <h1 className="text-2xl pl-2 font-bold text-gray-800">나의 여행 계획</h1>
-
-      {/* ✅ 오른쪽 상단 홈 버튼 */}
-      <button
-        onClick={() => router.push("/")}
-        className="absolute right-0 top-0 p-2 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 text-sm rounded-xl shadow"
-        aria-label="홈으로 이동"
-      >
-        <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-6 h-6"
-        >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m10-11v10a1 1 0 01-1 1h-5m-4 0v-4h4v4" />
-        </svg>
-      </button>
+                  {/* 버튼 영역 */}
+                  <div className="mt-3 flex gap-2 justify-end">
+                    <Link
+                      href={`/plans?id=${plan.id}`}
+                      className="px-4 py-2 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-xl text-sm font-medium shadow"
+                    >
+                      수정
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(plan.id)}
+                      className="px-4 py-2 bg-gradient-to-r from-pink-200 to-purple-200 text-pink-700 rounded-xl text-sm font-semibold shadow"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
-
-    {plans.length === 0 ? (
-      <p className="text-gray-500">아직 저장된 계획이 없어요.</p>
-    ) : (
-      <ul className="space-y-4">
-        {plans.map((plan) => (
-          <li key={plan.id} className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-800">{plan.title}</h2>
-              <p className="text-sm text-purple-700 font-semibold">
-                {format(new Date(plan.start_date), 'yyyy-MM-dd')} ~{' '}
-                {format(new Date(plan.end_date), 'yyyy-MM-dd')}
-              </p>
-              <p className="text-gray-700 mt-1">{plan.description}</p>
-
-              {/* 버튼 영역 */}
-              <div className="mt-3 flex gap-2 justify-end">
-                <Link
-                  href={`/plans?id=${plan.id}`}
-                  className="px-4 py-2 bg-gradient-to-r from-pink-300 to-purple-300 text-white rounded-xl text-sm font-medium shadow"
-                >
-                  수정
-                </Link>
-                <button
-                  onClick={() => handleDelete(plan.id)}
-                  className="px-4 py-2 bg-gradient-to-r from-pink-200 to-purple-200 text-pink-700 rounded-xl text-sm font-semibold shadow"
-                >
-                  삭제
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-</div>
   );
-}
+};
