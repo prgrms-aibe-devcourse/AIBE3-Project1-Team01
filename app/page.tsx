@@ -134,8 +134,18 @@ export default function Home() {
       </main>
 
       {/* ✅ Footer를 하단에 고정 */}
-      <footer className="bg-white/60 backdrop-blur-md py-8 text-center text-sm text-gray-600 mt-auto">
-        <p>© 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟</p>
+
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+
+        {/* 텍스트 */}
+        <p className="relative z-10 pl-[10rem] text-left w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
       </footer>
     </div>
   );
