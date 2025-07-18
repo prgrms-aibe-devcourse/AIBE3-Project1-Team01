@@ -61,20 +61,19 @@ export default function ReviewList() {
   const fetchReviews = async () => {
     setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    // 대표 이미지 불러오는 기능 추가
     let query = supabase
       .from("reviews")
-      .select(
-        `
-        *,
-        images(img_url, is_cover)
-      `
-      )
+      .select(`*, images(img_url, is_cover)`)
       .order("created_at", { ascending: false });
+
+    // region, rating 필터
+    if (filters.region !== "all") {
+      query = query.eq("region", filters.region);
+    }
+    if (filters.rating !== "all") {
+      const n = parseInt(filters.rating, 10);
+      if (!isNaN(n)) query = query.gte("rating", n);
+    }
 
     if (filters.region && filters.region !== "all") {
       query = query.eq("region", filters.region);
