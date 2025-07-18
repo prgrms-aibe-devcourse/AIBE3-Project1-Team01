@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabase";
+
 import Link from "next/link";
 
 const popularPlaces = [
@@ -38,7 +41,7 @@ const popularPlaces = [
 ];
 
 export default function PopularDestinations() {
-  const [popularPlaces, setPopularPlaces] = useState<PopularPlace[]>([]);
+  const [popularPlaces, setPopularPlaces] = useState<popularPlace[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
