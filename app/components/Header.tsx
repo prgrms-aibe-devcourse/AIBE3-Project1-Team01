@@ -88,10 +88,10 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
             <Link
-              href="/plans/list"
+              href="/plans/page.tsx"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
             >
-              내 일정
+              계획 세우기
             </Link>
             <Link
               href="/reviews"
@@ -110,11 +110,14 @@ export default function Header() {
           <div className="flex items-center space-x-10 z-10">
             {user ? (
               <>
-                <span className="text-sm text-[#413D3D] whitespace-nowrap">
+                <Link
+                  href="/plans/list"
+                  className="text-sm text-[#413D3D] whitespace-nowrap"
+                >
                   안녕하세요,
                   <br />
                   {user.email}님
-                </span>
+                </Link>
                 <button
                   onClick={() => handleLogout()}
                   className="px-5 py-2 rounded-full font-medium text-lg border text-[#333] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px]"
