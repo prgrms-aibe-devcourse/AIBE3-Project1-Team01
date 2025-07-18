@@ -1,7 +1,7 @@
 "use client";
 
-import Header from "./components/Header";
-import PopularDestinations from "./components/PopularDestinations";
+import Header from "@/app/components/Header";
+import PopularDestinations from "@/app/components/PopularDestinations";
 import Link from "next/link";
 
 export default function Home() {

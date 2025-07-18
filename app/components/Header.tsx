@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import LoginModal from "../login/LoginModal";
 import SignupModal from "../signup/SignupModal";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 /*
 Header에서의 기능은 다음과 같습니다

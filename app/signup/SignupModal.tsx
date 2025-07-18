@@ -3,7 +3,7 @@
  */
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 //타입 소개
 interface SignupModalProps {

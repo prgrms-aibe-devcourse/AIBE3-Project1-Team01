@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "../lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 //타입 정의
 import {
