@@ -4,10 +4,15 @@
 import { supabase } from "../../../lib/supabase";
 import { generateImageFileName, uploadImageToStorage } from "./imageUtils";
 
-// 기존 이미지 -> 순서 정렬을 위해서 url 뿐만 아니라 order 도 필요
+// 기존 이미지 -> 순서 정렬을 위해서 url 뿐만 아니라 order, is_cover 도 필요
 interface ExistingImage {
   url: string;
   order: number;
+  is_cover?: boolean;
+}
+
+interface ImageWithNewFlag extends ExistingImage {
+  isNew: boolean;
 }
 
 // 이미지 삭제 (스토리지 + DB)
@@ -50,7 +55,7 @@ export async function replaceImage(
   const fileName = generateImageFileName(newFile, `${reviewId}-replace-${oldImage.order}-`);
   const newUrl = await uploadImageToStorage(newFile, fileName);
 
-  // DB img_url 업데이트
+  // DB img_url 업데이트 (is_cover 상태 유지)
   const { error: updateError } = await supabase
     .from("images")
     .update({ img_url: newUrl })
@@ -99,10 +104,17 @@ export async function updateImagesOrder(
   }
 
   // 기존+새 이미지 합쳐서 order 0부터 일괄 재할당
-  const allImages = [
+  const allImages: ImageWithNewFlag[] = [
     ...remainingExistingImages.map((img) => ({ ...img, isNew: false })),
-    ...uploadedUrls.map((url) => ({ url, isNew: true })),
+    ...uploadedUrls.map((url, idx) => ({ 
+      url, 
+      order: remainingExistingImages.length + idx,
+      isNew: true 
+    })),
   ];
+
+  // 기존 커버 이미지 찾기
+  const existingCoverImage = remainingExistingImages.find(img => img.is_cover);
 
   // 0번부터 order 재할당
   for (let i = 0; i < allImages.length; i++) {
@@ -113,17 +125,23 @@ export async function updateImagesOrder(
         review_id: reviewId,
         img_url: img.url,
         order: i,
-        is_cover: newCoverImageIndex !== null && i === newCoverImageIndex,
+        is_cover: newCoverImageIndex !== null && i === (remainingExistingImages.length + newCoverImageIndex),
       });
       if (insertError) throw new Error(insertError.message);
     } else {
       // 기존 이미지 DB update (order: i)
-      if ((img as any).order !== i) {
+      const oldOrder = img.order;
+      const isCover = existingCoverImage ? oldOrder === existingCoverImage.order : false;
+      
+      if (oldOrder !== i || isCover) {
         const { error } = await supabase
           .from("images")
-          .update({ order: i })
+          .update({ 
+            order: i,
+            is_cover: isCover && newCoverImageIndex === null // 새로운 커버 이미지가 선택되지 않은 경우에만 기존 커버 상태 유지
+          })
           .eq("review_id", reviewId)
-          .filter('"order"', "eq", (img as any).order);
+          .filter('"order"', "eq", oldOrder);
         if (error) throw new Error(error.message);
       }
     }
