@@ -85,16 +85,26 @@ export default function SignupModal({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-[#F6EFEF] rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
-        >
-          <i className="ri-close-line text-xl"></i>
-        </button>
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-[#413D3D] mb-2">회원가입</h2>
-          <p className="text-gray-500">새로운 여행 친구가 되어주세요!</p>
+        <div className="relative w-full h-[180px] mb-8">
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat bg-contain"
+            style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+          />
+
+          {/* 버튼 */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer z-20"
+          >
+            <i className="ri-close-line text-xl"></i>
+          </button>
+
+          {/* 글자: 배경 위에 올라가도록 absolute + z-index */}
+          <div className="absolute inset-x-0 bottom-0 text-center">
+            <p className="text-[#413D3D]">여행 계획을 시작해보세요!</p>
+          </div>
         </div>
+
         {errorMsg && (
           <div className="text-red-500 text-sm text-center mb-2">
             {errorMsg}

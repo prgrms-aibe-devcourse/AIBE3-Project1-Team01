@@ -62,21 +62,32 @@ export default function LoginModal({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-[#F6EFEF] rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in duration-300">
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
-        >
-          <i className="ri-close-line text-xl"></i>
-        </button>
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-[#] mb-2">로그인</h2>
-          <p className="text-gray-500">여행 계획을 시작해보세요!</p>
+        <div className="relative w-full h-[180px] mb-8">
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat bg-contain"
+            style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+          />
+
+          {/* 버튼 */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer z-20"
+          >
+            <i className="ri-close-line text-xl"></i>
+          </button>
+
+          {/* 글자: 배경 위에 올라가도록 absolute + z-index */}
+          <div className="absolute inset-x-0 bottom-0 text-center">
+            <p className="text-[#413D3D]">여행 계획을 시작해보세요!</p>
+          </div>
         </div>
+
         {errorMsg && (
           <div className="text-red-500 text-sm text-center mb-4">
             {errorMsg}
           </div>
         )}
+
         <form className="space-y-4" onSubmit={handleOnSubmit}>
           <div>
             <input
@@ -137,6 +148,13 @@ export default function LoginModal({
               "로그인"
             )}
           </button>
+
+          {/* or 구분선 */}
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-solid border-gray-400"></div>
+            <span className="mx-3 text-gray-600 font-medium">or</span>
+            <div className="flex-grow border-t border-solid border-gray-400"></div>
+          </div>
 
           <button
             type="button"
