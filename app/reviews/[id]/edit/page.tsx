@@ -139,9 +139,7 @@ export default function EditReviewPage({
 
   // 수정 취소 핸들러
   const handleCancel = () => {
-    if (confirm("수정을 취소하시겠습니까?")) {
-      router.push("/reviews");
-    }
+    router.push("/reviews");
   };
 
   if (loading) {

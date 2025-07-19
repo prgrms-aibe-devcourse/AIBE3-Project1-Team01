@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import ReviewModal from "../components/ReviewModal";
+import ReviewConfirmModal from "../components/ReviewConfirmModal";
 
 // 후기 타입 명시
 type Review = {
@@ -35,6 +36,7 @@ export default function EditReviewPage() {
     title: string;
     detail: string;
   } | null>(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserAndReview = async () => {
@@ -65,7 +67,13 @@ export default function EditReviewPage() {
     fetchUserAndReview();
   }, [id]);
 
-  const handleDelete = async () => {
+  // 모달로 교체
+  const handleDelete = () => {
+    setConfirmModalOpen(true);
+  };
+  
+  // 실제 삭제 처리
+  const confirmDelete = async () => {
     const { error: imageDeleteError } = await supabase
       .from("images")
       .delete()
@@ -75,7 +83,7 @@ export default function EditReviewPage() {
       setModal({
         title: "이미지 삭제 실패",
         detail: imageDeleteError.message,
-      }); //모달 교체 완료
+      }); //모달 교체 완료료
       return;
     }
 
@@ -93,6 +101,8 @@ export default function EditReviewPage() {
     }
     router.push("/reviews");
   };
+
+
 
   if (isLoading || !review) {
     return (
@@ -221,6 +231,15 @@ export default function EditReviewPage() {
           title={modal.title}
           detail={modal.detail}
           onClose={() => setModal(null)}
+        />
+      )}
+
+      {confirmModalOpen && (
+        <ReviewConfirmModal
+          title="후기를 삭제하시겠습니까?"
+          detail="삭제한 후기는 복구할 수 없습니다."
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmModalOpen(false)}
         />
       )}
 
