@@ -4,7 +4,8 @@
  * - 커버 이미지 선택
  */
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import ReviewModal from "./ReviewModal";
 
 export interface ReviewImageUploadData {
   files: File[];
@@ -27,11 +28,20 @@ export default function ReviewImageUpload({
 }: ReviewImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  //모달 상태 
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
+
   // 이미지 선택
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + value.files.length > 5) {
-      alert("최대 5장까지 업로드 가능합니다.");
+      setModal({
+        title: "이미지는 최대 5장까지 업로드 가능합니다.",
+        detail: `현재 ${files.length + value.files.length}장`,
+      }); // 모달 교체 
       return;
     }
 
@@ -141,6 +151,14 @@ export default function ReviewImageUpload({
       <p className="text-xs text-gray-500 mt-1">
         ★ 버튼을 클릭하여 커버 이미지를 선택해주세요.
       </p>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 }

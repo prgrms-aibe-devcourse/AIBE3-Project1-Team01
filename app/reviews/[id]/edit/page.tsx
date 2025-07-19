@@ -8,6 +8,7 @@ import { supabase } from "../../../../lib/supabase";
 import { useReviewContent } from "../../hooks/useReviewContent";
 import { useReviewImageEdit } from "../../hooks/useReviewImageEdit";
 import Header from "../../../components/Header";
+import ReviewModal from "../../components/ReviewModal";
 
 export default function EditReviewPage({
   params,
@@ -47,6 +48,12 @@ export default function EditReviewPage({
     handleNewImageCoverChange, // 새 이미지 커버 설정
     updateImages,
   } = useReviewImageEdit([], reviewId);
+
+  //모달 상태 
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!reviewId) return;
@@ -89,7 +96,6 @@ export default function EditReviewPage({
 
         setLoading(false);
       } catch (e: any) {
-        alert(e.message);
         setLoading(false);
       }
     };
@@ -102,7 +108,6 @@ export default function EditReviewPage({
 
     const errorMsg = validateContent();
     if (errorMsg) {
-      alert(errorMsg);
       return;
     }
 
@@ -123,11 +128,12 @@ export default function EditReviewPage({
 
       // 이미지 업데이트
       await updateImages(reviewId);
-
-      alert("후기 수정 완료!");
       router.push(`/reviews/${reviewId}`); //리뷰 상세 페이지로 돌아가기
     } catch (e: any) {
-      alert(e.message || "오류가 발생했습니다.");
+      setModal({
+        title: "후기 수정 실패.",
+        detail: e.message,
+      }); //모달 교체 완료
     }
   };
 
@@ -218,6 +224,15 @@ export default function EditReviewPage({
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
+
     </div>
   );  
 }

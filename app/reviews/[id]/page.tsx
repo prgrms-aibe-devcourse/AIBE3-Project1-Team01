@@ -4,6 +4,7 @@ import { supabase } from "../../../lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
+import ReviewModal from "../components/ReviewModal";
 
 // 후기 타입 명시
 type Review = {
@@ -28,6 +29,12 @@ export default function EditReviewPage() {
   const params = useParams();
   const { id } = params;
   const router = useRouter();
+
+  //모달 상태 
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchUserAndReview = async () => {
@@ -65,7 +72,10 @@ export default function EditReviewPage() {
       .eq("review_id", id);
 
     if (imageDeleteError) {
-      alert("이미지 삭제 중 오류 발생: " + imageDeleteError.message);
+      setModal({
+        title: "이미지 삭제 실패",
+        detail: imageDeleteError.message,
+      }); //모달 교체 완료
       return;
     }
 
@@ -75,11 +85,12 @@ export default function EditReviewPage() {
       .eq("id", id);
 
     if (reviewDeleteError) {
-      alert("후기 삭제 실패: " + reviewDeleteError.message);
+      setModal({
+        title: "후기 삭제 실패",
+        detail: reviewDeleteError.message,
+      }); //모달 교체 완료
       return;
     }
-
-    alert("후기 삭제 완료!");
     router.push("/reviews");
   };
 
@@ -204,6 +215,15 @@ export default function EditReviewPage() {
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
+
     </div>
   );
 }
