@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import ReviewContentForm, {
   ReviewContentData,
@@ -13,6 +12,7 @@ import { useImageUpload } from "../hooks/useImageUpload";
 import { useReviewContent } from "../hooks/useReviewContent";
 import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
+import ReviewModal from "../components/ReviewModal"; // 모달 import 추가
 
 export default function WriteReviewPage() {
   // 후기 내용 상태 및 로직
@@ -42,6 +42,12 @@ export default function WriteReviewPage() {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const router = useRouter();
+
+  // 모달 상태
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
 
   // ReviewImageUpload에 맞는 value 객체 생성
   const imageValue = {
@@ -80,7 +86,6 @@ export default function WriteReviewPage() {
     // 입력 유효성 검사
     const errorMsg = validateContent();
     if (errorMsg) {
-      alert(errorMsg);
       return;
     }
     try {
@@ -91,7 +96,10 @@ export default function WriteReviewPage() {
       } = await supabase.auth.getUser();
       if (userError || !user) {
         //에러나거나, 사용자 정보가 없으면
-        alert("사용자 정보 가져오기 실패: " + userError.message);
+        setModal({
+          title: "사용자 정보 가져오기 실패",
+          detail: userError?.message ?? "알 수 없는 오류가 발생했습니다.",
+        }); // 모달 교체 완료료
         return;
       }
       const userId = user?.id;
@@ -111,25 +119,34 @@ export default function WriteReviewPage() {
         .select()
         .single();
       if (reviewError || !reviewData) {
-        alert("후기 저장 실패: " + reviewError?.message);
+        setModal({
+          title: "후기 저장 실패",
+          detail: reviewError?.message ?? "알 수 없는 오류가 발생했습니다.",
+        }); // 모달 교체 완료
         return;
       }
       const reviewId = reviewData.id;
+
       // 이미지 업로드 및 images 테이블 저장
       const uploaded = await upload(reviewId);
       setUploadedUrls(uploaded || []);
+
       // 상태 초기화
       resetImages();
       resetContent();
-      //
+
+      // 페이지 이동
       router.push(`/reviews/${reviewId}`);
     } catch (e: any) {
-      alert(e.message || "이미지 업로드 중 오류가 발생했습니다.");
+      setModal({
+        title: "오류 발생",
+        detail: e.message || "이미지 업로드 중 오류가 발생했습니다.",
+      }); // 모달 교체 완료료
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div>
       <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <button
@@ -163,25 +180,26 @@ export default function WriteReviewPage() {
             {isUploading ? "등록 중..." : "후기 등록"}
           </button>
         </form>
-        {/* 업로드 에러 메시지 */}
-        {uploadError && (
-          <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
-        )}
       </div>
-      {/* ✅ Footer를 하단에 고정 */}
 
+      {/* ✅ Footer를 하단에 고정 */}
       <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
-        {/* 배경 이미지 */}
         <div
           className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
           style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
         />
-
-        {/* 텍스트 */}
         <p className="relative z-10 pl-[10rem] text-left w-full">
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 }
