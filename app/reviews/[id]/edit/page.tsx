@@ -49,7 +49,7 @@ export default function EditReviewPage({
     updateImages,
   } = useReviewImageEdit([], reviewId);
 
-  //모달 상태 
+  //모달 상태
   const [modal, setModal] = useState<{
     title: string;
     detail: string;
@@ -144,7 +144,7 @@ export default function EditReviewPage({
 
   // 수정 취소 핸들러
   const handleCancel = () => {
-    router.push("/reviews");
+    router.push(`/reviews/${reviewId}`);
   };
 
   if (loading) {
@@ -165,16 +165,16 @@ export default function EditReviewPage({
         >
           ×
         </button>
-  
+
         <h1 className="text-2xl font-bold mb-6">후기 수정</h1>
-  
+
         <form onSubmit={handleSubmit}>
           <ReviewContentForm
             value={contentData}
             onChange={setContentData}
             disabled={isUploading}
           />
-  
+
           <ReviewImageEdit
             existingImages={existingImages}
             onExistingImageDelete={handleExistingImageDelete}
@@ -190,7 +190,7 @@ export default function EditReviewPage({
             newCoverImageIndex={newCoverImageIndex}
             disabled={isUploading}
           />
-  
+
           <div className="flex gap-3 mt-6">
             <button
               type="button"
@@ -208,13 +208,15 @@ export default function EditReviewPage({
               {isUploading ? "수정 중..." : "수정 완료"}
             </button>
           </div>
-  
+
           {uploadError && (
-            <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
+            <div className="mt-4 text-red-500 text-sm">
+              {uploadError.message}
+            </div>
           )}
         </form>
       </div>
-  
+
       <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto flex justify-center relative px-6 flex items-center">
         {/* 배경 이미지 */}
         <div
@@ -235,7 +237,6 @@ export default function EditReviewPage({
           onClose={() => setModal(null)}
         />
       )}
-
     </div>
-  );  
+  );
 }
