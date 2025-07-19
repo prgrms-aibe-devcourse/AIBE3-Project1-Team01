@@ -111,7 +111,7 @@ export default function ReviewList() {
   }, [filters]);
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div>
       <Header />
       <div className="flex justify-between items-center mb-6"></div>
 

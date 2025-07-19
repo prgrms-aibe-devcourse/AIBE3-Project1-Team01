@@ -103,7 +103,7 @@ export default function EditReviewPage() {
 
   // 후기 상세화면 렌더링
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div>
       <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-6 py-10">
         {/* 내용 */}
