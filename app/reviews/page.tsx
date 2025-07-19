@@ -101,7 +101,7 @@ export default function ReviewList() {
   return (
     <div>
       <Header />
-      <div className="px-10 md:px-48 py-16">
+      <div className="px-16 md:px-48 py-16">
         <div className="flex gap-10">
           {/* 왼쪽 필터 영역 */}
           <div className="w-[220px] shrink-0">
@@ -113,14 +113,19 @@ export default function ReviewList() {
           </div>
 
           {/* 오른쪽 후기 리스트 */}
-          <div className="flex-grow" style={{ maxWidth: "calc(100% - 220px)" }}>
-            {/* ✅ 후기 리스트 상단: 제목 + 버튼 */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-[#413D3D]">여행 후기 모아보기</h2>
+          <div
+            className="flex-grow overflow-x-auto"
+            style={{ maxWidth: "calc(100% - 220px)" }}
+          >
+            {/* 후기 리스트 상단: 제목 + 버튼 */}
+            <div className="flex items-center justify-between mb-6 min-w-[300px]">
+              <h2 className="text-xl font-bold text-[#413D3D] whitespace-nowrap min-w-[200px] flex-shrink-0">
+                여행 후기 모아보기
+              </h2>
               {user && (
                 <button
                   onClick={handleWriteClick}
-                  className="bg-[#F4CCC4] text-white font-semibold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition"
+                  className="bg-[#F4CCC4] text-white font-semibold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition whitespace-nowrap"
                 >
                   후기 작성
                 </button>
@@ -134,7 +139,7 @@ export default function ReviewList() {
                 {reviews.map((review) => (
                   <li
                     key={review.id}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow min-w-[300px]"
                   >
                     <div className="flex gap-4 items-start">
                       {/* 커버 이미지 or No Image */}
@@ -201,7 +206,6 @@ export default function ReviewList() {
                             ⭐x{review.rating}
                           </span>
                         </p>
-
 
                         {/* 후기 내용 */}
                         <p className="text-sm mt-2 text-gray-800 line-clamp-2">

@@ -71,7 +71,7 @@ export default function EditReviewPage() {
   const handleDelete = () => {
     setConfirmModalOpen(true);
   };
-  
+
   // 실제 삭제 처리
   const confirmDelete = async () => {
     const { error: imageDeleteError } = await supabase
@@ -155,27 +155,22 @@ export default function EditReviewPage() {
 
           {/* 이미지 영역 */}
           {images.length > 0 && (
-            <section className="mb-8 pl-6"> {/* ✅ 왼쪽 여백 본문과 맞춤 */}
-              <div className="flex flex-wrap gap-x-3 gap-y-4">
+            <section className="mb-8 pl-6"> {/* 왼쪽 여백 본문과 맞춤 */}
+              <div className="flex gap-x-3 overflow-x-auto pb-2">
                 {images.map((url, idx) => (
-                  <div
+                  <a
                     key={idx}
-                    className="relative group w-[180px] aspect-[2/3] rounded-lg overflow-hidden shadow-md"
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative group w-[180px] aspect-[2/3] rounded-lg overflow-hidden shadow-md shrink-0 block"
                   >
                     <img
                       src={url}
                       alt={`이미지 ${idx + 1}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
                     />
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-2 right-2 bg-white/90 text-xs text-blue-600 px-2 py-1 rounded shadow hover:underline"
-                    >
-                      원본보기
-                    </a>
-                  </div>
+                  </a>
                 ))}
               </div>
             </section>
@@ -199,13 +194,13 @@ export default function EditReviewPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => router.push(`${id}/edit`)}
-                  className="bg-[#C9E6E5] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
+                  className="whitespace-nowrap bg-[#C9E6E5] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
                 >
                   <i className="ri-edit-2-line mr-2 text-[#413D3D]"></i>수정
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="bg-[#F4CCC4] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
+                  className="whitespace-nowrap bg-[#F4CCC4] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
                 >
                   <i className="ri-delete-bin-line mr-2 text-[#413D3D]"></i>후기 삭제
                 </button>
