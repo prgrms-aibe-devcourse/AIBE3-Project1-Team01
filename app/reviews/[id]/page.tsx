@@ -74,6 +74,40 @@ export default function EditReviewPage() {
 
   // 실제 삭제 처리
   const confirmDelete = async () => {
+    // 해당 리뷰의 이미지 URL 조회
+    const { data: images, error: fetchError } = await supabase
+      .from("images")
+      .select("img_url")
+      .eq("review_id", id);
+
+    if (fetchError) {
+      setModal({
+        title: "이미지 조회 실패",
+        detail: fetchError.message,
+      });
+      return;
+    }
+
+    // 이미지 스토리지에서 삭제
+    const fileNames = images
+      ?.map((img) => img.img_url.split("/").pop())
+      .filter((name): name is string => !!name); // null/undefined 제거
+
+    if (fileNames.length > 0) {
+      const { error: storageDeleteError } = await supabase.storage
+        .from("images")
+        .remove(fileNames);
+
+      if (storageDeleteError) {
+        setModal({
+          title: "스토리지 삭제 실패",
+          detail: storageDeleteError.message,
+        });
+        return;
+      }
+    }
+
+    // 이미지 DB 삭제
     const { error: imageDeleteError } = await supabase
       .from("images")
       .delete()
@@ -83,10 +117,11 @@ export default function EditReviewPage() {
       setModal({
         title: "이미지 삭제 실패",
         detail: imageDeleteError.message,
-      }); //모달 교체 완료
+      });
       return;
     }
 
+    // 후기 삭제
     const { error: reviewDeleteError } = await supabase
       .from("reviews")
       .delete()
@@ -96,11 +131,12 @@ export default function EditReviewPage() {
       setModal({
         title: "후기 삭제 실패",
         detail: reviewDeleteError.message,
-      }); //모달 교체 완료
+      });
       return;
     }
     router.push("/reviews");
   };
+
 
 
 
