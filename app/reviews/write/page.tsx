@@ -146,7 +146,7 @@ export default function WriteReviewPage() {
       setModal({
         title: "오류 발생",
         detail: e.message || "이미지 업로드 중 오류가 발생했습니다.",
-      }); // 모달 교체 완료료
+      }); // 모달 교체 완료
     }
   };
 
