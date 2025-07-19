@@ -108,6 +108,11 @@ export default function EditReviewPage({
 
     const errorMsg = validateContent();
     if (errorMsg) {
+      setModal(null);
+      setModal({
+        title: "다시 수정하세요",
+        detail: errorMsg,
+      }); //모달 교체 완료
       return;
     }
 

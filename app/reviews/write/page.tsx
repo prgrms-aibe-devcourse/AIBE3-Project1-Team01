@@ -86,6 +86,11 @@ export default function WriteReviewPage() {
     // 입력 유효성 검사
     const errorMsg = validateContent();
     if (errorMsg) {
+      setModal(null);
+      setModal({
+        title: "다시 수정하세요",
+        detail: errorMsg,
+      }); //모달 교체 완료
       return;
     }
     try {

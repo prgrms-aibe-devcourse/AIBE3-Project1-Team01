@@ -83,7 +83,7 @@ export default function EditReviewPage() {
       setModal({
         title: "이미지 삭제 실패",
         detail: imageDeleteError.message,
-      }); //모달 교체 완료료
+      }); //모달 교체 완료
       return;
     }
 

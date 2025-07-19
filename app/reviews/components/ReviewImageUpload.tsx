@@ -38,6 +38,8 @@ export default function ReviewImageUpload({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + value.files.length > 5) {
+      setModal(null),
+      
       setModal({
         title: "이미지는 최대 5장까지 업로드 가능합니다.",
         detail: `현재 ${files.length + value.files.length}장`,
