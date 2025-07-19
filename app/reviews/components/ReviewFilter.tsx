@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { REGION_OPTIONS } from "../constants/regions";
 
 // 필터 Props 인터페이스 정의
 interface FilterProps {
   onFilterChange: (filters: FilterState) => void;
   activeFilters: FilterState;
+  isLoggedIn: boolean;
 }
 
 // 필터 상태 타입 정의
@@ -15,25 +17,16 @@ interface FilterState {
   myReviewOnly?: boolean;
 }
 
-// 지역 목록
+// 기존 하드코딩된 지역 목록 대신 constants/regions의 데이터를 활용하도록 변경
 const regions = [
   { id: "all", name: "전체 지역" },
-  { id: "서울", name: "서울" },
-  { id: "가평·양평", name: "가평·양평" },
-  { id: "강릉·속초", name: "강릉·속초" },
-  { id: "경주", name: "경주" },
-  { id: "부산", name: "부산" },
-  { id: "여수", name: "여수" },
-  { id: "인천", name: "인천" },
-  { id: "전주", name: "전주" },
-  { id: "제주", name: "제주" },
-  { id: "춘천·홍천", name: "춘천·홍천" },
-  { id: "태안", name: "태안" },
-  { id: "통영·거제·남해", name: "통영·거제·남해" },
-  { id: "포항·안동", name: "포항·안동" },
+  ...REGION_OPTIONS.map((r) => ({
+    id: r.province,
+    name: r.province,
+  })),
 ];
 
-// 평점 목록
+// 평점 목록 (변경 없음)
 const ratings = [
   { id: "all", name: "전체 평점" },
   { id: "5", name: "5점" },
@@ -46,6 +39,7 @@ const ratings = [
 export default function ReviewFilter({
   onFilterChange,
   activeFilters,
+  isLoggedIn,
 }: FilterProps) {
   // 초기 필터 상태 설정 (myReviewOnly는 false 기본값)
   const [filters, setFilters] = useState<FilterState>({
@@ -66,48 +60,30 @@ export default function ReviewFilter({
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
-      <h3 className="text-lg font-bold text-gray-800 mb-6">필터</h3>
-
-      {/* 내가 쓴 후기 토글 (지역 필터 스타일과 동일) */}
-      <div className="mb-6">
-        <div className="space-y-2">
-          <label className="flex items-center cursor-pointer hover:bg-[#C9E6E5]/30 p-2 rounded-lg transition">
-            {/* 실제 체크박스는 숨기고 */}
+      {/* 내가 쓴 후기 토글 (지역/평점 필터와 같은 스타일) */}
+      {isLoggedIn && (
+        <div className="mb-6">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">내 후기</h4>
+          <label className="flex items-center cursor-pointer rounded-lg transition">
             <input
               type="checkbox"
               checked={filters.myReviewOnly}
-              onChange={(e) =>
-                handleFilterUpdate("myReviewOnly", e.target.checked)
-              }
+              onChange={(e) => handleFilterUpdate("myReviewOnly", e.target.checked)}
               className="sr-only"
             />
-
-            {/* 원형 토글 디스크 */}
             <div
-              className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center transition-all ${
+              className={`w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center transition-all ${
                 filters.myReviewOnly
-                  ? "border-[#5CB9B7] bg-white"
+                  ? "border-[#F4CCC4] bg-[#F4CCC4]"
                   : "border-gray-300 bg-white"
               }`}
             >
-              {filters.myReviewOnly && (
-                <div className="w-2 h-2 bg-white rounded-full" />
-              )}
+              {filters.myReviewOnly && <div className="w-2 h-2 bg-white rounded-full" />}
             </div>
-
-            {/* 텍스트 */}
-            <span
-              className={`text-sm transition-colors ${
-                filters.myReviewOnly
-                  ? "text-[#5CB9B7] font-medium"
-                  : "text-gray-600"
-              }`}
-            >
-              내 후기
-            </span>
+            <span className="text-sm text-gray-600">내 후기만 보기</span>
           </label>
         </div>
-      </div>
+      )}
 
       {/* 지역 필터 */}
       <div className="mb-6">
@@ -126,7 +102,7 @@ export default function ReviewFilter({
               <div
                 className={`w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center ${
                   filters.region === region.id
-                    ? "border-pink-500 bg-pink-500"
+                    ? "border-[#F4CCC4] bg-[#F4CCC4]"
                     : "border-gray-300"
                 }`}
               >
@@ -134,15 +110,7 @@ export default function ReviewFilter({
                   <div className="w-2 h-2 bg-white rounded-full" />
                 )}
               </div>
-              <span
-                className={`text-sm ${
-                  filters.region === region.id
-                    ? "text-pink-600 font-medium"
-                    : "text-gray-600"
-                }`}
-              >
-                {region.name}
-              </span>
+              <span className="text-sm text-gray-600">{region.name}</span>
             </label>
           ))}
         </div>
@@ -165,7 +133,7 @@ export default function ReviewFilter({
               <div
                 className={`w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center ${
                   filters.rating === rating.id
-                    ? "border-yellow-500 bg-yellow-500"
+                    ? "border-[#F4CCC4] bg-[#F4CCC4]"
                     : "border-gray-300"
                 }`}
               >
@@ -173,15 +141,7 @@ export default function ReviewFilter({
                   <div className="w-2 h-2 bg-white rounded-full" />
                 )}
               </div>
-              <span
-                className={`text-sm ${
-                  filters.rating === rating.id
-                    ? "text-yellow-600 font-medium"
-                    : "text-gray-600"
-                }`}
-              >
-                {rating.name}
-              </span>
+              <span className="text-sm text-gray-600">{rating.name}</span>
             </label>
           ))}
         </div>

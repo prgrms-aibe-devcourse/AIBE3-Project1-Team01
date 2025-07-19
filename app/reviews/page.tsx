@@ -11,15 +11,11 @@ interface Review {
   id: number;
   title: string;
   region: string;
+  region_city: string;
   rating: number;
   content: string;
   created_at: string;
   cover_image?: string; // 커버 이미지 url
-}
-
-interface FilterState {
-  region: string;
-  rating: string;
 }
 
 interface FilterState {
@@ -66,15 +62,6 @@ export default function ReviewList() {
       .select(`*, images(img_url, is_cover)`)
       .order("created_at", { ascending: false });
 
-    // region, rating 필터
-    if (filters.region !== "all") {
-      query = query.eq("region", filters.region);
-    }
-    if (filters.rating !== "all") {
-      const n = parseInt(filters.rating, 10);
-      if (!isNaN(n)) query = query.gte("rating", n);
-    }
-
     if (filters.region && filters.region !== "all") {
       query = query.eq("region", filters.region);
     }
@@ -85,6 +72,7 @@ export default function ReviewList() {
         query = query.gte("rating", ratingNum);
       }
     }
+
     // 내가 쓴 후기만 보기 - 유저 ID 필터 추가
     if (filters.myReviewOnly && user) {
       query = query.eq("user_id", user.id);
@@ -113,91 +101,96 @@ export default function ReviewList() {
   return (
     <div>
       <Header />
-      <div className="flex justify-between items-center mb-6"></div>
+      <div className="px-10 md:px-48 py-16">
+        <div className="flex gap-10">
+          {/* 왼쪽 필터 영역 */}
+          <div className="w-[220px] shrink-0">
+            <ReviewFilter
+              activeFilters={filters}
+              onFilterChange={handleFilterChange}
+              isLoggedIn={!!user}
+            />
+          </div>
 
-      <div className="flex gap-8">
-        {/* 왼쪽 필터 영역 */}
-        <div className="w-1/4">
-          {/* 로그인된 유저에 한해 버튼 노출 */}
-          {user && (
-            <button
-              onClick={handleWriteClick}
-              className="w-full bg-[#F4CCC4] text-white font-bold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition"
-            >
-              후기 작성
-            </button>
-          )}
-
-          <ReviewFilter
-            activeFilters={filters}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-
-        {/* 오른쪽 후기 리스트 */}
-        <div className="w-3/4">
-          {loading ? (
-            <div>로딩 중...</div>
-          ) : (
-            <ul className="space-y-6">
-              {reviews.map((review) => (
-                <li
-                  key={review.id}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+          {/* 오른쪽 후기 리스트 */}
+          <div className="flex-grow" style={{ maxWidth: "calc(100% - 220px)" }}>
+            {/* ✅ 후기 리스트 상단: 제목 + 버튼 */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-[#413D3D]">여행 후기 모아보기</h2>
+              {user && (
+                <button
+                  onClick={handleWriteClick}
+                  className="bg-[#F4CCC4] text-white font-semibold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition"
                 >
-                  <div className="flex gap-4">
-                    {review.cover_image ? (
-                      <div className="w-24 h-24 flex-shrink-0">
-                        <img
-                          src={review.cover_image}
-                          alt={review.title}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-24 h-24 bg-gray-100 flex-shrink-0 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-400">No Image</span>
-                      </div>
-                    )}
-                    <div className="flex-grow">
-                      <Link
-                        href={`/reviews/${review.id}`}
-                        className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200"
-                      >
-                        {review.title}
-                      </Link>
-                      <p className="text-sm text-[#413D3D] mt-2 flex flex-wrap gap-2 items-center">
-                        {/* 지역 */}
-                        <span className="bg-[#C9E6E5] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-                          {review.region}
-                        </span>
+                  후기 작성
+                </button>
+              )}
+            </div>
 
-                        {/* 평점 */}
-                        <span className="bg-[#FBDED6] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-                          ⭐ {review.rating} / 5
-                        </span>
+            {loading ? (
+              <div>로딩 중...</div>
+            ) : (
+              <ul className="space-y-6">
+                {reviews.map((review) => (
+                  <li
+                    key={review.id}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex gap-4">
+                      {review.cover_image ? (
+                        <div className="w-24 h-24 flex-shrink-0">
+                          <img
+                            src={review.cover_image}
+                            alt={review.title}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-24 h-24 bg-gray-100 flex-shrink-0 rounded-lg flex items-center justify-center">
+                          <span className="text-gray-400">No Image</span>
+                        </div>
+                      )}
+                      <div className="flex-grow">
+                        <div className="flex items-center gap-4">
+                          <Link
+                            href={`/reviews/${review.id}`}
+                            className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200"
+                          >
+                            {review.title}
+                          </Link>
+                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                            {new Date(review.created_at).toLocaleDateString("ko-KR")}
+                          </span>
+                        </div>
 
-                        {/* 날짜 */}
-                        <span className="bg-[#F6EFEF] text-[#413D3D] px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-                          {" "}
-                          {new Date(review.created_at).toLocaleDateString(
-                            "ko-KR"
+                        {/* 태그 (지역 + 별점) */}
+                        <p className="mt-2 flex gap-2 items-center flex-wrap">
+                          <span className="bg-[#C9E6E5] text-[#413D3D] px-2 py-[2px] rounded-full text-[10px] font-medium shadow-sm">
+                            {review.region}
+                          </span>
+                          {review.region_city && (
+                            <span className="bg-[#FBDED6] text-[#413D3D] px-2 py-[2px] rounded-full text-[10px] font-medium shadow-sm">
+                              {review.region_city}
+                            </span>
                           )}
-                        </span>
-                      </p>
+                          {/* ✅ 별점 태그 스타일 맞춤 */}
+                          <span className="text-[#413D3D] text-[10px] font-medium ml-1 whitespace-nowrap">
+                            ⭐x{review.rating}
+                          </span>
+                        </p>
 
-                      <p className="text-sm mt-2 text-gray-800 line-clamp-2">
-                        {review.content}
-                      </p>
+                        <p className="text-sm mt-2 text-gray-800 line-clamp-2">
+                          {review.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
-      {/* ✅ Footer를 하단에 고정 */}
 
       <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto flex justify-center relative px-6 flex items-center">
         {/* 배경 이미지 */}
