@@ -39,13 +39,9 @@ export default function ReviewContentForm({
   // region 변경 시 region_city 초기화 및 value 변경
   const onRegionChange = (newRegion: string) => {
     setRegion(newRegion);
-    const isSingleCity = REGION_OPTIONS.find(r => r.province === newRegion)?.isSingleCity ?? false;
+    setRegionCity("");
 
-    // 시/도 단일 도시일 경우 region_city는 region과 동일하게 자동 설정, 아니면 빈 문자열
-    const newRegionCity = isSingleCity ? newRegion : "";
-    setRegionCity(newRegionCity);
-
-    onChange({ ...value, region: newRegion, region_city: newRegionCity });
+    onChange({ ...value, region: newRegion, region_city: ""});
   };
 
   // region_city 변경 시 value 변경
@@ -87,22 +83,28 @@ export default function ReviewContentForm({
             ))}
           </select>
 
-          {/* 시/군/구는 시/도가 단일 도시가 아닐 때만 보여줌 */}
-          {!REGION_OPTIONS.find((r) => r.province === region)?.isSingleCity && (
-            <select
-              value={regionCity}
-              onChange={(e) => onRegionCityChange(e.target.value)}
-              className="w-1/2 px-3 py-2 border rounded"
-              disabled={!region || disabled}
-            >
-              <option value="">시/군/구 선택</option>
-              {REGION_OPTIONS.find((r) => r.province === region)?.cities.map((cityName) => (
-                <option key={cityName} value={cityName}>
-                  {cityName}
-                </option>
-              ))}
-            </select>
-          )}
+          {/* 시/군/구 선택 */}  
+          <select
+            value={regionCity}
+            onChange={(e) => onRegionCityChange(e.target.value)}
+            className="w-1/2 px-3 py-2 border rounded"
+            disabled={!region || disabled}
+          >
+            {region === "세종" ? (
+              <option value="" disabled>
+                세종시는 자치구가 없습니다.
+              </option>
+            ) : (
+              <>
+                <option value="">시/군/구 선택</option>
+                {REGION_OPTIONS.find((r) => r.province === region)?.cities.map((cityName) => (
+                  <option key={cityName} value={cityName}>
+                    {cityName}
+                  </option>
+                ))}
+              </>
+            )}
+          </select>
         </div>
       </div>
 
