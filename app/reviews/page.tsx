@@ -136,7 +136,8 @@ export default function ReviewList() {
                     key={review.id}
                     className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 items-start">
+                      {/* 커버 이미지 or No Image */}
                       {review.cover_image ? (
                         <div className="w-24 h-24 flex-shrink-0">
                           <img
@@ -150,21 +151,44 @@ export default function ReviewList() {
                           <span className="text-gray-400">No Image</span>
                         </div>
                       )}
-                      <div className="flex-grow">
-                        <div className="flex items-center gap-4">
+
+                      {/* 제목, 작성일, 태그, 내용 영역 */}
+                      <div className="flex-grow min-w-0 flex flex-col">
+                        {/* 제목 + 작성일 (한 줄에 유지, 제목 넘칠 땐 말줄임) */}
+                        <div
+                          className="flex items-center justify-between gap-4 flex-nowrap min-w-0"
+                          style={{ minWidth: 0 }}
+                        >
                           <Link
                             href={`/reviews/${review.id}`}
-                            className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200"
+                            className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200 truncate max-w-full"
+                            style={{
+                              minWidth: 0,
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                              flexGrow: 1,
+                            }}
+                            title={review.title}
                           >
                             {review.title}
                           </Link>
-                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                          <span
+                            className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0"
+                          >
                             {new Date(review.created_at).toLocaleDateString("ko-KR")}
                           </span>
                         </div>
 
-                        {/* 태그 (지역 + 별점) */}
-                        <p className="mt-2 flex gap-2 items-center flex-wrap">
+                        {/* 태그 및 내용 부분 */}
+                        <p
+                          className="mt-2 flex gap-2 items-center flex-wrap"
+                          style={{
+                            whiteSpace: "normal",
+                            overflowWrap: "break-word",
+                            wordBreak: "keep-all",
+                          }}
+                        >
                           <span className="bg-[#C9E6E5] text-[#413D3D] px-2 py-[2px] rounded-full text-[10px] font-medium shadow-sm">
                             {review.region}
                           </span>
@@ -173,12 +197,13 @@ export default function ReviewList() {
                               {review.region_city}
                             </span>
                           )}
-                          {/* ✅ 별점 태그 스타일 맞춤 */}
                           <span className="text-[#413D3D] text-[10px] font-medium ml-1 whitespace-nowrap">
                             ⭐x{review.rating}
                           </span>
                         </p>
 
+
+                        {/* 후기 내용 */}
                         <p className="text-sm mt-2 text-gray-800 line-clamp-2">
                           {review.content}
                         </p>
@@ -200,7 +225,7 @@ export default function ReviewList() {
         />
 
         {/* 텍스트 */}
-        <p className=" text-center relative z-10  text-left w-full">
+        <p className="text-center relative z-10 text-left w-full">
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>
