@@ -131,9 +131,11 @@ export default function Home() {
             <div className="relative group">
               {/* 오버레이를 진하게 덮는 요소 */}
               <div className="absolute inset-0 bg-black/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              <button className="relative bg-[#e6b3aa] text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition duration-300 hover:bg-[#cc9288] hover:shadow-xl active:scale-95 active:brightness-90 focus:outline-none">
-                여행 계획 시작하기
-              </button>
+              <Link href={"/plans"} passHref>
+                <button className="relative bg-[#e6b3aa] text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition duration-300 hover:bg-[#cc9288] hover:shadow-xl active:scale-95 active:brightness-90 focus:outline-none">
+                  여행 계획 시작하기
+                </button>
+              </Link>
             </div>
           </div>
         </section>

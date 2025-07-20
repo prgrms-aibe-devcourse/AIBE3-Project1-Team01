@@ -133,9 +133,7 @@ export default function PopularDestinations() {
                   </p>
 
                   <div className="mt-auto flex items-center text-pink-500 group-hover:text-pink-600">
-                    <span className="text-sm font-medium">
-                      여행 계획 세우기
-                    </span>
+                    <span className="text-sm font-medium">자세히 보기</span>
                     <i className="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
                   </div>
                 </div>
