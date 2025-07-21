@@ -21,7 +21,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
       ? eachDayOfInterval({ start: range.from, end: range.to })
       : [];
 
-  const handleInputChange = ( //장소/설명 입력 필드 변경 시 호출되는 함수
+  const handleInputChange = ( //장소/설명 입력 필드 변경 시 호출
     date: string,
     index: number,
     field: 'place' | 'detail',
@@ -35,7 +35,7 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
     });
   };
 
-  const handleAddEntry = (date: string) => { //항목 추가 버튼 클릭 시 호출되는 함수
+  const handleAddEntry = (date: string) => { //항목 추가 버튼 클릭 시 호출
     setDailyPlans((prev) => {
       const current = prev[date] || [];
       return {

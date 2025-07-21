@@ -171,7 +171,7 @@ export default function PlanPage() {
           <div className="container mx-auto p-6 max-w-6xl">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* 왼쪽: 달력+제목+설명 */}
-              <div className="w-full md:w-1/3">
+              <div className="w-full md:w-[380px]">
                 <PlanForm
                   range={range}
                   setRange={setRange}

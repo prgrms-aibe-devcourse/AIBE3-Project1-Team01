@@ -1,12 +1,12 @@
 'use client';
 
-import { DayPicker } from 'react-day-picker'; //날짜 선택용 캘린더 컴포넌트 불러옴
-import { format } from 'date-fns'; //날짜를 '2025-07-17' 형식으로 바꿔주는 유틸 함수
+import { DayPicker } from 'react-day-picker';
+import { format } from 'date-fns';
 import 'react-day-picker/dist/style.css';
-import type { DateRange } from 'react-day-picker'; //날짜 범위(from, to)를 나타내는 타입만 불러옴
+import type { DateRange } from 'react-day-picker';
 
-type Props = { //PlanForm 컴포넌트가 page.tsx에서 받은 props 6가지
-  range: DateRange | undefined; //DateRange는 { from: Date, to: Date } 같은 형태
+type Props = {
+  range: DateRange | undefined;
   setRange: (range: DateRange | undefined) => void;
   title: string;
   setTitle: (title: string) => void;
@@ -21,14 +21,14 @@ export default function PlanForm({
   setTitle,
   description,
   setDescription,
-}: Props) { //PlanForm 컴포넌트 내부에서 사용되는 함수
+}: Props) {
   return (
     <div className="bg-white/80 rounded-2xl shadow-lg p-6 w-full">
       <h2 className="text-xl font-bold mb-4 text-black">날짜 선택</h2>
       <DayPicker mode="range" selected={range} onSelect={setRange} /> 
-      {/* 날짜 범위 선택 가능한 달력 표시. 선택값은 range이고, 선택 시 setRange 실행 */}
+      
 
-      {range?.from && range?.to && ( //날짜 범위가 선택되어 있으면 표시
+      {range?.from && range?.to && (
         <p className="mt-4 text-[#413D3D] font-semibold">
           {'<'}{format(range.from, 'yyyy-MM-dd')} ~ {format(range.to, 'yyyy-MM-dd')}{'>'}
         </p>

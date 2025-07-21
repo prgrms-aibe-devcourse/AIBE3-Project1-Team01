@@ -139,7 +139,8 @@ export default function ReviewList() {
                 {reviews.map((review) => (
                   <li
                     key={review.id}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow min-w-[300px]"
+                    onClick={() => router.push(`/reviews/${review.id}`)}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow min-w-[300px] cursor-pointer"
                   >
                     <div className="flex gap-4 items-start">
                       {/* 커버 이미지 or No Image */}
@@ -164,8 +165,7 @@ export default function ReviewList() {
                           className="flex items-center justify-between gap-4 flex-nowrap min-w-0"
                           style={{ minWidth: 0 }}
                         >
-                          <Link
-                            href={`/reviews/${review.id}`}
+                          <h3
                             className="text-lg font-semibold text-[#413D3D] hover:text-gray-400 transition-colors duration-200 truncate max-w-full"
                             style={{
                               minWidth: 0,
@@ -177,11 +177,11 @@ export default function ReviewList() {
                             title={review.title}
                           >
                             {review.title}
-                          </Link>
-                          <span
-                            className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0"
-                          >
-                            {new Date(review.created_at).toLocaleDateString("ko-KR")}
+                          </h3>
+                          <span className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">
+                            {new Date(review.created_at).toLocaleDateString(
+                              "ko-KR"
+                            )}
                           </span>
                         </div>
 

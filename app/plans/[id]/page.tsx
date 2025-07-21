@@ -61,30 +61,32 @@ export default function PlanDetailPage() {
       <Header />
       <div className="min-h-screen bg-[#F6EFEF] py-1">
         <div className="max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-lg mt-12">
-          <h1 className="text-2xl font-bold mb-3">{plan.title}</h1>
-          <p className="mb-2 text-gray-600">
+        <h1 className="text-2xl font-bold mb-3">
+        {plan.title}
+        <span className="text-sm font-normal text-gray-400 ml-3 align-middle relative top-[1px]">
             {plan.start_date} ~ {plan.end_date}
-          </p>
+        </span>
+        </h1>
           <p className="mb-3">{plan.description}</p>
           <hr className="my-6 border-t border-gray-200" />
 
-          <h2 className="text-lg font-bold mt-6 mb-2 text-[#413D3D]">세부 일정</h2>
+          <h2 className="text-lg font-bold mt-6 mb-2 text-gray-700">세부 일정</h2>
           {Object.keys(grouped).length === 0 ? (
             <p className="text-gray-400">등록된 일정이 없습니다.</p>
           ) : (
             Object.entries(grouped).map(([date, items]) => (
-              <div key={date} className="pb-4">
+              <div key={date} className="pl-1 pt-1 pb-4">
                 <div className="font-semibold mb-2 text-[#B84A39]">{date}</div>
-                <ol className="list-decimal pl-4 space-y-2">
-  {items.map((item, idx) => (
-    <li key={idx} className="text-gray-700 font-medium">
-      <div>{item.place}</div>
-      {item.detail && (
-        <div className="text-gray-600">{item.detail}</div>
-      )}
-    </li>
-  ))}
-</ol>
+                <ol className="list-decimal pl-5 space-y-2 pl-5">
+                {items.map((item, idx) => (
+                    <li key={idx} className="text-gray-700 font-medium pb-1">
+                    <div>{item.place}</div>
+                    {item.detail && (
+                        <div className="text-gray-600">{item.detail}</div>
+                    )}
+                    </li>
+                ))}
+                </ol>
               </div>
             ))
           )}
@@ -117,6 +119,17 @@ export default function PlanDetailPage() {
         onConfirm={handleDelete}
         onCancel={() => setDeleteModalOpen(false)}
       />
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
+          style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
+        />
+        {/* 텍스트 */}
+        <p className="relative z-10 text-center w-full">
+          © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
+        </p>
+      </footer>
     </>
   );
 }
