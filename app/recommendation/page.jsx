@@ -112,9 +112,16 @@ export default function RecommendationPage() {
             )}
             {areaCode && category && (
               <div className="bg-my-peach rounded-2xl shadow p-6">
-                <h2 className="text-2xl font-extrabold mb-4 drop-shadow text-my-dark-gray">
-                  세부 테마
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-extrabold drop-shadow text-my-dark-gray">
+                    세부 테마
+                  </h2>
+                  {(cat1 || cat2 || cat3) && (
+                    <span className="text-xs text-gray-400 ml-2">
+                      {[cat1, cat2, cat3].filter(Boolean).join(" > ")}
+                    </span>
+                  )}
+                </div>
                 <SubCategoryTabs
                   category={category}
                   cat1={cat1}

@@ -39,7 +39,6 @@ export default function DetailModal({ contentid, onClose }) {
             <div className="text-center py-12 text-red-500">{error}</div>
           ) : detail ? (
             <div>
-              {/* 제목 */}
               <h3 className="text-3xl font-extrabold mb-4 text-center text-my-dark-gray drop-shadow">
                 {detail.title}
               </h3>
