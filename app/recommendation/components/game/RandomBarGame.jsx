@@ -150,12 +150,6 @@ export default function RandomBarGame({ items, onComplete, onClose }) {
               >
                 다시하기
               </button>
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-              >
-                확인
-              </button>
             </div>
           </div>
         </div>

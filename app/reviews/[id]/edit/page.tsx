@@ -160,7 +160,7 @@ export default function EditReviewPage({
           className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}
           aria-label="닫기"
-          onClick={() => router.push("/reviews")}
+          onClick={() => router.push(`/reviews/${reviewId}`)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

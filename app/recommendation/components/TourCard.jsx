@@ -14,7 +14,10 @@ export default function TourCard({ place, onClick }) {
           style={{ maxWidth: 320 }}
         />
       ) : (
-        <div className="flex flex-col items-center justify-center h-48 w-full bg-gray-100 rounded-xl relative overflow-hidden">
+        <div
+          className="flex flex-col items-center justify-center w-full h-40 mb-4 bg-gray-100 rounded-xl relative overflow-hidden"
+          style={{ maxWidth: 320 }}
+        >
           <img
             src="/images/h1trip-logo.png"
             alt="로고"
