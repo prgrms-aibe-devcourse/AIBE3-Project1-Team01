@@ -89,7 +89,6 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
-<<<<<<< HEAD
             <button
               type="button"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg bg-transparent border-none px-0"
@@ -100,11 +99,6 @@ export default function Header() {
                   setIsLoginModalOpen(true);
                 }
               }}
-=======
-            <Link
-              href="/plans"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
->>>>>>> c227efede37a95aef1eeab3fe11670201dc37cd5
             >
               계획 세우기
             </button>
