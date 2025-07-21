@@ -6,7 +6,7 @@ import { supabase } from "../../../lib/supabase";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import DeleteModal from './DeleteModal';
+import DeleteModal from "../components/DeleteModal";
 import Header from "../../components/Header";
 
 type Plan = {
@@ -85,7 +85,8 @@ export default function PlansListPage() {
               {plans.map((plan) => (
                 <li
                   key={plan.id}
-                  className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all"
+                  className="border border-pink-100 rounded-xl p-5 shadow bg-white/90 hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => router.push(`/plans/${plan.id}`)}
                 >
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
@@ -102,11 +103,12 @@ export default function PlansListPage() {
                       <Link
                         href={`/plans?id=${plan.id}`}
                         className="px-4 py-2 bg-[#C9E6E5] text-[#413D3D] rounded-xl text-sm font-semibold shadow"
+                        onClick={e => e.stopPropagation()}
                       >
                         수정
                       </Link>
                       <button
-                        onClick={() => onDeleteClick(plan.id)}
+                        onClick={e => { e.stopPropagation(); onDeleteClick(plan.id); }}
                         className="px-4 py-2 bg-[#F4CCC4] text-[#413D3D] rounded-xl text-sm font-semibold shadow"
                       >
                         삭제

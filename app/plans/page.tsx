@@ -5,11 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import type { DateRange } from 'react-day-picker';
-import PlanForm from './PlanForm';
-import DayInputs from './DayInputs'; 
+import PlanForm from './components/PlanForm';
+import DayInputs from './components/DayInputs'; 
 import LoginModal from '../login/LoginModal';
 import SignupModal from '../signup/SignupModal';
-import Header from '../components/Header';  
+import Header from "../components/Header";
+import { format } from 'date-fns';
 
 export default function PlanPage() {
   const [range, setRange] = useState<DateRange | undefined>();
@@ -96,8 +97,8 @@ export default function PlanPage() {
           .update({
             title,
             description,
-            start_date: range.from.toISOString().slice(0, 10),
-            end_date: range.to.toISOString().slice(0, 10),
+            start_date: format(range.from, 'yyyy-MM-dd'),
+            end_date: format(range.to, 'yyyy-MM-dd'),
           })
           .eq('id', planId)
           .eq('user_id', user?.id);
@@ -122,6 +123,9 @@ export default function PlanPage() {
 
         await supabase.from('plan_items').insert(itemsToInsert);
         
+        // 수정 후 상세 페이지로 이동
+        router.push(`/plans/${planId}`);
+        
       } else {
         //새로 작성 모드일 경우
         const { data: planInsertData, error: planInsertError } = await supabase
@@ -129,8 +133,8 @@ export default function PlanPage() {
           .insert({
             title,
             description,
-            start_date: range.from.toISOString().slice(0, 10),
-            end_date: range.to.toISOString().slice(0, 10),
+            start_date: format(range.from, 'yyyy-MM-dd'),
+            end_date: format(range.to, 'yyyy-MM-dd'),
             user_id: user?.id,
           })
           .select()
@@ -141,7 +145,7 @@ export default function PlanPage() {
           return;
         }
 
-        const planId = planInsertData.id;
+        const newPlanId = planInsertData.id;
 
         const itemsToInsert = Object.entries(dailyPlans).flatMap(([date, entries]) =>
           entries.map((entry, idx) => ({
@@ -149,25 +153,25 @@ export default function PlanPage() {
             place: entry.place,
             detail: entry.detail,
             order: idx,
-            plan_id: planId,
+            plan_id: newPlanId,
           }))
         );
 
         await supabase.from('plan_items').insert(itemsToInsert);
 
+        // 저장 후 상세 페이지로 이동
+        router.push(`/plans/${newPlanId}`);
       }
-  
-      router.push('/plans/list');
     };
 
     return (
       <>
         <Header />
-        <div className="min-h-screen bg-[#F6EFEF] py-12">
+        <div className="min-h-screen bg-[#F6EFEF] py-7">
           <div className="container mx-auto p-6 max-w-6xl">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* 왼쪽: 달력+제목+설명 */}
-              <div className="w-full md:w-1/3">
+              <div className="w-full md:w-[380px]">
                 <PlanForm
                   range={range}
                   setRange={setRange}

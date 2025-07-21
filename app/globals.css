@@ -1,9 +1,9 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
+@import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* DayPicker */
+/* DayPicker 캘린더 */
 td.rdp-selected,
 td.rdp-range_start,
 td.rdp-range_end {

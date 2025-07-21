@@ -1,11 +1,10 @@
 "use client";
-/*
- */
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import SignupSuccessModal from "./SignupSuccessModal";
 
-//타입 소개
 interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,25 +16,26 @@ export default function SignupModal({
   onClose,
   onLogin,
 }: SignupModalProps) {
-  const [email, setEmail] = useState(""); // 이메일
-  const [password, setPassword] = useState(""); // 비밀번호
-  const [confirmPassword, setConfirmPassword] = useState(""); //비밀번호 확인
-  const [isLoading, setIsLoading] = useState(false); //로딩
-  const [errorMsg, setErrorMsg] = useState(""); // 에러 메시지
-  const router = useRouter();
-  const { handleSignUp } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  // 비밀번호와 확인 시 비밀번호가 다른 경우 하단에 비밀번호가 일치하지 않는다는 경고글 띄움
+  const router = useRouter();
+  const { handleSignUp, handleLogInWithGoogle } = useAuth(); // ✅ 소셜 로그인 함수 추가
+
   const isPasswordMismatch =
     Boolean(password) &&
     Boolean(confirmPassword) &&
     password !== confirmPassword;
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
     e.preventDefault();
+    setIsLoading(true);
+
     const emailRegex = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
-    // 입력값 검증
     if (!emailRegex.test(email)) {
       setErrorMsg("올바른 이메일을 입력하세요.");
       setIsLoading(false);
@@ -47,32 +47,38 @@ export default function SignupModal({
       return;
     }
     if (isPasswordMismatch) {
-      setErrorMsg(""); // 이미 아래에 안내가 있으므로 중복 안내 X
+      setErrorMsg("");
       setIsLoading(false);
       return;
     }
-    const { error } = await handleSignUp(email, password); // 회원가입
+
+    const { error } = await handleSignUp(email, password);
     setIsLoading(false);
 
-    //회원가입 시 에러 처리
     if (error) {
       setErrorMsg(error.message);
       setEmail("");
       setPassword("");
       setConfirmPassword("");
     } else {
-      alert("회원 가입 성공");
       setErrorMsg("");
-      onClose(); //성공 시 창 닫기
-      if (onLogin) {
-        onLogin(); // 로그인 모달 띄우기
-      }
+      setIsSuccess(true);
+    }
+  };
+
+  // ✅ 구글 로그인 처리 함수
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const { error } = await handleLogInWithGoogle();
+    setIsLoading(false);
+
+    if (error) {
+      setErrorMsg("구글 로그인에 실패했습니다.");
     }
   };
 
   if (!isOpen) return null;
 
-  // 입력값 초기화 후 모달 닫기
   const handleClose = () => {
     setEmail("");
     setPassword("");
@@ -90,7 +96,7 @@ export default function SignupModal({
             style={{ backgroundImage: "url('/images/h1trip-logo.png')" }}
           />
 
-          {/* 버튼 */}
+          {/* 닫기 버튼 */}
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer z-20"
@@ -98,17 +104,27 @@ export default function SignupModal({
             <i className="ri-close-line text-xl"></i>
           </button>
 
-          {/* 글자: 배경 위에 올라가도록 absolute + z-index */}
           <div className="absolute inset-x-0 bottom-0 text-center">
             <p className="text-[#413D3D]">여행 계획을 시작해보세요!</p>
           </div>
         </div>
+
+        {/* ✅ 회원가입 성공 시 모달 */}
+        <SignupSuccessModal
+          isOpen={isSuccess}
+          onClose={() => {
+            setIsSuccess(false);
+            onClose(); // 회원가입 모달 닫기
+            if (onLogin) onLogin(); // 로그인 모달 띄우기
+          }}
+        />
 
         {errorMsg && (
           <div className="text-red-500 text-sm text-center mb-2">
             {errorMsg}
           </div>
         )}
+
         <form className="space-y-4" onSubmit={handleOnSubmit}>
           <div>
             <input
@@ -142,12 +158,13 @@ export default function SignupModal({
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          {/*비밀번호 일치 확인 & 로딩 시 로딩중으로 글자 변경 */}
+
           {isPasswordMismatch && (
             <div className="text-red-500 text-sm text-center mb-2">
               비밀번호가 일치하지 않습니다.
             </div>
           )}
+
           <button
             type="submit"
             className="w-full bg-[#F4CCC4] text-white py-3 rounded-xl font-medium hover:brightness-105 transition-all duration-300 whitespace-nowrap cursor-pointer flex items-center justify-center"
