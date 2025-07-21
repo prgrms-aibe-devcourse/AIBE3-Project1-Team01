@@ -14,6 +14,20 @@ Header에서의 기능은 다음과 같습니다
 2. 로딩 시 로딩 중으로 띄워주기
 */
 
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  theme: {
+    extend: {},
+    screens: {
+      md: "500px", // md 브레이크포인트를 500px로 변경
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
+  },
+  plugins: [],
+};
+
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); //로그인 창을 띄워야 하는 경우 사용
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); //회원가입 창을 띄워야 하는 경우 사용
@@ -121,25 +135,26 @@ export default function Header() {
               <>
                 <Link
                   href="/plans/list"
-                  className="text-sm text-[#413D3D] whitespace-nowrap"
+                  className="text-sm text-[#413D3D] text-left min-w-[150px] max-w-[160px] leading-tight break-words whitespace-normal"
                 >
                   안녕하세요,
                   <br />
                   {user.email}님
                 </Link>
+
                 <button
                   onClick={() => handleLogout()}
-                  className="px-5 py-2 rounded-full font-medium text-lg border text-[#333] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px]"
+                  className="px-4 py-1.5 rounded-full font-medium text-base border-[3px] text-[#413D3D] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px] tracking-tight"
                 >
-                  Logout
+                  Log Out
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsLoginModalOpen(true)}
-                className="px-4 py-1.5 rounded-full font-medium text-base border-[3px] text-[#333] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px]"
+                className="px-4 py-1.5 rounded-full font-medium text-base border-[3px] text-[#413D3D] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px] tracking-tight"
               >
-                Login
+                Log In
               </button>
             )}
           </div>
