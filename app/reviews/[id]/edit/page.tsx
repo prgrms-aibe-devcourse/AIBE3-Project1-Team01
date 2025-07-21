@@ -156,28 +156,6 @@ export default function EditReviewPage({
     <div>
       <Header />
       <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        <button
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
-          style={{ lineHeight: 1 }}
-          aria-label="닫기"
-          onClick={() => router.push(`/reviews/${reviewId}`)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
-            />
-          </svg>
-        </button>
-
         <h1 className="text-2xl font-bold mb-6">후기 수정</h1>
 
         <form onSubmit={handleSubmit}>
@@ -207,7 +185,7 @@ export default function EditReviewPage({
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 bg-gray-100 py-2 rounded"
+              className="flex-1 bg-gray-100 py-2 rounded-xl hover:shadow-lg "
               disabled={isUploading}
             >
               취소

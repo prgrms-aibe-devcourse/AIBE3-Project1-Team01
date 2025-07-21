@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import ReviewFilter from "./components/ReviewFilter";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
+import SignupModal from "../signup/SignupModal";
+import LoginModal from "../login/LoginModal";
 
 interface Review {
   id: number;
@@ -33,6 +34,8 @@ export default function ReviewList() {
     rating: "all",
     myReviewOnly: false,
   });
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
 
   const router = useRouter();
 
@@ -48,8 +51,12 @@ export default function ReviewList() {
     setFilters(newFilters);
   };
 
-  // 3) 후기 작성 버튼
+  // 3) 후기 작성 버튼 +  모달 추가
   const handleWriteClick = () => {
+    if (!user) {
+      setShowLoginModal(true); // 로그인 안 된 경우 모달 오픈
+      return;
+    }
     router.push("/reviews/write");
   };
 
@@ -122,15 +129,31 @@ export default function ReviewList() {
               <h2 className="text-xl font-bold text-[#413D3D] whitespace-nowrap min-w-[200px] flex-shrink-0">
                 여행 후기 모아보기
               </h2>
-              {user && (
-                <button
-                  onClick={handleWriteClick}
-                  className="bg-[#F4CCC4] text-white font-semibold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition whitespace-nowrap"
-                >
-                  후기 작성
-                </button>
-              )}
+              <button
+                onClick={handleWriteClick}
+                className="bg-[#F4CCC4] text-white font-semibold px-4 py-2 rounded-full hover:bg-[#EAB7AD] transition whitespace-nowrap"
+              >
+                후기 작성
+              </button>
             </div>
+
+            <LoginModal
+              isOpen={showLoginModal}
+              onClose={() => setShowLoginModal(false)}
+              onSignup={() => {
+                setShowLoginModal(false);
+                setShowSignupModal(true);
+              }}
+            />
+
+            <SignupModal
+              isOpen={showSignupModal}
+              onClose={() => setShowSignupModal(false)}
+              onLogin={() => {
+                setShowSignupModal(false);
+                setShowLoginModal(true);
+              }}
+            />
 
             {loading ? (
               <div>로딩 중...</div>
