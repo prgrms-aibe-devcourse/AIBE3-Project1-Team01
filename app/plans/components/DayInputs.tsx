@@ -1,22 +1,17 @@
 'use client';
 
 import { format, eachDayOfInterval } from 'date-fns';
-//→ format: 날짜를 문자열로 포맷팅 (ex: 2025-07-16)
-//→ eachDayOfInterval: 날짜 범위(from~to)를 하루씩 나눈 배열로 만들어줌
 import type { DateRange } from 'react-day-picker';
-//range 타입 정의용 import. { from: Date, to: Date } 구조
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 type DailyPlans = {
   [date: string]: { place: string; detail: string }[];
 };
-//→ 날짜 문자열을 키로 하고, 장소/설명 쌍의 배열을 값으로 가지는 객체
-//→ 예: { '2025-07-17': [ { place: '경복궁', detail: '오전 방문' }, ... ] }
 
-type Props = { //DayInputs 컴포넌트가 받는 props 3가지
-  range: DateRange | undefined; //날짜 범위
-  dailyPlans: DailyPlans; //날짜별 일정 데이터
-  setDailyPlans: React.Dispatch<React.SetStateAction<DailyPlans>>; //함수형 업데이트 허용
+type Props = {
+  range: DateRange | undefined;
+  dailyPlans: DailyPlans;
+  setDailyPlans: React.Dispatch<React.SetStateAction<DailyPlans>>;
 };
 
 export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
@@ -25,24 +20,22 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
     range?.from && range?.to
       ? eachDayOfInterval({ start: range.from, end: range.to })
       : [];
-    //→ 날짜 범위가 존재하면 from~to 사이의 날짜들을 배열로 생성
-    //→ 예: [7/17, 7/18, 7/19]
 
-  const handleInputChange = ( //장소/설명 입력 필드 변경 시 호출되는 함수
+  const handleInputChange = ( //장소/설명 입력 필드 변경 시 호출
     date: string,
     index: number,
     field: 'place' | 'detail',
     value: string
   ) => {
     setDailyPlans((prev) => {
-      const current = prev[date] || []; //해당 날짜에 이미 저장된 일정 배열을 꺼냄 (없으면 빈 배열)
+      const current = prev[date] || []; 
       const updated = [...current];
-      updated[index] = { ...updated[index], [field]: value }; //해당 인덱스의 객체를 업데이트
+      updated[index] = { ...updated[index], [field]: value };
       return { ...prev, [date]: updated };
     });
   };
 
-  const handleAddEntry = (date: string) => { //항목 추가 버튼 클릭 시 호출되는 함수
+  const handleAddEntry = (date: string) => { //항목 추가 버튼 클릭 시 호출
     setDailyPlans((prev) => {
       const current = prev[date] || [];
       return {
@@ -65,7 +58,6 @@ export default function DayInputs({ range, dailyPlans, setDailyPlans }: Props) {
       const current = [...(prev[date] || [])];
       const targetIndex = direction === 'up' ? index - 1 : index + 1;
       
-      // 범위 밖이면 무시
       if (targetIndex < 0 || targetIndex >= current.length) return prev;
   
       // 스왑
