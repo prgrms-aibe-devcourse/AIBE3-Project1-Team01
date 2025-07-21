@@ -56,9 +56,7 @@ export function useReviewImageEdit(
   };
 
   // 기존 이미지 삭제
-  const handleExistingImageDelete = (index: number) => {
-    if (!confirm("이 이미지를 삭제하시겠습니까?")) return;
-    
+  const handleExistingImageDelete = (index: number) => { 
     const targetImage = existingImages[index];
     
     setDeletedIndexes((prev) => {
@@ -140,7 +138,6 @@ export function useReviewImageEdit(
 
   // 새 이미지 삭제
   const handleNewImageDelete = (index: number) => {
-    if (!confirm("이 이미지를 삭제하시겠습니까?")) return;
     
     setNewFiles((prev) => prev.filter((_, i) => i !== index));
     setNewPreviews((prev) => prev.filter((_, i) => i !== index));

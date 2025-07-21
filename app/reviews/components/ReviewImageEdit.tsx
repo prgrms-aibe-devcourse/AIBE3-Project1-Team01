@@ -4,7 +4,8 @@
  * - 새 이미지 추가
  * - 커버 이미지 선택
  */
-import React from "react";
+import React, { useState } from "react";
+import ReviewModal from "./ReviewModal";
 
 interface ExistingImage {
   url: string;
@@ -60,7 +61,12 @@ export default function ReviewImageEdit({
     const totalImages = totalExistingImages + totalNewImages;
 
     if (totalImages + files.length > 5) {
-      alert(`이미지는 최대 5장까지 업로드 가능합니다. (현재 ${totalImages}장)`);
+      setModal(null),
+      
+      setModal({
+        title: "이미지는 최대 5장까지 업로드 가능합니다.",
+        detail: `현재 ${totalImages + files.length}장`,
+      }); // 모달 교체 완료
       return;
     }
 
@@ -76,6 +82,12 @@ export default function ReviewImageEdit({
     if (!file) return;
     onExistingImageReplace(index, file);
   };
+
+  //모달 상태 
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
 
   return (
     <div className="mb-8">
@@ -195,6 +207,14 @@ export default function ReviewImageEdit({
       <p className="text-xs text-gray-500 mt-1">
         ★ 버튼을 클릭하여 커버 이미지를 선택해주세요.
       </p>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 } 

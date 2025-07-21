@@ -8,6 +8,7 @@ import { supabase } from "../../../../lib/supabase";
 import { useReviewContent } from "../../hooks/useReviewContent";
 import { useReviewImageEdit } from "../../hooks/useReviewImageEdit";
 import Header from "../../../components/Header";
+import ReviewModal from "../../components/ReviewModal";
 
 export default function EditReviewPage({
   params,
@@ -48,6 +49,12 @@ export default function EditReviewPage({
     updateImages,
   } = useReviewImageEdit([], reviewId);
 
+  //모달 상태
+  const [modal, setModal] = useState<{
+    title: string;
+    detail: string;
+  } | null>(null);
+
   useEffect(() => {
     if (!reviewId) return;
     const load = async () => {
@@ -65,6 +72,7 @@ export default function EditReviewPage({
         setContentData({
           title: review.title,
           region: review.region,
+          region_city: review.region_city,
           rating: review.rating,
           content: review.content,
         });
@@ -88,7 +96,6 @@ export default function EditReviewPage({
 
         setLoading(false);
       } catch (e: any) {
-        alert(e.message);
         setLoading(false);
       }
     };
@@ -101,7 +108,11 @@ export default function EditReviewPage({
 
     const errorMsg = validateContent();
     if (errorMsg) {
-      alert(errorMsg);
+      setModal(null);
+      setModal({
+        title: "다시 수정하세요",
+        detail: errorMsg,
+      }); //모달 교체 완료
       return;
     }
 
@@ -122,19 +133,18 @@ export default function EditReviewPage({
 
       // 이미지 업데이트
       await updateImages(reviewId);
-
-      alert("후기 수정 완료!");
       router.push(`/reviews/${reviewId}`); //리뷰 상세 페이지로 돌아가기
     } catch (e: any) {
-      alert(e.message || "오류가 발생했습니다.");
+      setModal({
+        title: "후기 수정 실패.",
+        detail: e.message,
+      }); //모달 교체 완료
     }
   };
 
   // 수정 취소 핸들러
   const handleCancel = () => {
-    if (confirm("수정을 취소하시겠습니까?")) {
-      router.push("/reviews");
-    }
+    router.push(`/reviews/${reviewId}`);
   };
 
   if (loading) {
@@ -143,69 +153,71 @@ export default function EditReviewPage({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6 py-8 text-[#413D3D]">
+    <div>
       <Header />
-
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold"> 후기 수정</h1>
+      <div className="relative w-full max-w-6xl mx-auto bg-white text-[#413D3D] rounded-2xl shadow-lg px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <button
-          onClick={handleCancel}
           className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
           style={{ lineHeight: 1 }}
+          aria-label="닫기"
+          onClick={handleCancel}
           disabled={isUploading}
         >
           ×
         </button>
+
+        <h1 className="text-2xl font-bold mb-6">후기 수정</h1>
+
+        <form onSubmit={handleSubmit}>
+          <ReviewContentForm
+            value={contentData}
+            onChange={setContentData}
+            disabled={isUploading}
+          />
+
+          <ReviewImageEdit
+            existingImages={existingImages}
+            onExistingImageDelete={handleExistingImageDelete}
+            onExistingImageReplace={handleExistingImageReplace}
+            onExistingImageCoverChange={handleExistingImageCoverChange}
+            deletedIndexes={deletedIndexes}
+            replacementPreviews={replacementPreviews}
+            newFiles={newFiles}
+            newPreviews={newPreviews}
+            onNewImageAdd={handleNewImageAdd}
+            onNewImageDelete={handleNewImageDelete}
+            onNewImageCoverChange={handleNewImageCoverChange}
+            newCoverImageIndex={newCoverImageIndex}
+            disabled={isUploading}
+          />
+
+          <div className="flex gap-3 mt-6">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="flex-1 bg-gray-100 py-2 rounded"
+              disabled={isUploading}
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded-xl hover:shadow-lg disabled:bg-gray-300"
+              disabled={isUploading}
+            >
+              {isUploading ? "수정 중..." : "수정 완료"}
+            </button>
+          </div>
+
+          {uploadError && (
+            <div className="mt-4 text-red-500 text-sm">
+              {uploadError.message}
+            </div>
+          )}
+        </form>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <ReviewContentForm
-          value={contentData}
-          onChange={setContentData}
-          disabled={isUploading}
-        />
-
-        <ReviewImageEdit
-          existingImages={existingImages}
-          onExistingImageDelete={handleExistingImageDelete}
-          onExistingImageReplace={handleExistingImageReplace}
-          onExistingImageCoverChange={handleExistingImageCoverChange}
-          deletedIndexes={deletedIndexes}
-          replacementPreviews={replacementPreviews}
-          newFiles={newFiles}
-          newPreviews={newPreviews}
-          onNewImageAdd={handleNewImageAdd}
-          onNewImageDelete={handleNewImageDelete}
-          onNewImageCoverChange={handleNewImageCoverChange}
-          newCoverImageIndex={newCoverImageIndex}
-          disabled={isUploading}
-        />
-
-        <div className="flex gap-3 mt-6">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="flex-1 bg-gray-100 py-2 rounded"
-            disabled={isUploading}
-          >
-            취소
-          </button>
-          <button
-            type="submit"
-            className="flex-1 bg-[#F4CCC4] text-[#413D3D] py-2 rounded-full disabled:bg-gray-300"
-            disabled={isUploading}
-          >
-            {isUploading ? "수정 중..." : "수정 완료"}
-          </button>
-        </div>
-
-        {uploadError && (
-          <div className="mt-4 text-red-500 text-sm">{uploadError.message}</div>
-        )}
-      </form>
-      {/* ✅ Footer를 하단에 고정 */}
-
-      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
+      <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto flex justify-center relative px-6 flex items-center">
         {/* 배경 이미지 */}
         <div
           className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
@@ -213,10 +225,18 @@ export default function EditReviewPage({
         />
 
         {/* 텍스트 */}
-        <p className="relative z-10 pl-[10rem] text-left w-full">
+        <p className=" text-center relative z-10  text-left w-full">
           © 2025 h1 Trip. 모든 여행자들의 꿈을 응원합니다. 🌟
         </p>
       </footer>
+
+      {modal && (
+        <ReviewModal
+          title={modal.title}
+          detail={modal.detail}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 }

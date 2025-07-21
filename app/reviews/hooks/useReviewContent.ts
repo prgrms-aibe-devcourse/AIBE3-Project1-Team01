@@ -10,7 +10,7 @@ export function useReviewContent(initial?: ReviewContentData) {
   
   // 후기 내용 상태
   const [form, setForm] = useState<ReviewContentData>(
-    initial || { title: "", region: "", rating: 5, content: "" }
+    initial || { title: "", region: "", region_city: "", rating: 5, content: "" }
   );
 
   // 입력값 변경 핸들러
@@ -23,7 +23,7 @@ export function useReviewContent(initial?: ReviewContentData) {
 
   // 상태 초기화
   const reset = () => {
-    setForm(initial || { title: "", region: "", rating: 5, content: "" });
+    setForm(initial || { title: "", region: "", region_city: "", rating: 5, content: "" });
   };
 
   // 유효성 검사

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -20,13 +20,12 @@ export default function PlanPage() {
   }>({});
   const router = useRouter();
   const { user } = useAuth();
-  const searchParams = useSearchParams(); 
-  const planId = searchParams.get('id');
+  const searchParams = useSearchParams();
+  const planId = searchParams.get("id");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [dateError, setDateError] = useState('');
 
-  
   // 모달 간 전환 함수
   const handleSwitchToSignup = () => {
     setShowLoginModal(false);
@@ -44,10 +43,10 @@ export default function PlanPage() {
       if (!planId) return;
 
       const { data: plan, error: planError } = await supabase
-        .from('plans')
-        .select('*')
-        .eq('id', planId)
-        .eq('user_id', user?.id)
+        .from("plans")
+        .select("*")
+        .eq("id", planId)
+        .eq("user_id", user?.id)
         .single();
 
       if (planError || !plan) return;
@@ -60,12 +59,13 @@ export default function PlanPage() {
       });
 
       const { data: items } = await supabase
-        .from('plan_items')
-        .select('*')
-        .eq('plan_id', planId)
-        .order('order', { ascending: true });
+        .from("plan_items")
+        .select("*")
+        .eq("plan_id", planId)
+        .order("order", { ascending: true });
 
-      const grouped: { [date: string]: { place: string; detail: string }[] } = {};
+      const grouped: { [date: string]: { place: string; detail: string }[] } =
+        {};
       items?.forEach((item) => {
         if (!grouped[item.date]) grouped[item.date] = [];
         grouped[item.date].push({ place: item.place, detail: item.detail });

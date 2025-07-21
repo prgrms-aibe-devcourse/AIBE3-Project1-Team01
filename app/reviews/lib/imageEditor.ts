@@ -95,9 +95,9 @@ export async function updateImagesOrder(
   remainingExistingImages: ExistingImage[],
   newFiles: File[],
   newCoverImageIndex: number | null,
-  existingCoverIndex: number
+  existingCoverOrder: number | null // 변경: 기존 인덱스 대신 기존 커버 이미지 order 값
 ) {
-  // 새 이미지 업로드(스토리지)
+  // 1) 새 이미지 업로드
   const uploadedUrls: string[] = [];
   for (let i = 0; i < newFiles.length; i++) {
     const file = newFiles[i];
@@ -106,52 +106,70 @@ export async function updateImagesOrder(
     uploadedUrls.push(imageUrl);
   }
 
-  // 기존+새 이미지 합쳐서 order 0부터 일괄 재할당
+  // 2) 기존 이미지 + 새 이미지 합침 (순서 유지)
   const allImages: ImageWithNewFlag[] = [
     ...remainingExistingImages.map((img) => ({ ...img, isNew: false })),
-    ...uploadedUrls.map((url, idx) => ({ 
-      url, 
+    ...uploadedUrls.map((url, idx) => ({
+      url,
       order: remainingExistingImages.length + idx,
-      isNew: true 
+      isNew: true,
     })),
   ];
 
-  // 커버 이미지 상태 초기화
+  // 3) 대표이미지 결정
+  const existingCoverIndexInRemaining = existingCoverOrder !== null
+    ? remainingExistingImages.findIndex(img => img.order === existingCoverOrder)
+    : -1;
+
+  let coverIndex = -1;
+
+  if (newCoverImageIndex !== null) {
+    // 새 이미지 중 커버 지정된 경우
+    coverIndex = remainingExistingImages.length + newCoverImageIndex;
+  } else if (existingCoverIndexInRemaining !== -1) {
+    // 기존 대표 이미지가 삭제되지 않고 존재하면 유지
+    coverIndex = existingCoverIndexInRemaining;
+  } else {
+    // 대표 이미지 삭제되었거나 없으면 대표 이미지 없음 (coverIndex = -1)
+    coverIndex = -1;
+  }
+
+
+  // 4) 기존 커버 이미지 초기화
   await supabase
     .from("images")
     .update({ is_cover: false })
     .eq("review_id", reviewId);
 
-  // 0번부터 order 재할당하면서 커버 이미지 설정
+  // 5) allImages 순회하며 DB 업데이트 또는 insert
   for (let i = 0; i < allImages.length; i++) {
     const img = allImages[i];
-    const isCover = newCoverImageIndex !== null ? 
-      (img.isNew && i === remainingExistingImages.length + newCoverImageIndex) :
-      (!img.isNew && existingCoverIndex !== -1 && i === existingCoverIndex);
+    const isCover = i === coverIndex;
 
     if (img.isNew) {
-      // 새 이미지 DB insert
+      // 새 이미지 insert
       const { error: insertError } = await supabase.from("images").insert({
         review_id: reviewId,
         img_url: img.url,
         order: i,
-        is_cover: isCover
+        is_cover: isCover,
       });
       if (insertError) throw new Error(insertError.message);
     } else {
-      // 기존 이미지 DB update
+      // 기존 이미지 update
       const oldOrder = img.order;
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from("images")
-        .update({ 
+        .update({
           order: i,
-          is_cover: isCover
+          is_cover: isCover,
         })
         .eq("review_id", reviewId)
         .filter('"order"', "eq", oldOrder);
-      if (error) throw new Error(error.message);
+      if (updateError) throw new Error(updateError.message);
     }
   }
 
   return uploadedUrls;
-} 
+}
+
