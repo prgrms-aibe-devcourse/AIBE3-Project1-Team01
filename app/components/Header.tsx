@@ -139,7 +139,7 @@ export default function Header() {
                 onClick={() => setIsLoginModalOpen(true)}
                 className="px-4 py-1.5 rounded-full font-medium text-base border-[3px] text-[#333] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px]"
               >
-                Login
+                Log In
               </button>
             )}
           </div>
