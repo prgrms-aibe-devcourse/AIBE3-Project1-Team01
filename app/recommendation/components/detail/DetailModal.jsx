@@ -17,9 +17,8 @@ export default function DetailModal({ contentid, onClose }) {
   if (!contentid) return null;
   return (
     <>
-      {/* Overlay only below the header */}
       <div className="fixed left-0 right-0 top-24 bottom-0 z-[9998] bg-black/50" />
-      {/* Modal stays in original position */}
+
       <div className="fixed left-0 right-0 top-32 bottom-0 z-[9999] flex items-start justify-center">
         <div
           className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-bounceIn"
