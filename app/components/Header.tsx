@@ -14,20 +14,6 @@ Header에서의 기능은 다음과 같습니다
 2. 로딩 시 로딩 중으로 띄워주기
 */
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  theme: {
-    extend: {},
-    screens: {
-      md: "500px", // md 브레이크포인트를 500px로 변경
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
-    },
-  },
-  plugins: [],
-};
-
 export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); //로그인 창을 띄워야 하는 경우 사용
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); //회원가입 창을 띄워야 하는 경우 사용
