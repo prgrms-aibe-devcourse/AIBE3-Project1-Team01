@@ -14,7 +14,8 @@ import {
   SUBCATEGORIES,
   CATEGORY_TREE,
 } from "./constants/travelData";
-import Header from "@/app/components/Header";
+// import Header from "@/app/components/Header";
+import Header from "../components/Header";
 
 export default function RecommendationPage() {
   const [areaCode, setAreaCode] = useState("");
