@@ -14,7 +14,8 @@ import {
   SUBCATEGORIES,
   CATEGORY_TREE,
 } from "./constants/travelData";
-import Header from "@/app/components/Header";
+
+import Header from "../components/Header";
 
 export default function RecommendationPage() {
   const [areaCode, setAreaCode] = useState("");
@@ -60,6 +61,7 @@ export default function RecommendationPage() {
   return (
     <div className="relative w-full min-h-screen flex flex-col bg-my-off-white">
       <Header />
+
       {/* 상단 배경: 66vh로 확장 */}
       <div className="absolute top-0 left-0 w-full h-[66vh] min-h-[300px] z-0 pointer-events-none">
         <img
@@ -204,7 +206,6 @@ export default function RecommendationPage() {
           </div>
         </div>
       </main>
-      {/* 푸터 */}
       <footer className="bg-white/60 backdrop-blur-md py-9 text-sm text-gray-600 mt-auto relative px-6 flex items-center">
         <div
           className="absolute inset-y-0 left-16 w-40 bg-no-repeat bg-left bg-contain pointer-events-none"
