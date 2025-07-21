@@ -6,6 +6,7 @@ import Link from "next/link";
 import LoginModal from "../login/LoginModal";
 import SignupModal from "../signup/SignupModal";
 import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 /*
 Header에서의 기능은 다음과 같습니다
@@ -17,6 +18,7 @@ export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); //로그인 창을 띄워야 하는 경우 사용
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); //회원가입 창을 띄워야 하는 경우 사용
   const { user, isLoading, handleLogout } = useAuth();
+  const router = useRouter();
 
   // 모달 전환 핸들러: 회원가입으로 전환
   const openSignup = () => {
@@ -87,12 +89,19 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
-            <Link
-              href="/plans"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
+            <button
+              type="button"
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg bg-transparent border-none px-0"
+              onClick={() => {
+                if (user) {
+                  router.push("/plans");
+                } else {
+                  setIsLoginModalOpen(true);
+                }
+              }}
             >
               계획 세우기
-            </Link>
+            </button>
             <Link
               href="/reviews"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
