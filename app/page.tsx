@@ -1,10 +1,26 @@
 "use client";
 
-import Header from "@/app/components/Header";
-import PopularDestinations from "@/app/components/PopularDestinations";
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import LoginModal from './login/LoginModal';
+import Header from "./components/Header";
+import PopularDestinations from "./components/PopularDestinations";
 import Link from "next/link";
 
 export default function Home() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handlePlanClick = () => {
+    if (user) {
+      router.push('/plans');
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F6EFEF] font-sans text-gray-800">
       {/* 헤더를 최상단 레이어로 */}
@@ -59,9 +75,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* 여행 계획 */}
-            <Link
-              href="/plans"
-              className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group"
+            <button
+              type="button"
+              onClick={handlePlanClick}
+              className="bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group w-full text-center"
             >
               <div className="w-16 h-16 bg-[#F4CCC4] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <i className="ri-map-pin-line text-2xl text-white"></i>
@@ -72,7 +89,11 @@ export default function Home() {
               <p className="text-[#413D3D] text-sm ">
                 지역별 추천 장소와 함께 나만의 여행 일정을 쉽게 짜보세요.
               </p>
-            </Link>
+            </button>
+            <LoginModal
+              isOpen={showLoginModal}
+              onClose={() => setShowLoginModal(false)}
+            />
 
             {/* 여행 후기 */}
             <Link
@@ -131,9 +152,11 @@ export default function Home() {
             <div className="relative group">
               {/* 오버레이를 진하게 덮는 요소 */}
               <div className="absolute inset-0 bg-black/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              <button className="relative bg-[#e6b3aa] text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition duration-300 hover:bg-[#cc9288] hover:shadow-xl active:scale-95 active:brightness-90 focus:outline-none">
-                여행 계획 시작하기
-              </button>
+              <Link href={"/plans"} passHref>
+                <button className="relative bg-[#e6b3aa] text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg transition duration-300 hover:bg-[#cc9288] hover:shadow-xl active:scale-95 active:brightness-90 focus:outline-none">
+                  여행 계획 시작하기
+                </button>
+              </Link>
             </div>
           </div>
         </section>

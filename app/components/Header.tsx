@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import LoginModal from "../login/LoginModal";
 import SignupModal from "../signup/SignupModal";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 /*
 Header에서의 기능은 다음과 같습니다
@@ -17,6 +18,7 @@ export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); //로그인 창을 띄워야 하는 경우 사용
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); //회원가입 창을 띄워야 하는 경우 사용
   const { user, isLoading, handleLogout } = useAuth();
+  const router = useRouter();
 
   // 모달 전환 핸들러: 회원가입으로 전환
   const openSignup = () => {
@@ -87,12 +89,19 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
-            <Link
-              href="/plans/list"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
+            <button
+              type="button"
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg bg-transparent border-none px-0"
+              onClick={() => {
+                if (user) {
+                  router.push("/plans");
+                } else {
+                  setIsLoginModalOpen(true);
+                }
+              }}
             >
-              내 일정
-            </Link>
+              계획 세우기
+            </button>
             <Link
               href="/reviews"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
@@ -110,11 +119,14 @@ export default function Header() {
           <div className="flex items-center space-x-10 z-10">
             {user ? (
               <>
-                <span className="text-sm text-[#413D3D] whitespace-nowrap">
+                <Link
+                  href="/plans/list"
+                  className="text-sm text-[#413D3D] whitespace-nowrap"
+                >
                   안녕하세요,
                   <br />
                   {user.email}님
-                </span>
+                </Link>
                 <button
                   onClick={() => handleLogout()}
                   className="px-5 py-2 rounded-full font-medium text-lg border text-[#333] bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200 shadow-sm active:translate-y-[1px]"
