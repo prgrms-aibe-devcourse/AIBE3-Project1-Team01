@@ -74,7 +74,7 @@ export default function Header() {
           style={{ height: "60px" }} // 헤더 내부 높이 고정
         >
           <div
-            className="flex items-center relative"
+            className="flex items-center"
             style={{ height: "80px" }}
           >
             <Link href="/">
@@ -88,10 +88,11 @@ export default function Header() {
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 absolute left-1/2 transform -translate-x-1/2">
+          <nav className="hidden md:flex items-center font-semibold gap-8 lg:gap-12 xl:gap-16 flex-grow justify-center max-w-[calc(100%-340px)] pr-8">
+            {/* flex-grow로 가능한 공간 최대한 차지 + 최대 너비 제한, 오른쪽 패딩 추가 */}
             <button
               type="button"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg bg-transparent border-none px-0"
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg bg-transparent border-none px-0 whitespace-nowrap"
               onClick={() => {
                 if (user) {
                   router.push("/plans");
@@ -104,24 +105,25 @@ export default function Header() {
             </button>
             <Link
               href="/reviews"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg whitespace-nowrap"
             >
               여행 후기
             </Link>
             <Link
               href="/recommendation"
-              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
+              className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg whitespace-nowrap"
             >
               장소 추천
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-10 z-10">
+          <div className="flex items-center space-x-10 z-10 ml-auto whitespace-nowrap min-w-[160px]">
             {user ? (
               <>
                 <Link
                   href="/plans/list"
-                  className="text-sm text-[#413D3D] text-left min-w-[150px] max-w-[160px] leading-tight break-words whitespace-normal"
+                  className="text-sm text-[#413D3D] text-left leading-tight"
+                  style={{ whiteSpace: "normal" }} // 줄바꿈 허용 (안녕하세요 ~)
                 >
                   안녕하세요,
                   <br />
