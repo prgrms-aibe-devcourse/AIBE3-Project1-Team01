@@ -29,7 +29,7 @@ export default function ReviewConfirmModal({
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-full bg-pink-500 text-white text-sm hover:bg-pink-600"
+            className="px-4 py-2 rounded-full bg-[#F4CCC4] text-[#413D3D] text-sm hover:bg-[#cc9288]"
           >
             확인
           </button>

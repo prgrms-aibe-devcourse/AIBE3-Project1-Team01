@@ -31,7 +31,7 @@ export default function EditReviewPage() {
   const { id } = params;
   const router = useRouter();
 
-  //모달 상태 
+  //모달 상태
   const [modal, setModal] = useState<{
     title: string;
     detail: string;
@@ -137,9 +137,6 @@ export default function EditReviewPage() {
     router.push("/reviews");
   };
 
-
-
-
   if (isLoading || !review) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
@@ -164,15 +161,30 @@ export default function EditReviewPage() {
           <section className="relative mb-8 border-b border-gray-300 pb-4">
             {/* 닫기 버튼 */}
             <button
-              className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center text-2xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
+              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-400 hover:text-gray-600 bg-white/80 rounded-full shadow transition-all duration-200"
               style={{ lineHeight: 1 }}
               aria-label="닫기"
               onClick={() => router.push("/reviews")}
             >
-              ×
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                />
+              </svg>
             </button>
 
-            <h1 className="text-3xl font-bold text-gray-800 mb-3">{review.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-3">
+              {review.title}
+            </h1>
 
             <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
               <span className="bg-[#C9E6E5] text-[#413D3D] px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
@@ -191,7 +203,9 @@ export default function EditReviewPage() {
 
           {/* 이미지 영역 */}
           {images.length > 0 && (
-            <section className="mb-8 pl-6"> {/* 왼쪽 여백 본문과 맞춤 */}
+            <section className="mb-8 pl-6">
+              {" "}
+              {/* 왼쪽 여백 본문과 맞춤 */}
               <div className="flex gap-x-3 overflow-x-auto pb-2">
                 {images.map((url, idx) => (
                   <a
@@ -220,9 +234,15 @@ export default function EditReviewPage() {
           {/* 작성일/수정일 + 수정/삭제 버튼 한 줄로 배치 */}
           <div className="flex items-center justify-between">
             <div className="text-xs text-gray-400 whitespace-nowrap space-x-4">
-              <span>작성일: {new Date(review.created_at!).toLocaleDateString("ko-KR")}</span>
+              <span>
+                작성일:{" "}
+                {new Date(review.created_at!).toLocaleDateString("ko-KR")}
+              </span>
               {review.updated_at && (
-                <span>수정일: {new Date(review.updated_at).toLocaleDateString("ko-KR")}</span>
+                <span>
+                  수정일:{" "}
+                  {new Date(review.updated_at).toLocaleDateString("ko-KR")}
+                </span>
               )}
             </div>
 
@@ -238,7 +258,8 @@ export default function EditReviewPage() {
                   onClick={handleDelete}
                   className="whitespace-nowrap bg-[#F4CCC4] text-[#413D3D] px-6 py-2 rounded-xl font-medium hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
                 >
-                  <i className="ri-delete-bin-line mr-2 text-[#413D3D]"></i>후기 삭제
+                  <i className="ri-delete-bin-line mr-2 text-[#413D3D]"></i>후기
+                  삭제
                 </button>
               </div>
             )}
@@ -273,7 +294,6 @@ export default function EditReviewPage() {
           onCancel={() => setConfirmModalOpen(false)}
         />
       )}
-
     </div>
   );
 }
