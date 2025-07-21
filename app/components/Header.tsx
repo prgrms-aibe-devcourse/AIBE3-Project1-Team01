@@ -82,7 +82,7 @@ export default function Header() {
                 src="/images/h1trip-logo2.png"
                 alt="h1 Trip"
                 width={160}
-                height={80} // 헤더보다 큰 로고 높이
+                height={80}
                 className="object-contain cursor-pointer"
               />
             </Link>
@@ -109,7 +109,7 @@ export default function Header() {
               여행 후기
             </Link>
             <Link
-              href="/recommendation" // <-- 이동하고자 하는 페이지 경로 (예: /recommendation)
+              href="/recommendation"
               className="text-[#413D3D] hover:text-[#B2DAD9] transition-colors cursor-pointer text-lg"
             >
               장소 추천
