@@ -108,12 +108,13 @@ export default function Header() {
           <div className="flex-none flex justify-end items-center space-x-4 w-[220px]">
             {user ? (
               <>
-                <span
-                  className="text-sm text-[#413D3D] whitespace-normal break-words"
+                <Link
+                  href="/plans/list"
+                  className="text-sm text-[#413D3D] whitespace-normal break-words hover:underline"
                   style={{ maxWidth: 140 }}
                 >
                   안녕하세요, {user.email.split("@")[0]}&nbsp;님
-                </span>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="whitespace-nowrap flex-shrink-0 px-4 py-1.5 rounded-full font-medium text-base border-2 bg-[#C9E6E5] border-[#7FC4C9] hover:bg-[#B2DAD9] transition-all duration-200"
