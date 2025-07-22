@@ -112,7 +112,7 @@ export default function Header() {
                   className="text-sm text-[#413D3D] whitespace-normal break-words"
                   style={{ maxWidth: 140 }}
                 >
-                  안녕하세요, {user.email.split("@")[0]}님
+                  안녕하세요, {user.email.split("@")[0]}&nbsp;님
                 </span>
                 <button
                   onClick={handleLogout}
